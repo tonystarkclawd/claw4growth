@@ -505,7 +505,7 @@ a {
 .demo {
     position: relative;
     z-index: 1;
-    padding: var(--section-pad) 0;
+    padding: clamp(32px, 4vh, 60px) 0 var(--section-pad);
 }
 
 .tg-phone {
