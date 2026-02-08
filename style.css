@@ -325,13 +325,11 @@ a {
     display: flex;
     align-items: center;
     padding: 140px 0 clamp(40px, 6vh, 80px);
-    text-align: center;
 }
 
 .hero .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
 .hero-badge {
@@ -346,6 +344,7 @@ a {
     margin-bottom: 32px;
     text-transform: uppercase;
     animation: pulse-badge 2s ease-in-out infinite;
+    align-self: center;
 }
 
 @keyframes pulse-badge {
@@ -372,8 +371,6 @@ a {
     max-width: 900px;
     margin-bottom: 32px;
     text-shadow: 3px 3px #000;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .text-accent {
@@ -387,8 +384,6 @@ a {
     max-width: 640px;
     line-height: 1.85;
     margin-bottom: 40px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .hero-sub strong {
@@ -403,8 +398,6 @@ a {
 
 .form-group {
     max-width: 520px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .form-inner {
@@ -465,8 +458,6 @@ a {
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .stat-item {
