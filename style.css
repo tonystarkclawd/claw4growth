@@ -1140,9 +1140,7 @@ a {
 }
 
 /* FORCE VISIBILITY FIX */
-@media (max-width: 768px) {
-    .crt-overlay, .falling-text-container { display: none !important; }
-}
+/* CRT + falling text enabled everywhere */
 .reveal, .hero-entrance, .hero-title, .hero-sub, .hero-badge, .hero-stats,
 .section-title, .section-sub, .compare-card, .step, .problem-card, 
 .feature-card, .terminal, .demo-caption, .os-card, .final-title, 
