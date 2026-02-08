@@ -1140,7 +1140,9 @@ a {
 }
 
 /* FORCE VISIBILITY FIX */
-.crt-overlay, .falling-text-container { display: none !important; }
+@media (max-width: 768px) {
+    .crt-overlay, .falling-text-container { display: none !important; }
+}
 .reveal, .hero-entrance, .hero-title, .hero-sub, .hero-badge, .hero-stats,
 .section-title, .section-sub, .compare-card, .step, .problem-card, 
 .feature-card, .terminal, .demo-caption, .os-card, .final-title, 
