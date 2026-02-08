@@ -1132,6 +1132,13 @@ a {
     }
 }
 
+/* MASCOT */
+.hero-mascot {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
 /* FORCE VISIBILITY FIX */
 .crt-overlay, .falling-text-container { display: none !important; }
 .reveal, .hero-entrance, .hero-title, .hero-sub, .hero-badge, .hero-stats,
