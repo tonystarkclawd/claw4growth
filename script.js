@@ -121,23 +121,76 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const botAvatarSVG = `<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="60" fill="#1a1a2e"/><path d="M60 25 C45 25 35 40 35 50 C35 60 42 72 50 75 L50 80 L54 80 L54 75 C54 75 57 76 60 75 L60 80 L64 80 L64 75 C72 72 79 60 79 50 C79 40 75 25 60 25Z" fill="url(#ab)"/><rect x="42" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><rect x="62" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><path d="M54 36 L62 36" stroke="#e0e0e0" stroke-width="1.2"/><circle cx="48" cy="36" r="2" fill="#00e5cc"/><circle cx="68" cy="36" r="2" fill="#00e5cc"/><defs><linearGradient id="ab" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs></svg>`;
 
-    // Chat script: array of messages
+    // Chat script: 3 scenarios — Meta report, CRO audit, scheduled competitor analysis
     const chatScript = [
+        // === SCENARIO 1: Bot proactively sends Meta Ads performance recap ===
+        {
+            who: 'bot',
+            html: `📊 <strong>Daily Meta Ads Recap — Feb 8</strong>
+
+<div class="tg-result-section">
+<div class="tg-result-item"><span class="tg-bullet green">•</span> <strong>Spend:</strong> $284.50 / $350 daily budget</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> <strong>ROAS:</strong> 4.2x (target: 3.5x) ✅</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> <strong>Leads:</strong> 47 (CPL $6.05, down 12% vs. yesterday)</div>
+<div class="tg-result-item"><span class="tg-bullet yellow">•</span> <strong>Top campaign:</strong> "Spring Launch — Lookalike 2%" — 6.1x ROAS</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> <strong>Underperforming:</strong> "Retarget — Cart Abandoners" — 1.3x ROAS, paused automatically</div>
+</div>
+
+Want me to reallocate the paused budget to the Lookalike campaign? <span class="tg-time">9:00</span>`,
+            delay: 0,
+        },
         {
             who: 'user',
-            html: 'Can you audit my pricing page? https://acme.io/pricing <span class="tg-time">9:41</span>',
+            html: 'Yes, move it. Also run a CRO audit on acme.io/pricing <span class="tg-time">9:02</span>',
+            delay: 2800,
+        },
+        // === SCENARIO 2: CRO Audit ===
+        {
+            who: 'typing',
+            delay: 1500,
+            duration: 2500,
+        },
+        {
+            who: 'bot',
+            html: `✅ Done — $65.50 reallocated to "Spring Launch — Lookalike 2%".
+
+Now scanning your pricing page... <span class="tg-time">9:02</span>`,
             delay: 0,
         },
         {
             who: 'typing',
-            delay: 800,
-            duration: 1500,
+            delay: 2000,
+            duration: 3000,
         },
         {
             who: 'bot',
-            html: '🔍 Scanning <strong>acme.io/pricing</strong>... Give me 30 seconds. <span class="tg-time">9:41</span>',
+            html: `🔍 <strong>CRO Report — acme.io/pricing</strong>
+
+<div class="tg-result-section">
+<div class="tg-result-title critical">❌ Critical (3)</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> CTA contrast ratio 2.1:1 (needs 4.5:1)</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> Pricing defaults to annual — 73% expect monthly first</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> No social proof near CTA</div>
+</div>
+
+<div class="tg-result-section">
+<div class="tg-result-title win">✅ Quick Wins</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Add "Most Popular" badge — est. +18% CTR</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Move testimonials above fold — est. +12% conv.</div>
+</div>
+
+<div class="tg-result-section">
+<div class="tg-result-title impact">⚡ Est. total impact: +23-31% conversion rate</div>
+</div>
+<span class="tg-time">9:03</span>`,
             delay: 0,
         },
+        {
+            who: 'user',
+            html: 'Great. Can you also keep an eye on Competitor X? <span class="tg-time">9:04</span>',
+            delay: 3000,
+        },
+        // === SCENARIO 3: Scheduled competitor analysis ===
         {
             who: 'typing',
             delay: 1200,
@@ -145,55 +198,17 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         {
             who: 'bot',
-            html: `<strong>CRO Report — acme.io/pricing</strong>
+            html: `🕐 <strong>Competitor monitoring scheduled.</strong>
 
-<div class="tg-result-section">
-<div class="tg-result-title critical">❌ Critical Issues (3)</div>
-<div class="tg-result-item"><span class="tg-bullet red">•</span> CTA button has 2.1:1 contrast ratio (needs 4.5:1)</div>
-<div class="tg-result-item"><span class="tg-bullet red">•</span> Pricing toggle defaults to annual — 73% want monthly first</div>
-<div class="tg-result-item"><span class="tg-bullet red">•</span> No social proof within 400px of CTA</div>
+I'll check competitorx.com every Monday at 9:00 AM and send you a briefing with:
+<div class="tg-result-section" style="margin-top:4px">
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Pricing changes</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> New features / landing pages</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Ad creative updates (Meta Library)</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Content & SEO shifts</div>
 </div>
 
-<div class="tg-result-section">
-<div class="tg-result-title warning">⚠️ Warnings (5)</div>
-<div class="tg-result-item"><span class="tg-bullet yellow">•</span> Hero copy is 47 words — optimal is 15-25 for pricing</div>
-<div class="tg-result-item"><span class="tg-bullet yellow">•</span> Missing urgency element near primary CTA</div>
-</div>
-
-<div class="tg-result-section">
-<div class="tg-result-title win">✅ Quick Wins</div>
-<div class="tg-result-item"><span class="tg-bullet green">•</span> Add "Most Popular" badge — est. +18% CTR</div>
-<div class="tg-result-item"><span class="tg-bullet green">•</span> Move testimonials above fold — est. +12% conversion</div>
-<div class="tg-result-item"><span class="tg-bullet green">•</span> A/B test: "Start Free" vs "Get Started"</div>
-</div>
-
-<div class="tg-result-section">
-<div class="tg-result-title impact">⚡ Estimated total impact: +23-31% conversion rate</div>
-</div>
-<span class="tg-time">9:42</span>`,
-            delay: 0,
-        },
-        {
-            who: 'user',
-            html: 'That contrast issue — can you write the CSS fix? <span class="tg-time">9:42</span>',
-            delay: 1200,
-        },
-        {
-            who: 'typing',
-            delay: 600,
-            duration: 1200,
-        },
-        {
-            who: 'bot',
-            html: `Sure. Here's the fix:
-
-<code style="display:block;background:#0a0f1a;padding:8px 10px;border-radius:6px;margin:6px 0;font-size:12px;color:#00e5cc;font-family:monospace;white-space:pre">.pricing-cta {
-  background: #2563eb;
-  color: #ffffff;
-  /* 8.6:1 contrast ratio ✓ */
-}</code>
-
-That bumps it from 2.1:1 to 8.6:1. Want me to schedule a weekly re-audit? <span class="tg-time">9:42</span>`,
+First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">9:04</span>`,
             delay: 0,
         },
     ];
