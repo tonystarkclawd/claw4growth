@@ -116,79 +116,173 @@ document.addEventListener('DOMContentLoaded', () => {
         requestAnimationFrame(tick);
     }
 
-    // ===== TERMINAL TYPING ANIMATION =====
-    const terminalBody = document.getElementById('terminal-body');
+    // ===== TELEGRAM CHAT ANIMATION =====
+    const tgChat = document.getElementById('tg-chat');
 
-    const terminalLines = [
-        { text: '> claw4growth audit --url https://acme.io/pricing', cls: 't-cmd', delay: 0 },
-        { text: '', cls: '', delay: 400 },
-        { text: '  Scanning pricing page...', cls: 't-dim', delay: 600 },
-        { text: '', cls: '', delay: 200 },
-        { text: '  CRO Report — acme.io/pricing', cls: 't-white t-bold', delay: 500 },
-        { text: '  ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', cls: 't-dim', delay: 100 },
-        { text: '', cls: '', delay: 300 },
-        { text: '  ✖ Critical Issues (3)', cls: 't-red t-bold', delay: 400 },
-        { text: '    → CTA button has 2.1:1 contrast ratio (needs 4.5:1)', cls: 't-red', delay: 300 },
-        { text: '    → Pricing toggle defaults to annual — 73% want monthly first', cls: 't-red', delay: 300 },
-        { text: '    → No social proof within 400px of CTA', cls: 't-red', delay: 300 },
-        { text: '', cls: '', delay: 200 },
-        { text: '  ⚠ Warnings (5)', cls: 't-yellow t-bold', delay: 400 },
-        { text: '    → Hero copy is 47 words — optimal is 15-25 for pricing', cls: 't-yellow', delay: 300 },
-        { text: '    → Missing urgency element near primary CTA', cls: 't-yellow', delay: 300 },
-        { text: '', cls: '', delay: 200 },
-        { text: '  ✓ Quick Wins', cls: 't-green t-bold', delay: 400 },
-        { text: '    → Add "Most Popular" badge → est. +18% CTR', cls: 't-green', delay: 300 },
-        { text: '    → Move testimonials above fold → est. +12% conversion', cls: 't-green', delay: 300 },
-        { text: '    → A/B test: "Start Free" vs "Get Started"', cls: 't-green', delay: 300 },
-        { text: '', cls: '', delay: 200 },
-        { text: '  ⚡ Estimated total impact: +23-31% conversion rate', cls: 't-white t-bold', delay: 500 },
+    const botAvatarSVG = `<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="60" fill="#1a1a2e"/><path d="M60 25 C45 25 35 40 35 50 C35 60 42 72 50 75 L50 80 L54 80 L54 75 C54 75 57 76 60 75 L60 80 L64 80 L64 75 C72 72 79 60 79 50 C79 40 75 25 60 25Z" fill="url(#ab)"/><rect x="42" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><rect x="62" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><path d="M54 36 L62 36" stroke="#e0e0e0" stroke-width="1.2"/><circle cx="48" cy="36" r="2" fill="#00e5cc"/><circle cx="68" cy="36" r="2" fill="#00e5cc"/><defs><linearGradient id="ab" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs></svg>`;
+
+    // Chat script: array of messages
+    const chatScript = [
+        {
+            who: 'user',
+            html: 'Can you audit my pricing page? https://acme.io/pricing <span class="tg-time">9:41</span>',
+            delay: 0,
+        },
+        {
+            who: 'typing',
+            delay: 800,
+            duration: 1500,
+        },
+        {
+            who: 'bot',
+            html: '🔍 Scanning <strong>acme.io/pricing</strong>... Give me 30 seconds. <span class="tg-time">9:41</span>',
+            delay: 0,
+        },
+        {
+            who: 'typing',
+            delay: 1200,
+            duration: 2000,
+        },
+        {
+            who: 'bot',
+            html: `<strong>CRO Report — acme.io/pricing</strong>
+
+<div class="tg-result-section">
+<div class="tg-result-title critical">❌ Critical Issues (3)</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> CTA button has 2.1:1 contrast ratio (needs 4.5:1)</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> Pricing toggle defaults to annual — 73% want monthly first</div>
+<div class="tg-result-item"><span class="tg-bullet red">•</span> No social proof within 400px of CTA</div>
+</div>
+
+<div class="tg-result-section">
+<div class="tg-result-title warning">⚠️ Warnings (5)</div>
+<div class="tg-result-item"><span class="tg-bullet yellow">•</span> Hero copy is 47 words — optimal is 15-25 for pricing</div>
+<div class="tg-result-item"><span class="tg-bullet yellow">•</span> Missing urgency element near primary CTA</div>
+</div>
+
+<div class="tg-result-section">
+<div class="tg-result-title win">✅ Quick Wins</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Add "Most Popular" badge — est. +18% CTR</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> Move testimonials above fold — est. +12% conversion</div>
+<div class="tg-result-item"><span class="tg-bullet green">•</span> A/B test: "Start Free" vs "Get Started"</div>
+</div>
+
+<div class="tg-result-section">
+<div class="tg-result-title impact">⚡ Estimated total impact: +23-31% conversion rate</div>
+</div>
+<span class="tg-time">9:42</span>`,
+            delay: 0,
+        },
+        {
+            who: 'user',
+            html: 'That contrast issue — can you write the CSS fix? <span class="tg-time">9:42</span>',
+            delay: 1200,
+        },
+        {
+            who: 'typing',
+            delay: 600,
+            duration: 1200,
+        },
+        {
+            who: 'bot',
+            html: `Sure. Here's the fix:
+
+<code style="display:block;background:#0a0f1a;padding:8px 10px;border-radius:6px;margin:6px 0;font-size:12px;color:#00e5cc;font-family:monospace;white-space:pre">.pricing-cta {
+  background: #2563eb;
+  color: #ffffff;
+  /* 8.6:1 contrast ratio ✓ */
+}</code>
+
+That bumps it from 2.1:1 to 8.6:1. Want me to schedule a weekly re-audit? <span class="tg-time">9:42</span>`,
+            delay: 0,
+        },
     ];
 
-    let terminalStarted = false;
+    let chatStarted = false;
 
-    const terminalObserver = new IntersectionObserver((entries) => {
+    const chatObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
-            if (entry.isIntersecting && !terminalStarted) {
-                terminalStarted = true;
-                runTerminalAnimation();
-                terminalObserver.unobserve(entry.target);
+            if (entry.isIntersecting && !chatStarted) {
+                chatStarted = true;
+                runChatAnimation();
+                chatObserver.unobserve(entry.target);
             }
         });
     }, { threshold: 0.3 });
 
-    if (terminalBody) {
-        terminalObserver.observe(terminalBody);
+    if (tgChat) {
+        chatObserver.observe(tgChat);
     }
 
-    function runTerminalAnimation() {
-        terminalBody.innerHTML = '';
-        let totalDelay = 0;
+    function createMsgEl(who, html) {
+        const wrapper = document.createElement('div');
+        wrapper.className = `tg-msg tg-msg-${who}`;
 
-        terminalLines.forEach((line, i) => {
-            totalDelay += line.delay;
+        if (who === 'bot') {
+            const avatar = document.createElement('div');
+            avatar.className = 'tg-msg-avatar';
+            avatar.innerHTML = botAvatarSVG;
+            wrapper.appendChild(avatar);
+        }
 
-            setTimeout(() => {
-                const oldCursor = terminalBody.querySelector('.terminal-cursor');
-                if (oldCursor) oldCursor.remove();
+        const bubble = document.createElement('div');
+        bubble.className = 'tg-bubble';
+        bubble.innerHTML = html;
+        wrapper.appendChild(bubble);
 
-                const div = document.createElement('div');
-                div.className = 't-line';
-                if (line.text === '') {
-                    div.innerHTML = '&nbsp;';
-                    div.className = 't-line-gap';
-                } else {
-                    div.innerHTML = `<span class="${line.cls}">${line.text}</span>`;
-                }
+        return wrapper;
+    }
 
-                if (i === terminalLines.length - 1) {
-                    const cursor = document.createElement('span');
-                    cursor.className = 'terminal-cursor';
-                    div.appendChild(cursor);
-                }
+    function createTypingEl() {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'tg-msg tg-msg-bot';
 
-                terminalBody.appendChild(div);
-                terminalBody.scrollTop = terminalBody.scrollHeight;
-            }, totalDelay);
+        const avatar = document.createElement('div');
+        avatar.className = 'tg-msg-avatar';
+        avatar.innerHTML = botAvatarSVG;
+        wrapper.appendChild(avatar);
+
+        const bubble = document.createElement('div');
+        bubble.className = 'tg-bubble';
+        bubble.innerHTML = '<div class="tg-typing"><div class="tg-typing-dot"></div><div class="tg-typing-dot"></div><div class="tg-typing-dot"></div></div>';
+        wrapper.appendChild(bubble);
+
+        return wrapper;
+    }
+
+    function runChatAnimation() {
+        tgChat.innerHTML = '';
+        let totalDelay = 400;
+
+        chatScript.forEach((msg) => {
+            totalDelay += msg.delay;
+
+            if (msg.who === 'typing') {
+                const showAt = totalDelay;
+                const removeAt = totalDelay + msg.duration;
+
+                setTimeout(() => {
+                    const typing = createTypingEl();
+                    typing.id = 'tg-typing-indicator';
+                    tgChat.appendChild(typing);
+                    tgChat.scrollTop = tgChat.scrollHeight;
+                }, showAt);
+
+                setTimeout(() => {
+                    const el = document.getElementById('tg-typing-indicator');
+                    if (el) el.remove();
+                }, removeAt);
+
+                totalDelay = removeAt;
+            } else {
+                const showAt = totalDelay;
+                setTimeout(() => {
+                    const el = createMsgEl(msg.who, msg.html);
+                    tgChat.appendChild(el);
+                    tgChat.scrollTop = tgChat.scrollHeight;
+                }, showAt);
+                totalDelay += 300;
+            }
         });
     }
 
