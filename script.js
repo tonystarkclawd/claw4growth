@@ -227,6 +227,16 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
 
     if (tgChat) {
         chatObserver.observe(tgChat);
+        // Safety: if already in viewport on load, start immediately
+        requestAnimationFrame(() => {
+            if (!chatStarted) {
+                const rect = tgChat.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    chatStarted = true;
+                    runChatAnimation();
+                }
+            }
+        });
     }
 
     function createMsgEl(who, html) {
