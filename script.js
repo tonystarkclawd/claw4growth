@@ -332,16 +332,16 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             submitBtn.textContent = 'SENDING...';
 
             try {
-                // Send to Kit API
-                const response = await fetch('https://api.kit.com/v3/subscribers', {
+                // Send to Kit API v4
+                const response = await fetch('https://api.kit.com/v4/subscribers', {
                     method: 'POST',
                     headers: {
-                        'Authorization': 'Bearer kit_65501187375548682d678e72681939e4',
+                        'X-Kit-Api-Key': 'kit_65501187375548682d678e72681939e4',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
                         email_address: email,
-                        tags: ['claw4growth']
+                        state: 'active'
                     })
                 });
 
