@@ -332,16 +332,15 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             submitBtn.textContent = 'SENDING...';
 
             try {
-                // Send to Kit API v4
-                const response = await fetch('https://api.kit.com/v4/subscribers', {
+                // Send to Kit API v3 form endpoint (CORS-friendly)
+                const response = await fetch('https://api.convertkit.com/v3/forms/9067942/subscribe', {
                     method: 'POST',
                     headers: {
-                        'X-Kit-Api-Key': 'kit_65501187375548682d678e72681939e4',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        email_address: email,
-                        state: 'active'
+                        api_key: 'sXdAgHsR95bxbswao3qyAQ',
+                        email: email
                     })
                 });
 
