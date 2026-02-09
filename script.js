@@ -332,14 +332,13 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             submitBtn.textContent = 'SENDING...';
 
             try {
-                // Send to Kit API v3 form endpoint (CORS-friendly)
-                const response = await fetch('https://api.convertkit.com/v3/forms/9067942/subscribe', {
+                // Send to our internal API (saves to DB + notifies Telegram + syncs Kit)
+                const response = await fetch('https://api.ironads.agency/claw4growth/submit', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        api_key: 'sXdAgHsR95bxbswao3qyAQ',
                         email: email
                     })
                 });
@@ -357,11 +356,16 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
                         }
                     });
 
-                    console.log('✅ Subscriber added to Kit:', email);
+                    console.log('✅ Subscriber added:', email);
+                } else if (response.status === 409) {
+                    // Already subscribed
+                    formGroup.style.display = 'none';
+                    successMsg.textContent = '✓ YOU\'RE ALREADY IN!';
+                    successMsg.classList.add('show');
                 } else {
                     // API error
-                    const error = await response.json();
-                    console.error('Kit API error:', error);
+                    const error = await response.json().catch(() => ({}));
+                    console.error('API error:', error);
                     alert('Something went wrong. Try again or email us directly.');
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalBtnText;
