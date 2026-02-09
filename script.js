@@ -315,7 +315,7 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
     const forms = document.querySelectorAll('.waitlist-form');
 
     forms.forEach(form => {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const input = form.querySelector('.form-input');
@@ -324,19 +324,56 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
 
             const formGroup = form.querySelector('.form-group');
             const successMsg = form.querySelector('.form-success');
+            const submitBtn = form.querySelector('.form-btn');
 
-            formGroup.style.display = 'none';
-            successMsg.classList.add('show');
+            // Show loading state
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'SENDING...';
 
-            console.log('Waitlist signup:', email);
+            try {
+                // Send to Kit API
+                const response = await fetch('https://api.kit.com/v3/subscribers', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer kit_65501187375548682d678e72681939e4',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        email_address: email,
+                        tags: ['claw4growth']
+                    })
+                });
 
-            // Increment counter
-            counters.forEach(c => {
-                const current = parseInt(c.textContent, 10);
-                if (!isNaN(current)) {
-                    c.textContent = current + 1;
+                if (response.ok) {
+                    // Success
+                    formGroup.style.display = 'none';
+                    successMsg.classList.add('show');
+
+                    // Increment counter
+                    counters.forEach(c => {
+                        const current = parseInt(c.textContent, 10);
+                        if (!isNaN(current)) {
+                            c.textContent = current + 1;
+                        }
+                    });
+
+                    console.log('✅ Subscriber added to Kit:', email);
+                } else {
+                    // API error
+                    const error = await response.json();
+                    console.error('Kit API error:', error);
+                    alert('Something went wrong. Try again or email us directly.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
                 }
-            });
+            } catch (err) {
+                // Network error
+                console.error('Network error:', err);
+                alert('Connection failed. Check your internet and try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
         });
     });
 
