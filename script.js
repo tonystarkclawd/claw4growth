@@ -326,51 +326,44 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             const successMsg = form.querySelector('.form-success');
             const submitBtn = form.querySelector('.form-btn');
 
-            // Show loading state
             const originalBtnText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'SENDING...';
 
             try {
-                // Send to standalone API server
-                const response = await fetch('http://46.225.4.66:8765/submit', {
+                // Kit API v3 form subscribe (CORS enabled: access-control-allow-origin: *)
+                const response = await fetch('https://api.convertkit.com/v3/forms/9067942/subscribe', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ email: email })
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        api_key: 'sXdAgHsR95bxbswao3qyAQ',
+                        email: email
+                    })
                 });
 
-                const data = await response.json();
-
                 if (response.ok) {
-                    // Success
                     formGroup.style.display = 'none';
                     successMsg.classList.add('show');
-
-                    // Increment counter
                     counters.forEach(c => {
                         const current = parseInt(c.textContent, 10);
-                        if (!isNaN(current)) {
-                            c.textContent = current + 1;
-                        }
+                        if (!isNaN(current)) c.textContent = current + 1;
                     });
 
-                    console.log('✅ Subscribed:', email);
-                } else if (response.status === 409) {
-                    // Already subscribed
-                    formGroup.style.display = 'none';
-                    successMsg.textContent = '✓ YOU\'RE ALREADY IN!';
-                    successMsg.classList.add('show');
+                    // Also save to our backend (fire-and-forget)
+                    fetch('http://46.225.4.66:8765/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email })
+                    }).catch(() => {});
+
                 } else {
-                    // API error
-                    console.error('API error:', data);
-                    alert(data.error || 'Something went wrong. Try again.');
+                    const err = await response.json().catch(() => ({}));
+                    console.error('Kit error:', err);
+                    alert('Something went wrong. Please try again.');
                     submitBtn.disabled = false;
                     submitBtn.textContent = originalBtnText;
                 }
             } catch (err) {
-                // Network error
                 console.error('Network error:', err);
                 alert('Connection failed. Please try again.');
                 submitBtn.disabled = false;
