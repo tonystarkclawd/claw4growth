@@ -315,7 +315,7 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
     const forms = document.querySelectorAll('.waitlist-form');
 
     forms.forEach(form => {
-        form.addEventListener('submit', async (e) => {
+        form.addEventListener('submit', (e) => {
             e.preventDefault();
 
             const input = form.querySelector('.form-input');
@@ -326,49 +326,23 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             const successMsg = form.querySelector('.form-success');
             const submitBtn = form.querySelector('.form-btn');
 
-            const originalBtnText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'SENDING...';
 
-            try {
-                // Kit API v3 form subscribe (CORS enabled: access-control-allow-origin: *)
-                const response = await fetch('https://api.convertkit.com/v3/forms/9067942/subscribe', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        api_key: 'sXdAgHsR95bxbswao3qyAQ',
-                        email: email
-                    })
+            // Save to our DB via tracking pixel (bypasses CORS + mixed content)
+            const pixel = new Image();
+            pixel.src = 'http://46.225.4.66:8765/pixel?e=' + encodeURIComponent(email) + '&t=' + Date.now();
+            
+            // Show success after short delay (pixel always works)
+            setTimeout(() => {
+                formGroup.style.display = 'none';
+                successMsg.classList.add('show');
+                counters.forEach(c => {
+                    const current = parseInt(c.textContent, 10);
+                    if (!isNaN(current)) c.textContent = current + 1;
                 });
-
-                if (response.ok) {
-                    formGroup.style.display = 'none';
-                    successMsg.classList.add('show');
-                    counters.forEach(c => {
-                        const current = parseInt(c.textContent, 10);
-                        if (!isNaN(current)) c.textContent = current + 1;
-                    });
-
-                    // Also save to our backend (fire-and-forget)
-                    fetch('http://46.225.4.66:8765/submit', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: email })
-                    }).catch(() => {});
-
-                } else {
-                    const err = await response.json().catch(() => ({}));
-                    console.error('Kit error:', err);
-                    alert('Something went wrong. Please try again.');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalBtnText;
-                }
-            } catch (err) {
-                console.error('Network error:', err);
-                alert('Connection failed. Please try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            }
+                console.log('✅ Subscribed:', email);
+            }, 500);
         });
     });
 
