@@ -315,7 +315,7 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
     const forms = document.querySelectorAll('.waitlist-form');
 
     forms.forEach(form => {
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const input = form.querySelector('.form-input');
@@ -329,20 +329,35 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             submitBtn.disabled = true;
             submitBtn.textContent = 'SENDING...';
 
-            // Save to our DB via tracking pixel (bypasses CORS + mixed content)
-            const pixel = new Image();
-            pixel.src = 'http://46.225.4.66:8765/pixel?e=' + encodeURIComponent(email) + '&t=' + Date.now();
-            
-            // Show success after short delay (pixel always works)
-            setTimeout(() => {
-                formGroup.style.display = 'none';
-                successMsg.classList.add('show');
-                counters.forEach(c => {
-                    const current = parseInt(c.textContent, 10);
-                    if (!isNaN(current)) c.textContent = current + 1;
+            // Save to our DB via HTTPS API (Cloudflare tunnel)
+            try {
+                const response = await fetch('https://leads.ironads.agency/submit', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email })
                 });
-                console.log('✅ Subscribed:', email);
-            }, 500);
+
+                if (response.ok || response.status === 409) {
+                    formGroup.style.display = 'none';
+                    if (response.status === 409) {
+                        successMsg.textContent = '✓ YOU\'RE ALREADY IN!';
+                    }
+                    successMsg.classList.add('show');
+                    counters.forEach(c => {
+                        const current = parseInt(c.textContent, 10);
+                        if (!isNaN(current)) c.textContent = current + 1;
+                    });
+                } else {
+                    alert('Something went wrong. Please try again.');
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalBtnText;
+                }
+            } catch (err) {
+                console.error('Error:', err);
+                alert('Connection failed. Please try again.');
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalBtnText;
+            }
         });
     });
 
