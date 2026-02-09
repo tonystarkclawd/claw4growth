@@ -312,71 +312,16 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
     }
 
     // ===== FORM HANDLING =====
+    // Forms now use native HTML POST to Kit endpoint - no JS interception needed
+    // This ensures 100% reliability (no CORS, no API issues)
+    
+    // Optional: could add analytics tracking here without preventing default
     const forms = document.querySelectorAll('.waitlist-form');
-
     forms.forEach(form => {
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-
-            const input = form.querySelector('.form-input');
-            const email = input.value.trim();
-            if (!email) return;
-
-            const formGroup = form.querySelector('.form-group');
-            const successMsg = form.querySelector('.form-success');
-            const submitBtn = form.querySelector('.form-btn');
-
-            // Show loading state
-            const originalBtnText = submitBtn.textContent;
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'SENDING...';
-
-            try {
-                // Send to our internal API (saves to DB + notifies Telegram + syncs Kit)
-                const response = await fetch('https://api.ironads.agency/claw4growth/submit', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email: email
-                    })
-                });
-
-                if (response.ok) {
-                    // Success
-                    formGroup.style.display = 'none';
-                    successMsg.classList.add('show');
-
-                    // Increment counter
-                    counters.forEach(c => {
-                        const current = parseInt(c.textContent, 10);
-                        if (!isNaN(current)) {
-                            c.textContent = current + 1;
-                        }
-                    });
-
-                    console.log('✅ Subscriber added:', email);
-                } else if (response.status === 409) {
-                    // Already subscribed
-                    formGroup.style.display = 'none';
-                    successMsg.textContent = '✓ YOU\'RE ALREADY IN!';
-                    successMsg.classList.add('show');
-                } else {
-                    // API error
-                    const error = await response.json().catch(() => ({}));
-                    console.error('API error:', error);
-                    alert('Something went wrong. Try again or email us directly.');
-                    submitBtn.disabled = false;
-                    submitBtn.textContent = originalBtnText;
-                }
-            } catch (err) {
-                // Network error
-                console.error('Network error:', err);
-                alert('Connection failed. Check your internet and try again.');
-                submitBtn.disabled = false;
-                submitBtn.textContent = originalBtnText;
-            }
+        form.addEventListener('submit', (e) => {
+            // Just log for analytics - let native POST happen
+            const email = form.querySelector('.form-input').value;
+            console.log('Form submit:', email);
         });
     });
 
