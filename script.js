@@ -86,6 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // ===== COUNTER ANIMATION =====
     const counters = document.querySelectorAll('.proof-count');
 
+    // Fetch real count from API
+    fetch('https://leads.ironads.agency/count')
+        .then(r => r.json())
+        .then(data => {
+            if (data.count) {
+                counters.forEach(c => c.setAttribute('data-target', data.count));
+            }
+        })
+        .catch(() => {}); // Keep hardcoded fallback
+
     const counterObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
