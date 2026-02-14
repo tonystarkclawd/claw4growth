@@ -1430,6 +1430,12 @@ a {
     100% { transform: translateX(-50%); }
 }
 @media (max-width: 768px) {
-    .ticker-track { gap: 32px; }
-    .ticker-item img { width: 28px; height: 28px; }
+    .integrations-ticker { padding: 32px 0 20px; }
+    .ticker-label { font-size: 0.5rem; letter-spacing: 2px; margin-bottom: 16px; }
+    .ticker-track { gap: 28px; animation-duration: 20s; }
+    .ticker-item img { width: 32px; height: 32px; }
+    .ticker-item span { font-size: 0.5rem; }
+    .ticker-sub { font-size: 0.55rem; padding: 0 16px; }
+    .integrations-ticker::before,
+    .integrations-ticker::after { width: 40px; }
 }
