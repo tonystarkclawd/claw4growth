@@ -3,319 +3,255 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Claw4Growth - Your AI Marketing Team, Ready in 2 Minutes</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Claw4Growth — Start Your Marketing Operator</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="onboarding.css">
 </head>
 <body>
-    <!-- Yellow Ticker Banner -->
-    <div class="ticker">
-        <div class="ticker-content">
-            ⬛ CLICK DEPLOY = CLAW4GROWTH — EARLY ACCESS: 10 SPOTS ONLY — MEMORY · CRON · SKILLS · CRO · SEO · PAID MEDIA — BUILT BY A MARKETER, FOR MARKETERS ⬛ CLICK DEPLOY = CLAW4GROWTH — EARLY ACCESS: 10 SPOTS ONLY — MEMORY · CRON · SKILLS · CRO · SEO · PAID MEDIA — BUILT BY A MARKETER, FOR MARKETERS ⬛
-        </div>
+
+    <!-- CRT OVERLAY -->
+    <div class="crt-overlay"></div>
+
+    <!-- FALLING TEXT -->
+    <div class="falling-text-container" id="falling-text"></div>
+
+    <!-- PROGRESS BAR -->
+    <div class="ob-progress">
+        <div class="ob-progress-bar" id="progressBar"></div>
     </div>
 
-    <!-- Ambient Terminal Text -->
-    <div class="ambient-text" style="top: 20%; left: 5%;">CONVERT</div>
-    <div class="ambient-text" style="top: 30%; right: 8%;">SPLIT</div>
-    <div class="ambient-text" style="top: 50%; left: 10%;">OPTIMIZE</div>
-    <div class="ambient-text" style="top: 70%; right: 5%;">PIXEL</div>
-    <div class="ambient-text" style="bottom: 15%; left: 8%;">SEGMENT</div>
-    <div class="ambient-text" style="bottom: 35%; right: 10%;">FUNNEL</div>
+    <!-- SCREENS CONTAINER -->
+    <div class="ob-container">
 
-    <div class="container">
-        <!-- Progress Bar -->
-        <div class="progress-bar">
-            <div class="progress-fill" id="progressFill"></div>
+        <!-- SCREEN 1: Login -->
+        <div class="ob-screen active" id="screen-1">
+            <div class="ob-mascot">
+                <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+                    <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient><linearGradient id="sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5cc" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5cc" stop-opacity="0.1"/></linearGradient></defs>
+                    <path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#lg)"/>
+                    <path d="M24 48 C12 44 7 52 11 60 C15 68 24 63 28 54 C30 49 28 47 24 48Z" fill="url(#lg)"/>
+                    <path d="M96 48 C108 44 113 52 109 60 C105 68 96 63 92 54 C90 49 92 47 96 48Z" fill="url(#lg)"/>
+                    <rect x="28" y="58" width="64" height="6" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.5"/>
+                    <rect x="32" y="38" width="56" height="20" rx="2" fill="#0a0f1a" stroke="#333" stroke-width="0.5"/>
+                    <rect x="38" y="50" width="4" height="6" rx="0.5" fill="#00e5cc" opacity="0.8"/>
+                    <rect x="44" y="47" width="4" height="9" rx="0.5" fill="#00e5cc" opacity="0.9"/>
+                    <rect x="50" y="44" width="4" height="12" rx="0.5" fill="#ff4d4d" opacity="0.9"/>
+                    <rect x="56" y="46" width="4" height="10" rx="0.5" fill="#00e5cc" opacity="0.8"/>
+                    <rect x="62" y="42" width="4" height="14" rx="0.5" fill="#00e5cc"/>
+                    <rect x="68" y="48" width="4" height="8" rx="0.5" fill="#00e5cc" opacity="0.7"/>
+                    <rect x="74" y="40" width="4" height="16" rx="0.5" fill="#ff4d4d"/>
+                    <rect x="80" y="43" width="4" height="13" rx="0.5" fill="#00e5cc" opacity="0.9"/>
+                    <rect x="32" y="38" width="56" height="20" rx="2" fill="url(#sg)"/>
+                    <path d="M47 18 Q38 8 33 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/>
+                    <path d="M73 18 Q82 8 87 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+                    <rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+                    <path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/>
+                    <circle cx="45" cy="31" r="4" fill="#0a0f1a"/><circle cx="75" cy="31" r="4" fill="#0a0f1a"/>
+                    <circle cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle cx="76" cy="30" r="1.5" fill="#00e5cc"/>
+                    <path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    <rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/>
+                    <rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/>
+                    <path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+                    <circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/>
+                </svg>
+            </div>
+            <h1 class="ob-title">CLAW<span class="logo-accent">4</span>GROWTH</h1>
+            <p class="ob-subtitle">Your AI marketing team, ready in 2 minutes</p>
+            <button class="ob-btn-google" onclick="goToScreen(2)">
+                <svg width="18" height="18" viewBox="0 0 18 18"><path d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z" fill="#4285F4"/><path d="M9.003 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9.003 18z" fill="#34A853"/><path d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.997 8.997 0 0 0 .003 9c0 1.452.348 2.827.954 4.042l3.007-2.332z" fill="#FBBC05"/><path d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0A8.997 8.997 0 0 0 .957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9.003 3.58z" fill="#EA4335"/></svg>
+                Continue with Google
+            </button>
+            <p class="ob-note">No credit card required to start</p>
         </div>
 
-        <!-- Screen 1: Landing/Login -->
-        <div class="screen active" id="screen-login">
-            <div class="content">
-                <h1 class="logo">
-                    <span>🤖</span>
-                    CLAW4GROWTH
-                </h1>
-                <p class="tagline">Your AI marketing team, ready in 2 minutes</p>
-                <button class="btn btn-primary google-btn" onclick="goToScreen(2)">
-                    <svg width="18" height="18" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.46-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        <!-- SCREEN 2: Operator Name -->
+        <div class="ob-screen" id="screen-2">
+            <h1 class="ob-title">WHAT'S YOUR OPERATOR'S NAME?</h1>
+            <p class="ob-subtitle">This is what you'll call your AI marketing team member</p>
+            <div class="ob-field">
+                <input type="text" id="operatorName" class="ob-input" placeholder="e.g. Max, Luna, Atlas..." maxlength="20" autocomplete="off">
+            </div>
+            <button class="ob-btn" onclick="saveNameAndContinue()">CONTINUE</button>
+        </div>
+
+        <!-- SCREEN 3: Brand Info -->
+        <div class="ob-screen" id="screen-3">
+            <h1 class="ob-title">TELL ME ABOUT YOUR BRAND</h1>
+            <p class="ob-subtitle">Help your operator understand your business</p>
+            <div class="ob-field">
+                <label class="ob-label">Brand name</label>
+                <input type="text" id="brandName" class="ob-input" placeholder="Your company name" autocomplete="off">
+            </div>
+            <div class="ob-field">
+                <label class="ob-label">Industry</label>
+                <select id="brandIndustry" class="ob-select">
+                    <option value="">Select your industry</option>
+                    <option value="saas">SaaS</option>
+                    <option value="ecommerce">E-commerce</option>
+                    <option value="agency">Agency</option>
+                    <option value="freelance">Freelance</option>
+                    <option value="creator">Creator</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="ob-field">
+                <label class="ob-label">One-line description</label>
+                <input type="text" id="brandDescription" class="ob-input" placeholder="What does your brand do?" maxlength="150" autocomplete="off">
+                <span class="ob-char-count"><span id="descCount">0</span>/150</span>
+            </div>
+            <div class="ob-field">
+                <label class="ob-label">Website URL <span class="ob-optional">(optional)</span></label>
+                <input type="url" id="brandUrl" class="ob-input" placeholder="https://yourbrand.com" autocomplete="off">
+            </div>
+            <button class="ob-btn" onclick="saveBrandAndContinue()">CONTINUE</button>
+        </div>
+
+        <!-- SCREEN 4: Tone Selection -->
+        <div class="ob-screen" id="screen-4">
+            <h1 class="ob-title">HOW SHOULD YOUR OPERATOR TALK?</h1>
+            <p class="ob-subtitle">Pick the vibe that matches your brand</p>
+            <div class="ob-tone-grid">
+                <div class="ob-tone-card" data-tone="professional" onclick="selectTone(this)">
+                    <div class="ob-tone-name">PROFESSIONAL</div>
+                    <div class="ob-tone-desc">Clear, polished, corporate-friendly</div>
+                </div>
+                <div class="ob-tone-card" data-tone="casual" onclick="selectTone(this)">
+                    <div class="ob-tone-name">CASUAL</div>
+                    <div class="ob-tone-desc">Relaxed, first-name basis, conversational</div>
+                </div>
+                <div class="ob-tone-card" data-tone="bold" onclick="selectTone(this)">
+                    <div class="ob-tone-name">BOLD</div>
+                    <div class="ob-tone-desc">Direct, provocative, no fluff</div>
+                </div>
+                <div class="ob-tone-card" data-tone="friendly" onclick="selectTone(this)">
+                    <div class="ob-tone-name">FRIENDLY</div>
+                    <div class="ob-tone-desc">Warm, encouraging, approachable</div>
+                </div>
+            </div>
+            <button class="ob-btn" id="toneContinueBtn" onclick="saveToneAndContinue()" disabled>CONTINUE</button>
+        </div>
+
+        <!-- SCREEN 5: Connect Apps -->
+        <div class="ob-screen" id="screen-5">
+            <h1 class="ob-title">CONNECT YOUR TOOLS</h1>
+            <p class="ob-subtitle">Your operator works better with access to your stack</p>
+            <div class="ob-apps-grid">
+                <div class="ob-app-card" data-app="linkedin" onclick="toggleApp(this)">
+                    <div class="ob-app-icon">in</div>
+                    <div class="ob-app-name">LinkedIn</div>
+                </div>
+                <div class="ob-app-card" data-app="gmail" onclick="toggleApp(this)">
+                    <div class="ob-app-icon">M</div>
+                    <div class="ob-app-name">Gmail</div>
+                </div>
+                <div class="ob-app-card" data-app="calendar" onclick="toggleApp(this)">
+                    <div class="ob-app-icon">C</div>
+                    <div class="ob-app-name">Calendar</div>
+                </div>
+                <div class="ob-app-card" data-app="sheets" onclick="toggleApp(this)">
+                    <div class="ob-app-icon">S</div>
+                    <div class="ob-app-name">Sheets</div>
+                </div>
+                <div class="ob-app-card" data-app="notion" onclick="toggleApp(this)">
+                    <div class="ob-app-icon">N</div>
+                    <div class="ob-app-name">Notion</div>
+                </div>
+                <div class="ob-app-card" data-app="analytics" onclick="toggleApp(this)">
+                    <div class="ob-app-icon">A</div>
+                    <div class="ob-app-name">Analytics</div>
+                </div>
+            </div>
+            <button class="ob-btn" onclick="saveAppsAndContinue()">CONTINUE</button>
+            <a href="#" class="ob-skip" onclick="skipApps()">Skip for now</a>
+        </div>
+
+        <!-- SCREEN 6: Payment -->
+        <div class="ob-screen" id="screen-6">
+            <h1 class="ob-title">CHOOSE YOUR PLAN</h1>
+            <p class="ob-subtitle">Cancel anytime. Your operator stops when you do.</p>
+            <div class="ob-plans">
+                <div class="ob-plan-card selected" data-plan="monthly" onclick="selectPlan(this)">
+                    <div class="ob-plan-name">MONTHLY</div>
+                    <div class="ob-plan-price">&euro;49.90<span>/mo</span></div>
+                </div>
+                <div class="ob-plan-card" data-plan="annual" onclick="selectPlan(this)">
+                    <div class="ob-plan-name">ANNUAL</div>
+                    <div class="ob-plan-price">&euro;39.90<span>/mo</span></div>
+                    <div class="ob-plan-badge">SAVE 20%</div>
+                </div>
+            </div>
+            <button class="ob-btn" onclick="startPayment()">START YOUR OPERATOR</button>
+        </div>
+
+        <!-- SCREEN 7: Deploy -->
+        <div class="ob-screen" id="screen-7">
+            <div class="ob-deploy-loading" id="deployLoading">
+                <div class="ob-mascot">
+                    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" width="80" height="80">
+                        <defs><linearGradient id="lg2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs>
+                        <path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#lg2)"/>
+                        <rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+                        <rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+                        <path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/>
+                        <circle cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle cx="76" cy="30" r="1.5" fill="#00e5cc"/>
                     </svg>
-                    ▸ CONTINUE WITH GOOGLE
-                </button>
-                <p class="disclaimer">No credit card required to start</p>
+                </div>
+                <h2 class="ob-deploy-text">DEPLOYING YOUR OPERATOR...</h2>
+                <div class="ob-deploy-steps">
+                    <div class="ob-deploy-step" id="ds1">Provisioning instance...</div>
+                    <div class="ob-deploy-step" id="ds2">Loading marketing skills...</div>
+                    <div class="ob-deploy-step" id="ds3">Configuring personality...</div>
+                    <div class="ob-deploy-step" id="ds4">Creating Telegram bot...</div>
+                    <div class="ob-deploy-step" id="ds5">Ready!</div>
+                </div>
+            </div>
+            <div class="ob-deploy-done" id="deployDone" style="display:none">
+                <div class="ob-mascot">
+                    <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
+                        <defs><linearGradient id="lg3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs>
+                        <path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#lg3)"/>
+                        <rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+                        <rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+                        <path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/>
+                        <circle cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle cx="76" cy="30" r="1.5" fill="#00e5cc"/>
+                        <path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <h1 class="ob-title">YOUR OPERATOR IS <span style="color:var(--accent-bright)">READY</span></h1>
+                <p class="ob-subtitle" id="deployMessage">Meet your new marketing team member</p>
+                <a href="#" class="ob-btn ob-btn-telegram" id="telegramLink">OPEN ON TELEGRAM</a>
             </div>
         </div>
 
-        <!-- Screen 2: Operator Name -->
-        <div class="screen" id="screen-name">
-            <div class="content">
-                <h2>WHAT'S YOUR OPERATOR'S NAME?</h2>
-                <p class="subtitle">This is what you'll call your AI marketing team member</p>
-                <input 
-                    type="text" 
-                    id="operatorName" 
-                    class="input-field" 
-                    placeholder="e.g. Max, Luna, Atlas..."
-                    maxlength="30"
-                >
-                <button class="btn btn-primary" onclick="saveNameAndContinue()">▸ CONTINUE</button>
-            </div>
-        </div>
-
-        <!-- Screen 3: Brand Info -->
-        <div class="screen" id="screen-brand">
-            <div class="content">
-                <h2>TELL ME ABOUT YOUR <span class="highlight-green">BRAND</span></h2>
-                <p class="subtitle">Help your operator understand your business</p>
-                
-                <div class="form-group">
-                    <label for="brandName">Brand name</label>
-                    <input type="text" id="brandName" class="input-field" placeholder="Your company name">
-                </div>
-
-                <div class="form-group">
-                    <label for="industry">Industry</label>
-                    <select id="industry" class="input-field">
-                        <option value="">Select your industry</option>
-                        <option value="saas">SaaS</option>
-                        <option value="ecommerce">E-commerce</option>
-                        <option value="agency">Agency</option>
-                        <option value="freelance">Freelance</option>
-                        <option value="creator">Creator</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="description">One-line description</label>
-                    <input 
-                        type="text" 
-                        id="description" 
-                        class="input-field" 
-                        placeholder="What does your brand do?"
-                        maxlength="150"
-                    >
-                    <span class="char-count" id="descCount">0/150</span>
-                </div>
-
-                <div class="form-group">
-                    <label for="website">Website URL <span class="optional">(optional)</span></label>
-                    <input 
-                        type="url" 
-                        id="website" 
-                        class="input-field" 
-                        placeholder="https://yourbrand.com"
-                    >
-                </div>
-
-                <button class="btn btn-primary" onclick="saveBrandAndContinue()">▸ CONTINUE</button>
-            </div>
-        </div>
-
-        <!-- Screen 4: Tone Selection -->
-        <div class="screen" id="screen-tone">
-            <div class="content">
-                <h2>HOW SHOULD YOUR OPERATOR <span class="highlight-green">TALK?</span></h2>
-                <p class="subtitle">Choose a communication style that fits your brand</p>
-                
-                <div class="tone-grid">
-                    <div class="tone-card" data-tone="professional" onclick="selectTone('professional')">
-                        <div class="tone-icon">👔</div>
-                        <h3>PROFESSIONAL</h3>
-                        <p>Clear, polished, corporate-friendly</p>
-                    </div>
-                    <div class="tone-card" data-tone="casual" onclick="selectTone('casual')">
-                        <div class="tone-icon">☕</div>
-                        <h3>CASUAL</h3>
-                        <p>Relaxed, first-name basis, conversational</p>
-                    </div>
-                    <div class="tone-card" data-tone="bold" onclick="selectTone('bold')">
-                        <div class="tone-icon">⚡</div>
-                        <h3>BOLD</h3>
-                        <p>Direct, provocative, no fluff</p>
-                    </div>
-                    <div class="tone-card" data-tone="friendly" onclick="selectTone('friendly')">
-                        <div class="tone-icon">🤝</div>
-                        <h3>FRIENDLY</h3>
-                        <p>Warm, encouraging, approachable</p>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary" id="toneBtn" onclick="saveToneAndContinue()" disabled>▸ CONTINUE</button>
-            </div>
-        </div>
-
-        <!-- Screen 5: Connect Apps -->
-        <div class="screen" id="screen-apps">
-            <div class="content">
-                <h2>CONNECT YOUR <span class="highlight-green">TOOLS</span></h2>
-                <p class="subtitle">Grant your operator access to the apps you use (you can skip this and add later)</p>
-                
-                <div class="apps-grid">
-                    <div class="app-card" data-app="linkedin" onclick="toggleApp('linkedin')">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="#0A66C2"><path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.79M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/></svg>
-                        </div>
-                        <span>LinkedIn</span>
-                        <div class="checkmark">✓</div>
-                    </div>
-                    <div class="app-card" data-app="gmail" onclick="toggleApp('gmail')">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="#EA4335"><path d="M20,18H18V9.25L12,13L6,9.25V18H4V6H5.2L12,10.25L18.8,6H20M20,4H4C2.89,4 2,4.89 2,6V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V6C22,4.89 21.1,4 20,4Z"/></svg>
-                        </div>
-                        <span>Gmail</span>
-                        <div class="checkmark">✓</div>
-                    </div>
-                    <div class="app-card" data-app="calendar" onclick="toggleApp('calendar')">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="#4285F4"><path d="M19,19H5V8H19M16,1V3H8V1H6V3H5C3.89,3 3,3.89 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3H18V1M17,12H12V17H17V12Z"/></svg>
-                        </div>
-                        <span>Calendar</span>
-                        <div class="checkmark">✓</div>
-                    </div>
-                    <div class="app-card" data-app="sheets" onclick="toggleApp('sheets')">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="#0F9D58"><path d="M19,11H11V5H19M19,19H11V13H19M5,19H9V5H5V19Z"/></svg>
-                        </div>
-                        <span>Sheets</span>
-                        <div class="checkmark">✓</div>
-                    </div>
-                    <div class="app-card" data-app="notion" onclick="toggleApp('notion')">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="#000"><path d="M4,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M4,6V18H11V6H4M13,6V18H20V6H13M15,13H18V15H15V13Z"/></svg>
-                        </div>
-                        <span>Notion</span>
-                        <div class="checkmark">✓</div>
-                    </div>
-                    <div class="app-card" data-app="analytics" onclick="toggleApp('analytics')">
-                        <div class="app-icon">
-                            <svg viewBox="0 0 24 24" fill="#F9AB00"><path d="M7.5,21H2V9H7.5V21M14.75,3H9.25V21H14.75V3M22,11H16.5V21H22V11Z"/></svg>
-                        </div>
-                        <span>Analytics</span>
-                        <div class="checkmark">✓</div>
-                    </div>
-                </div>
-
-                <a href="#" class="skip-link" onclick="goToScreen(6); return false;">▸ Skip for now</a>
-                <button class="btn btn-primary" onclick="saveAppsAndContinue()">▸ CONTINUE</button>
-            </div>
-        </div>
-
-        <!-- Screen 6: Payment -->
-        <div class="screen" id="screen-payment">
-            <div class="content">
-                <h2>START YOUR <span class="highlight-green">MARKETING</span> OPERATOR</h2>
-                <p class="subtitle">Choose your plan and get started in minutes</p>
-                
-                <div class="pricing-cards">
-                    <div class="pricing-card active" data-plan="monthly" onclick="selectPlan('monthly')">
-                        <div class="plan-header">
-                            <h3>MONTHLY</h3>
-                            <div class="price">€49.90<span>/mo</span></div>
-                        </div>
-                        <ul class="features">
-                            <li>12+ marketing skills</li>
-                            <li>Unlimited integrations</li>
-                            <li>Daily insights & reports</li>
-                            <li>Priority support</li>
-                        </ul>
-                    </div>
-                    <div class="pricing-card" data-plan="annual" onclick="selectPlan('annual')">
-                        <div class="badge">SAVE 20%</div>
-                        <div class="plan-header">
-                            <h3>ANNUAL</h3>
-                            <div class="price">€39.90<span>/mo</span></div>
-                            <div class="billed">Billed €479/year</div>
-                        </div>
-                        <ul class="features">
-                            <li>12+ marketing skills</li>
-                            <li>Unlimited integrations</li>
-                            <li>Daily insights & reports</li>
-                            <li>Priority support</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="payment-form">
-                    <div class="stripe-placeholder">
-                        <div class="stripe-header">
-                            <svg width="60" height="26" viewBox="0 0 60 25" fill="none"><path d="M59.6 14.9c0-4.5-2.2-8.1-6.4-8.1-4.2 0-6.8 3.6-6.8 8 0 5.3 3 8 7.3 8 2.1 0 3.7-.5 5-1.3v-3.4c-1.3.7-2.7 1.1-4.5 1.1-1.8 0-3.4-.6-3.6-2.8h8.9c0-.2.1-1 .1-1.5zm-9-1.9c0-2.1 1.3-3 2.5-3s2.4.9 2.4 3h-4.9zm-7.3-6.2c-1.7 0-2.8.8-3.4 1.4l-.2-1.1h-3.8v20.3l4.3-.9V24c.6.4 1.5 1 3.1 1 3.1 0 6-2.5 6-8.2-.1-5.1-2.9-8-6-8zm-1 12.3c-1 0-1.6-.4-2-.8v-6.3c.4-.5 1.1-.9 2-.9 1.5 0 2.6 1.7 2.6 4s-1 4-2.6 4zm-12.5-12l.2-1.3h-4.3v15.4h4.3V12c1-1.3 2.8-1.1 3.3-.9V6.9c-.5-.2-2.5-.5-3.5 1.2zM25 2.9l-4.3.9v3.3l4.3-.9V2.9zm0 5.1h-4.3v15.4h4.3V8zm-8.7-.3c-.6-.2-1.4-.4-2.3-.4-2.3 0-3.8 1.2-3.8 3.2 0 1.7 1.2 2.3 2.7 2.8 1.2.4 1.6.7 1.6 1.2 0 .7-.6 1-1.7 1-1.1 0-2.3-.5-3-.9v3.6c.8.4 2 .7 3.1.7 2.5 0 4.1-1.2 4.1-3.3 0-1.8-1.3-2.5-2.8-3-1.2-.4-1.6-.6-1.6-1.1 0-.5.5-.9 1.4-.9.9 0 2 .3 2.7.6l.6-3.5zM0 15.5c0 3.1 2.1 4.9 5.5 4.9 2.4 0 4-.5 5.4-1.2v-3.5c-1.4.8-2.9 1.3-4.9 1.3-1.9 0-2.9-.7-2.9-2.2V11h7.7V7.7H3.1V1.4L0 2.3v13.2z" fill="#635BFF"/></svg>
-                            <span>Secure payment powered by Stripe</span>
-                        </div>
-                        <div class="form-field">
-                            <label>Card number</label>
-                            <input type="text" placeholder="1234 1234 1234 1234" disabled>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-field">
-                                <label>Expiry</label>
-                                <input type="text" placeholder="MM / YY" disabled>
-                            </div>
-                            <div class="form-field">
-                                <label>CVC</label>
-                                <input type="text" placeholder="123" disabled>
-                            </div>
-                        </div>
-                        <p class="stripe-note">This is a placeholder. Real Stripe integration coming soon.</p>
-                    </div>
-                </div>
-
-                <button class="btn btn-primary btn-large" onclick="processPayment()">▸ START OPERATOR</button>
-                <p class="disclaimer">Cancel anytime. No long-term commitments.</p>
-            </div>
-        </div>
-
-        <!-- Screen 7: Deploy -->
-        <div class="screen" id="screen-deploy">
-            <div class="content">
-                <div id="deployingState" class="deploy-state active">
-                    <div class="spinner"></div>
-                    <h2>DEPLOYING YOUR <span class="highlight-green">OPERATOR...</span></h2>
-                    <p class="subtitle">Setting up your AI marketing team</p>
-                    <div class="deploy-steps">
-                        <div class="deploy-step active">
-                            <div class="step-icon">✓</div>
-                            <span>Provisioning instance</span>
-                        </div>
-                        <div class="deploy-step">
-                            <div class="step-icon">⋯</div>
-                            <span>Generating personality</span>
-                        </div>
-                        <div class="deploy-step">
-                            <div class="step-icon">⋯</div>
-                            <span>Loading marketing skills</span>
-                        </div>
-                        <div class="deploy-step">
-                            <div class="step-icon">⋯</div>
-                            <span>Creating Telegram bot</span>
-                        </div>
-                        <div class="deploy-step">
-                            <div class="step-icon">⋯</div>
-                            <span>Connecting integrations</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="readyState" class="deploy-state">
-                    <div class="robot-mascot">🤖</div>
-                    <div class="highlight-box">⬛ BUILT ON OPENCLAW — READY TO DEPLOY</div>
-                    <h2>YOUR OPERATOR IS <span class="highlight-green">READY!</span></h2>
-                    <p class="subtitle">Meet <span id="operatorNameDisplay" class="highlight-yellow"></span>, your AI marketing team member</p>
-                    <button class="btn btn-primary btn-large telegram-btn" onclick="openTelegram()">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.161l-1.896 8.938c-.143.644-.519.801-1.051.498l-2.907-2.143-1.406 1.352c-.155.156-.286.287-.588.287l.209-2.968 5.407-4.882c.234-.209-.051-.326-.364-.117l-6.688 4.214-2.885-.901c-.627-.197-.641-.627.131-.927l11.284-4.349c.524-.197.982.126.813.927z"/>
-                        </svg>
-                        ▸ OPEN ON TELEGRAM
-                    </button>
-                    <p class="telegram-note">You'll receive a personalized greeting in your Telegram chat</p>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <script src="app.js"></script>
+    <!-- FALLING TEXT SCRIPT (from landing) -->
+    <script>
+    (function() {
+        const container = document.getElementById('falling-text');
+        const words = [
+            'ROAS', 'CTR', 'CRO', 'SEO', 'CVR', 'SCALE', 'GROWTH',
+            'FUNNEL', 'LEADS', 'CAC', 'LTV', 'ARPU', 'MRR', 'CHURN',
+            'COPY', 'LAUNCH', 'SPLIT', 'RETARGET', 'OPTIMIZE', 'AUDIT'
+        ];
+        for (let i = 0; i < 25; i++) {
+            const word = document.createElement('span');
+            word.className = 'falling-word';
+            word.textContent = words[Math.floor(Math.random() * words.length)];
+            word.style.left = Math.random() * 100 + 'vw';
+            word.style.animationDuration = (8 + Math.random() * 12) + 's';
+            word.style.animationDelay = (Math.random() * -20) + 's';
+            word.style.fontSize = (8 + Math.random() * 4) + 'px';
+            word.style.opacity = 0.08 + Math.random() * 0.1;
+            container.appendChild(word);
+        }
+    })();
+    </script>
+    <script src="onboarding.js"></script>
 </body>
 </html>
