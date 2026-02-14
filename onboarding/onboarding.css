@@ -416,6 +416,66 @@
     color: var(--accent-bright);
 }
 
+/* Mascot power-up animation */
+.ob-mascot-nerd {
+    animation: float 3s ease-in-out infinite;
+}
+
+.ob-mascot-power {
+    animation: powerUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+
+@keyframes powerUp {
+    0% { 
+        transform: scale(0.6) rotate(-5deg); 
+        opacity: 0;
+        filter: brightness(3) saturate(0);
+    }
+    40% {
+        transform: scale(1.15) rotate(2deg);
+        filter: brightness(2) saturate(0.5);
+    }
+    70% {
+        transform: scale(0.95) rotate(-1deg);
+        filter: brightness(1.2) saturate(1);
+    }
+    100% { 
+        transform: scale(1) rotate(0deg); 
+        opacity: 1;
+        filter: brightness(1) saturate(1);
+    }
+}
+
+/* Flash effect on transition */
+.ob-deploy-done {
+    position: relative;
+}
+
+.ob-deploy-done::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0,229,204,0.3) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: flashGlow 1s ease-out forwards;
+    pointer-events: none;
+}
+
+@keyframes flashGlow {
+    0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
+    50% { transform: translate(-50%,-50%) scale(2); opacity: 0.6; }
+    100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
+}
+
 .ob-btn-telegram {
     display: inline-block;
     text-decoration: none;
