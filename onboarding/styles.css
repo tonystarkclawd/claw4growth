@@ -1,0 +1,862 @@
+/* ==========================================================================
+   Claw4Growth Onboarding - Hacker Terminal Aesthetic
+   ========================================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+    /* Colors - Hacker Terminal Theme */
+    --bg-primary: #0a0a0a;
+    --bg-secondary: #1a1a1a;
+    --bg-tertiary: #2a2a2a;
+    --bg-hover: #333333;
+    
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --text-muted: #888888;
+    
+    --green: #00ff00;
+    --green-bright: #39ff14;
+    --green-dark: #00cc00;
+    --green-glow: rgba(0, 255, 0, 0.3);
+    
+    --yellow: #ffff00;
+    --yellow-gold: #ffd700;
+    
+    --red: #ff3333;
+    
+    --border: #333333;
+    --border-light: #222222;
+    
+    /* Spacing */
+    --space-xs: 0.5rem;
+    --space-sm: 1rem;
+    --space-md: 1.5rem;
+    --space-lg: 2rem;
+    --space-xl: 3rem;
+    
+    /* Typography */
+    --font-mono: 'Space Mono', 'IBM Plex Mono', 'Courier New', monospace;
+    
+    /* Transitions */
+    --transition: all 0.2s ease;
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-mono);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+}
+
+/* ==========================================================================
+   Ticker Banner (Top)
+   ========================================================================== */
+
+.ticker {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--yellow);
+    color: #000;
+    padding: 0.5rem 0;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    z-index: 1001;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.ticker-content {
+    display: inline-block;
+    animation: ticker 30s linear infinite;
+}
+
+@keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: var(--space-md);
+    padding-top: calc(var(--space-md) + 3rem); /* Account for ticker */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--space-lg) 0;
+}
+
+/* Ambient terminal text scattered around */
+.ambient-text {
+    position: fixed;
+    color: var(--green);
+    font-size: 0.75rem;
+    opacity: 0.3;
+    pointer-events: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* ==========================================================================
+   Progress Bar
+   ========================================================================== */
+
+.progress-bar {
+    position: fixed;
+    top: 2.5rem; /* Below ticker */
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--border);
+    z-index: 1000;
+}
+
+.progress-fill {
+    height: 100%;
+    background: var(--green);
+    width: 0%;
+    transition: width 0.4s ease;
+    box-shadow: 0 0 10px var(--green-glow);
+}
+
+/* ==========================================================================
+   Screen Management
+   ========================================================================== */
+
+.screen {
+    display: none;
+    opacity: 0;
+    animation: fadeOut 0.3s ease;
+}
+
+.screen.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+h1, h2, h3 {
+    font-weight: 700;
+    line-height: 1.1;
+    margin-bottom: var(--space-md);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+h1 {
+    font-size: 3rem;
+    letter-spacing: 0.1em;
+}
+
+h2 {
+    font-size: 2rem;
+    letter-spacing: 0.08em;
+}
+
+h3 {
+    font-size: 1.25rem;
+    letter-spacing: 0.05em;
+}
+
+.tagline, .subtitle {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    margin-bottom: var(--space-xl);
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+.subtitle {
+    font-size: 0.95rem;
+}
+
+.logo {
+    color: var(--text-primary);
+    margin-bottom: var(--space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+}
+
+.logo-icon {
+    width: 48px;
+    height: 48px;
+}
+
+.highlight-green {
+    color: var(--green);
+}
+
+.highlight-yellow {
+    color: var(--yellow-gold);
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-xs);
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    font-weight: 700;
+    border-radius: 4px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    width: 100%;
+    margin-top: var(--space-md);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.btn-primary {
+    background: var(--green);
+    color: #000;
+    border-color: var(--green);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--green-bright);
+    border-color: var(--green-bright);
+    box-shadow: 0 0 20px var(--green-glow);
+    transform: translateY(-2px);
+}
+
+.btn-primary:disabled {
+    background: var(--bg-tertiary);
+    color: var(--text-muted);
+    border-color: var(--border);
+    cursor: not-allowed;
+}
+
+.btn-large {
+    padding: 1.25rem 2.5rem;
+    font-size: 1.125rem;
+}
+
+.google-btn {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    border-color: var(--border);
+}
+
+.google-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--green);
+    box-shadow: 0 0 15px var(--green-glow);
+}
+
+.telegram-btn {
+    background: var(--green);
+    color: #000;
+}
+
+.telegram-btn:hover {
+    background: var(--green-bright);
+    box-shadow: 0 0 25px var(--green-glow);
+}
+
+.skip-link {
+    display: block;
+    text-align: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-top: var(--space-md);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.skip-link:hover {
+    color: var(--green);
+}
+
+/* ==========================================================================
+   Forms
+   ========================================================================== */
+
+.form-group {
+    margin-bottom: var(--space-md);
+}
+
+label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 700;
+    margin-bottom: var(--space-xs);
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.optional {
+    color: var(--text-muted);
+    font-weight: 400;
+    text-transform: lowercase;
+}
+
+.input-field {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    transition: var(--transition);
+    font-family: var(--font-mono);
+}
+
+.input-field:focus {
+    outline: none;
+    border-color: var(--green);
+    background: var(--bg-tertiary);
+    box-shadow: 0 0 10px var(--green-glow);
+}
+
+.input-field::placeholder {
+    color: var(--text-muted);
+}
+
+select.input-field {
+    cursor: pointer;
+}
+
+.char-count {
+    display: block;
+    text-align: right;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+.disclaimer {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: var(--space-md);
+}
+
+/* ==========================================================================
+   Tone Cards
+   ========================================================================== */
+
+.tone-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.tone-card {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: var(--space-md);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.tone-card:hover {
+    border-color: var(--green);
+    background: var(--bg-tertiary);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--green-glow);
+}
+
+.tone-card.selected {
+    border-color: var(--green);
+    background: var(--bg-tertiary);
+    box-shadow: 0 0 20px var(--green-glow);
+}
+
+.tone-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--space-sm);
+}
+
+.tone-card h3 {
+    margin-bottom: var(--space-xs);
+    font-size: 1rem;
+    color: var(--green);
+}
+
+.tone-card p {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin: 0;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* ==========================================================================
+   App Cards
+   ========================================================================== */
+
+.apps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-md);
+}
+
+.app-card {
+    position: relative;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: var(--space-md);
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+}
+
+.app-card:hover {
+    border-color: var(--green);
+    background: var(--bg-tertiary);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--green-glow);
+}
+
+.app-card.connected {
+    border-color: var(--green);
+    background: var(--bg-tertiary);
+    box-shadow: 0 0 15px var(--green-glow);
+}
+
+.app-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.app-icon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.app-card span {
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.checkmark {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 24px;
+    height: 24px;
+    background: var(--green);
+    border-radius: 50%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #000;
+    font-size: 0.875rem;
+    font-weight: 700;
+}
+
+.app-card.connected .checkmark {
+    display: flex;
+}
+
+/* ==========================================================================
+   Pricing Cards
+   ========================================================================== */
+
+.pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+.pricing-card {
+    position: relative;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: var(--space-md);
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.pricing-card:hover {
+    border-color: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px var(--green-glow);
+}
+
+.pricing-card.active {
+    border-color: var(--green);
+    background: var(--bg-tertiary);
+    box-shadow: 0 0 20px var(--green-glow);
+}
+
+.badge {
+    position: absolute;
+    top: -12px;
+    right: 12px;
+    background: var(--yellow-gold);
+    color: #000;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.plan-header {
+    margin-bottom: var(--space-md);
+}
+
+.plan-header h3 {
+    font-size: 1rem;
+    margin-bottom: var(--space-xs);
+    color: var(--text-secondary);
+}
+
+.price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--green);
+    letter-spacing: 0.05em;
+}
+
+.price span {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--text-secondary);
+}
+
+.billed {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: var(--space-xs);
+}
+
+.features {
+    list-style: none;
+}
+
+.features li {
+    padding: var(--space-xs) 0;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.features li::before {
+    content: "▸ ";
+    color: var(--green);
+    font-weight: 700;
+    margin-right: var(--space-xs);
+}
+
+/* ==========================================================================
+   Payment Form
+   ========================================================================== */
+
+.payment-form {
+    background: var(--bg-secondary);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+}
+
+.stripe-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-md);
+    border-bottom: 1px solid var(--border);
+}
+
+.stripe-header span {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.form-field {
+    margin-bottom: var(--space-md);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-md);
+}
+
+.stripe-note {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--yellow-gold);
+    font-style: italic;
+    margin-top: var(--space-md);
+}
+
+/* ==========================================================================
+   Deploy Screen
+   ========================================================================== */
+
+.deploy-state {
+    display: none;
+    text-align: center;
+}
+
+.deploy-state.active {
+    display: block;
+}
+
+.spinner {
+    width: 80px;
+    height: 80px;
+    border: 4px solid var(--border);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto var(--space-lg);
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.success-icon {
+    width: 120px;
+    height: 120px;
+    background: var(--green);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--space-lg);
+    font-size: 4rem;
+    color: #000;
+    animation: scaleIn 0.5s ease;
+    box-shadow: 0 0 40px var(--green-glow);
+}
+
+@keyframes scaleIn {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.robot-mascot {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto var(--space-lg);
+    font-size: 10rem;
+    text-align: center;
+    animation: scaleIn 0.5s ease;
+}
+
+.deploy-steps {
+    max-width: 500px;
+    margin: var(--space-xl) auto 0;
+    text-align: left;
+}
+
+.deploy-step {
+    display: flex;
+    align-items: center;
+    gap: var(--space-md);
+    padding: var(--space-sm);
+    margin-bottom: var(--space-sm);
+    color: var(--text-muted);
+    transition: var(--transition);
+    border-left: 2px solid var(--border);
+    padding-left: var(--space-md);
+}
+
+.deploy-step.active {
+    color: var(--green);
+    border-left-color: var(--green);
+}
+
+.deploy-step.completed {
+    color: var(--text-secondary);
+    border-left-color: var(--green);
+}
+
+.step-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    background: var(--bg-tertiary);
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+}
+
+.deploy-step.active .step-icon {
+    background: var(--bg-primary);
+    border-color: var(--green);
+    color: var(--green);
+    box-shadow: 0 0 10px var(--green-glow);
+}
+
+.deploy-step.completed .step-icon {
+    background: var(--green);
+    border-color: var(--green);
+    color: #000;
+}
+
+.telegram-note {
+    margin-top: var(--space-md);
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Yellow highlight box */
+.highlight-box {
+    background: var(--yellow);
+    color: #000;
+    padding: var(--space-sm) var(--space-md);
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    margin-bottom: var(--space-md);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 640px) {
+    .container {
+        padding: var(--space-sm);
+        padding-top: calc(var(--space-sm) + 3rem);
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .tone-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .apps-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .pricing-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .ticker {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .content {
+        padding: var(--space-md) 0;
+    }
+    
+    h1 {
+        font-size: 1.75rem;
+    }
+    
+    .tagline, .subtitle {
+        font-size: 0.95rem;
+    }
+    
+    .btn {
+        padding: 0.875rem 1.5rem;
+    }
+}
