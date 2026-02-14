@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claw4Growth — Dashboard</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <!-- CRT OVERLAY -->
+    <div class="crt-overlay"></div>
+
+    <!-- FALLING TEXT -->
+    <div class="falling-text-container" id="falling-text"></div>
+
+    <!-- NAV -->
+    <nav class="dash-nav">
+        <div class="dash-nav-inner">
+            <span class="logo-text">CLAW<span class="logo-accent">4</span>GROWTH</span>
+            <span class="dash-user" id="dashUser">Max's Dashboard</span>
+        </div>
+    </nav>
+
+    <!-- MAIN -->
+    <main class="dash-main">
+
+        <!-- CONNECTIONS SECTION -->
+        <section class="dash-section">
+            <h2 class="dash-section-title">CONNECTIONS</h2>
+            <p class="dash-section-sub">Connect your tools — your operator works better with access to your stack</p>
+            
+            <div class="dash-apps-grid" id="appsGrid">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- SUBSCRIPTION SECTION -->
+        <section class="dash-section">
+            <h2 class="dash-section-title">SUBSCRIPTION</h2>
+
+            <div class="dash-sub-card">
+                <div class="dash-sub-row">
+                    <div class="dash-sub-plan">
+                        <span class="dash-sub-label">CURRENT PLAN</span>
+                        <span class="dash-sub-value" id="planName">PRO MONTHLY</span>
+                    </div>
+                    <div class="dash-sub-price">
+                        <span class="dash-sub-amount" id="planPrice">&euro;49.90</span>
+                        <span class="dash-sub-period">/month</span>
+                    </div>
+                </div>
+
+                <div class="dash-sub-row">
+                    <div>
+                        <span class="dash-sub-label">NEXT BILLING</span>
+                        <span class="dash-sub-value" id="nextBilling">March 14, 2026</span>
+                    </div>
+                </div>
+
+                <div class="dash-usage">
+                    <div class="dash-usage-header">
+                        <span class="dash-sub-label">API USAGE THIS MONTH</span>
+                        <span class="dash-usage-pct" id="usagePct">45%</span>
+                    </div>
+                    <div class="dash-usage-bar">
+                        <div class="dash-usage-fill" id="usageFill" style="width:45%"></div>
+                    </div>
+                    <span class="dash-usage-note">Included in your plan. Resets monthly.</span>
+                </div>
+
+                <div class="dash-sub-actions">
+                    <button class="dash-btn" onclick="manageSubscription()">MANAGE SUBSCRIPTION</button>
+                    <button class="dash-btn dash-btn-danger" onclick="cancelSubscription()">CANCEL</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FALLING TEXT SCRIPT -->
+    <script>
+    (function() {
+        const container = document.getElementById('falling-text');
+        const words = ['ROAS','CTR','CRO','SEO','CVR','SCALE','GROWTH','FUNNEL','LEADS','CAC','LTV','ARPU','MRR','CHURN','COPY','LAUNCH','SPLIT','RETARGET','OPTIMIZE','AUDIT'];
+        for (let i = 0; i < 20; i++) {
+            const word = document.createElement('span');
+            word.className = 'falling-word';
+            word.textContent = words[Math.floor(Math.random() * words.length)];
+            word.style.left = Math.random() * 100 + 'vw';
+            word.style.animationDuration = (8 + Math.random() * 12) + 's';
+            word.style.animationDelay = (Math.random() * -20) + 's';
+            word.style.fontSize = (8 + Math.random() * 4) + 'px';
+            word.style.opacity = 0.08 + Math.random() * 0.1;
+            container.appendChild(word);
+        }
+    })();
+    </script>
+    <script src="dashboard.js"></script>
+</body>
+</html>
