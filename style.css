@@ -1403,11 +1403,13 @@ a {
 .ticker-item img {
     width: 36px;
     height: 36px;
-    filter: brightness(0.85);
-    transition: filter 0.3s;
+    filter: invert(1);
+    opacity: 0.7;
+    transition: all 0.3s;
 }
 .ticker-item:hover img {
-    filter: brightness(1) drop-shadow(0 0 6px rgba(0,229,204,0.4));
+    opacity: 1;
+    filter: invert(1) drop-shadow(0 0 8px rgba(0,229,204,0.5));
 }
 .ticker-item span {
     font-family: 'JetBrains Mono', monospace;
