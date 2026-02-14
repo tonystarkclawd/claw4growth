@@ -1,8 +1,8 @@
 // Claw4Growth Customer Dashboard
 
 const apps = [
+    { id: 'notion', name: 'Notion', icon: 'N', accounts: [] },
     { id: 'googlesuper', name: 'Google Suite', icon: 'G', sub: 'Drive, Gmail, Sheets, Calendar, Analytics', accounts: [] },
-    { id: 'googleads', name: 'Google Ads', icon: 'Ads', accounts: [] },
     { id: 'meta', name: 'Meta Ads', icon: 'M', accounts: [] },
     { id: 'facebook', name: 'Facebook', icon: 'f', accounts: [] },
     { id: 'instagram', name: 'Instagram', icon: 'IG', accounts: [] },
