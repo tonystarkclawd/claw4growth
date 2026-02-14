@@ -10,6 +10,7 @@ const apps = [
     { id: 'linkedin', name: 'LinkedIn', icon: 'in', accounts: [] },
     { id: 'hubspot', name: 'HubSpot', icon: 'H', accounts: [] },
     { id: 'shopify', name: 'Shopify', icon: 'S', accounts: [] },
+    { id: 'canva', name: 'Canva', icon: 'Cv', accounts: [] },
 ];
 
 // Demo: simulate some connected accounts
