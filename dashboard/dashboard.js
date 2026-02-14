@@ -1,19 +1,19 @@
 // Claw4Growth Customer Dashboard
 
 const apps = [
+    { id: 'googlesuper', name: 'Google Suite', icon: 'G', sub: 'Drive, Gmail, Sheets, Calendar, Analytics', accounts: [] },
+    { id: 'googleads', name: 'Google Ads', icon: 'Ads', accounts: [] },
+    { id: 'meta', name: 'Meta Ads', icon: 'M', accounts: [] },
+    { id: 'facebook', name: 'Facebook', icon: 'f', accounts: [] },
+    { id: 'instagram', name: 'Instagram', icon: 'IG', accounts: [] },
+    { id: 'tiktok', name: 'TikTok', icon: 'TT', accounts: [] },
     { id: 'linkedin', name: 'LinkedIn', icon: 'in', accounts: [] },
-    { id: 'gmail', name: 'Gmail', icon: 'M', accounts: [] },
-    { id: 'calendar', name: 'Calendar', icon: 'C', accounts: [] },
-    { id: 'sheets', name: 'Sheets', icon: 'S', accounts: [] },
-    { id: 'notion', name: 'Notion', icon: 'N', accounts: [] },
-    { id: 'analytics', name: 'Analytics', icon: 'A', accounts: [] },
-    { id: 'meta', name: 'Meta Ads', icon: 'f', accounts: [] },
-    { id: 'gsc', name: 'Search Console', icon: 'G', accounts: [] },
+    { id: 'hubspot', name: 'HubSpot', icon: 'H', accounts: [] },
+    { id: 'shopify', name: 'Shopify', icon: 'S', accounts: [] },
 ];
 
 // Demo: simulate some connected accounts
-apps[1].accounts = [{ email: 'hello@acme.com', id: 'demo1' }]; // Gmail
-apps[5].accounts = [{ email: 'UA-12345678', id: 'demo2' }]; // Analytics
+apps[0].accounts = [{ email: 'hello@acme.com', id: 'demo1' }]; // Google Suite
 
 function renderApps() {
     const grid = document.getElementById('appsGrid');
