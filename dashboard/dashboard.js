@@ -1,16 +1,16 @@
 // Claw4Growth Customer Dashboard
 
 const apps = [
-    { id: 'notion', name: 'Notion', icon: 'N', accounts: [] },
     { id: 'googlesuper', name: 'Google Suite', icon: 'G', sub: 'Drive, Gmail, Sheets, Calendar, Analytics', accounts: [] },
-    { id: 'meta', name: 'Meta Ads', icon: 'M', accounts: [] },
-    { id: 'facebook', name: 'Facebook', icon: 'f', accounts: [] },
     { id: 'instagram', name: 'Instagram', icon: 'IG', accounts: [] },
-    { id: 'tiktok', name: 'TikTok', icon: 'TT', accounts: [] },
+    { id: 'meta', name: 'Meta Ads', icon: 'M', accounts: [] },
     { id: 'linkedin', name: 'LinkedIn', icon: 'in', accounts: [] },
-    { id: 'hubspot', name: 'HubSpot', icon: 'H', accounts: [] },
-    { id: 'shopify', name: 'Shopify', icon: 'S', accounts: [] },
     { id: 'canva', name: 'Canva', icon: 'Cv', accounts: [] },
+    { id: 'facebook', name: 'Facebook', icon: 'f', accounts: [] },
+    { id: 'tiktok', name: 'TikTok', icon: 'TT', accounts: [] },
+    { id: 'shopify', name: 'Shopify', icon: 'S', accounts: [] },
+    { id: 'hubspot', name: 'HubSpot', icon: 'H', accounts: [] },
+    { id: 'notion', name: 'Notion', icon: 'N', accounts: [] },
 ];
 
 // Demo: simulate some connected accounts
