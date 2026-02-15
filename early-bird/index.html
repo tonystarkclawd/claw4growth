@@ -44,10 +44,11 @@
         .nav { top: 28px; }
 
         /* Hero adjustments for marketer audience */
-        .hero { text-align: center; }
-        .hero .container { align-items: center; }
-        .hero-title { text-align: center; }
-        .hero-sub { max-width: 600px; text-align: center; }
+        .hero { text-align: left; }
+        .hero .container { align-items: flex-start; }
+        .hero-title { text-align: left; }
+        .hero-sub { max-width: 600px; text-align: left; }
+        .hero-badge { align-self: center; }
         
         /* Force center everything — override base landing left alignment */
         .section-title, .section-sub { text-align: left !important; }
@@ -56,7 +57,7 @@
         /* Cards and content blocks: left-aligned (matches main LP) */
         .feature-inner, .what-inner, .compare-inner, .compare-list, .usecase-inner p { text-align: left; }
         .hero .container { display: flex; flex-direction: column; align-items: center; max-width: 800px; }
-        .hero-title { text-align: center !important; width: 100%; font-size: clamp(18px, 4vw, 36px) !important; word-break: break-word; }
+        .hero-title { text-align: left !important; width: 100%; font-size: clamp(18px, 4vw, 36px) !important; word-break: break-word; }
         .compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
         .what-grid { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
         .usecase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; width: 100%; }
