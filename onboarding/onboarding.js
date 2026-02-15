@@ -59,10 +59,22 @@ function selectTone(el) {
 
 function saveToneAndContinue() {
     if (!state.tone) return;
-    goToScreen(5);
+    goToScreen(5); // → Payment
 }
 
-// Screen 5: Apps
+// Screen 5: Payment
+function selectPlan(el) {
+    document.querySelectorAll('.ob-plan-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state.plan = el.dataset.plan;
+}
+
+function startPayment() {
+    // TODO: Stripe Checkout integration
+    goToScreen(6); // → Connect Apps
+}
+
+// Screen 6: Apps
 function toggleApp(el) {
     el.classList.toggle('connected');
     const app = el.dataset.app;
@@ -73,21 +85,8 @@ function toggleApp(el) {
     }
 }
 
-function saveAppsAndContinue() { goToScreen(6); }
-function skipApps() { state.connectedApps = []; goToScreen(6); }
-
-// Screen 6: Payment
-function selectPlan(el) {
-    document.querySelectorAll('.ob-plan-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    state.plan = el.dataset.plan;
-}
-
-function startPayment() {
-    // TODO: Stripe Checkout integration
-    goToScreen(7);
-    simulateDeploy();
-}
+function saveAppsAndContinue() { goToScreen(7); simulateDeploy(); }
+function skipApps() { state.connectedApps = []; goToScreen(7); simulateDeploy(); }
 
 // Screen 7: Deploy
 function simulateDeploy() {

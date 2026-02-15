@@ -105,62 +105,16 @@
             <button class="ob-btn" id="toneContinueBtn" onclick="saveToneAndContinue()" disabled>CONTINUE</button>
         </div>
 
-        <!-- SCREEN 5: Connect Apps -->
+        <!-- SCREEN 5: Payment -->
         <div class="ob-screen" id="screen-5">
-            <h1 class="ob-title">CONNECT YOUR TOOLS</h1>
-            <p class="ob-subtitle">Your operator works better with access to your stack</p>
-            <div class="ob-apps-grid">
-                <div class="ob-app-card" data-app="googlesuper" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">G</div>
-                    <div class="ob-app-name">Google Suite</div>
-                    <div class="ob-app-sub">Drive, Gmail, Sheets, Calendar, Analytics</div>
-                </div>
-                <div class="ob-app-card" data-app="instagram" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">IG</div>
-                    <div class="ob-app-name">Instagram</div>
-                </div>
-                <div class="ob-app-card" data-app="meta" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">M</div>
-                    <div class="ob-app-name">Meta Ads</div>
-                </div>
-                <div class="ob-app-card" data-app="linkedin" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">in</div>
-                    <div class="ob-app-name">LinkedIn</div>
-                </div>
-                <div class="ob-app-card" data-app="canva" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">Cv</div>
-                    <div class="ob-app-name">Canva</div>
-                </div>
-                <div class="ob-app-card" data-app="facebook" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">f</div>
-                    <div class="ob-app-name">Facebook</div>
-                </div>
-                <div class="ob-app-card" data-app="tiktok" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">TT</div>
-                    <div class="ob-app-name">TikTok</div>
-                </div>
-                <div class="ob-app-card" data-app="shopify" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">S</div>
-                    <div class="ob-app-name">Shopify</div>
-                </div>
-                <div class="ob-app-card" data-app="hubspot" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">H</div>
-                    <div class="ob-app-name">HubSpot</div>
-                </div>
-                <div class="ob-app-card" data-app="notion" onclick="toggleApp(this)">
-                    <div class="ob-app-icon">N</div>
-                    <div class="ob-app-name">Notion</div>
-                </div>
-            </div>
-            <button class="ob-btn" onclick="saveAppsAndContinue()">CONTINUE</button>
-            <a href="#" class="ob-skip" onclick="skipApps()">Skip for now</a>
-        </div>
-
-        <!-- SCREEN 6: Payment -->
-        <div class="ob-screen" id="screen-6">
             <h1 class="ob-title">CHOOSE YOUR PLAN</h1>
             <p class="ob-subtitle">Cancel anytime. Your operator stops when you do.</p>
             <div class="ob-plans">
+                <div class="ob-plan-card" data-plan="earlybird" onclick="selectPlan(this)">
+                    <div class="ob-plan-name">EARLY BIRD</div>
+                    <div class="ob-plan-price">&euro;34.90<span>/mo</span></div>
+                    <div class="ob-plan-badge">LIMITED</div>
+                </div>
                 <div class="ob-plan-card selected" data-plan="monthly" onclick="selectPlan(this)">
                     <div class="ob-plan-name">MONTHLY</div>
                     <div class="ob-plan-price">&euro;49.90<span>/mo</span></div>
@@ -172,6 +126,54 @@
                 </div>
             </div>
             <button class="ob-btn" onclick="startPayment()">START YOUR OPERATOR</button>
+        </div>
+
+        <!-- SCREEN 6: Connect Apps -->
+        <div class="ob-screen" id="screen-6">
+            <h1 class="ob-title">CONNECT YOUR TOOLS</h1>
+            <p class="ob-subtitle">Your operator works better with access to your stack</p>
+            <div class="ob-apps-grid">
+                <div class="ob-app-card" data-app="google" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google"></div>
+                    <div class="ob-app-name">Google Suite</div>
+                    <div class="ob-app-sub">Drive, Gmail, Sheets, Calendar, Ads</div>
+                </div>
+                <div class="ob-app-card" data-app="meta" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta"></div>
+                    <div class="ob-app-name">Meta</div>
+                    <div class="ob-app-sub">Facebook, Instagram, Ads</div>
+                </div>
+                <div class="ob-app-card" data-app="linkedin" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"></div>
+                    <div class="ob-app-name">LinkedIn</div>
+                </div>
+                <div class="ob-app-card" data-app="tiktok" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"></div>
+                    <div class="ob-app-name">TikTok</div>
+                </div>
+                <div class="ob-app-card" data-app="canva" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/canva.svg" alt="Canva"></div>
+                    <div class="ob-app-name">Canva</div>
+                </div>
+                <div class="ob-app-card" data-app="shopify" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"></div>
+                    <div class="ob-app-name">Shopify</div>
+                </div>
+                <div class="ob-app-card" data-app="hubspot" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"></div>
+                    <div class="ob-app-name">HubSpot</div>
+                </div>
+                <div class="ob-app-card" data-app="notion" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"></div>
+                    <div class="ob-app-name">Notion</div>
+                </div>
+                <div class="ob-app-card" data-app="slack" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/slack.svg" alt="Slack"></div>
+                    <div class="ob-app-name">Slack</div>
+                </div>
+            </div>
+            <button class="ob-btn" onclick="saveAppsAndContinue()">CONTINUE</button>
+            <a href="#" class="ob-skip" onclick="skipApps()">Skip for now</a>
         </div>
 
         <!-- SCREEN 7: Deploy -->

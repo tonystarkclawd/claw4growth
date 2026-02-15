@@ -284,6 +284,12 @@
     margin-bottom: 6px;
 }
 
+.ob-app-icon img {
+    width: 28px;
+    height: 28px;
+    filter: invert(1);
+}
+
 .ob-app-name {
     font-family: var(--font-mono);
     font-size: 10px;
