@@ -54,6 +54,8 @@
         .what-grid, .usecase-grid, .compare-grid, .features-grid { max-width: 900px; margin: 0 auto !important; width: 100%; }
         .int-grid { justify-content: center; }
         .container { text-align: center; }
+        .compare-inner { text-align: left; }
+        .compare-list { text-align: left; }
         .hero .container { display: flex; flex-direction: column; align-items: center; max-width: 800px; }
         .hero-title { text-align: center !important; width: 100%; font-size: clamp(18px, 4vw, 36px) !important; word-break: break-word; }
         .compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
@@ -309,6 +311,8 @@
             .features-grid { grid-template-columns: 1fr !important; }
             .tg-phone { max-width: 100% !important; transform: none !important; }
             .tg-chat { min-height: 340px !important; max-height: 400px !important; height: 340px !important; }
+            /* Mid-page CTAs smaller on mobile */
+            .eb-cta-mid { font-size: 9px !important; padding: 14px 20px !important; }
             /* Nav: smaller logo + CTA on mobile */
             .logo-icon { width: 22px !important; height: 22px !important; }
             .logo-text { font-size: 11px !important; }
@@ -527,8 +531,8 @@
                 <div class="what-card mc-panel-dark">
                     <div class="what-inner">
                         <span class="what-emoji">✍️</span>
-                        <h3>WRITES YOUR COPY</h3>
-                        <p>Ad copy, social posts, email sequences, landing pages — all in your brand voice. It remembers your tone, your audience, your past winners. <strong>Save 5-10 hours/week on content creation.</strong></p>
+                        <h3>WRITES COPY & CONTENT</h3>
+                        <p>Ad copy, social posts, email sequences, landing pages — all in your brand voice. It researches trends on LinkedIn and X, then creates content ideas tailored to your niche. <strong>Save 5-10 hours/week.</strong></p>
                     </div>
                 </div>
                 <div class="what-card mc-panel-dark">
@@ -547,9 +551,9 @@
                 </div>
                 <div class="what-card mc-panel-dark">
                     <div class="what-inner">
-                        <span class="what-emoji">📱</span>
-                        <h3>MANAGES YOUR SOCIAL</h3>
-                        <p>Drafts posts, suggests engagement responses, creates content ideas tailored to your niche. Keeps your channels active even when you're busy. <strong>Your brand stays visible 24/7.</strong></p>
+                        <span class="what-emoji">🛒</span>
+                        <h3>PLUGS INTO YOUR E-COMMERCE</h3>
+                        <p>Connects to Shopify, HubSpot, and your CRM. Monitors conversion rates, flags drops before you notice, and suggests fixes based on your data. <strong>Your store runs smarter, not harder.</strong></p>
                     </div>
                 </div>
             </div>
@@ -572,7 +576,7 @@
                 <div class="usecase-card mc-panel-dark">
                     <div class="usecase-inner">
                         <span class="uc-icon">📋</span>
-                        <p>Monday 8am: a competitor briefing lands in your Telegram with what changed last week</p>
+                        <p>Monday 8am: a competitor briefing lands in your Telegram — pricing changes, new ads, content shifts</p>
                     </div>
                 </div>
                 <div class="usecase-card mc-panel-dark">
@@ -584,25 +588,25 @@
                 <div class="usecase-card mc-panel-dark">
                     <div class="usecase-inner">
                         <span class="uc-icon">💡</span>
-                        <p>Wednesday: 5 content ideas based on what's trending in your niche right now</p>
+                        <p>Wednesday: it scans LinkedIn, X, and industry blogs for trending topics — then sends you 5 ready-to-post content ideas</p>
                     </div>
                 </div>
                 <div class="usecase-card mc-panel-dark">
                     <div class="usecase-inner">
-                        <span class="uc-icon">🎯</span>
-                        <p>Your landing page bounce rate spikes — it tells you why and how to fix it</p>
-                    </div>
-                </div>
-                <div class="usecase-card mc-panel-dark">
-                    <div class="usecase-inner">
-                        <span class="uc-icon">✍️</span>
-                        <p>You say "write 5 LinkedIn posts about our product launch" — done in 2 minutes, in your voice</p>
+                        <span class="uc-icon">🛒</span>
+                        <p>Your Shopify conversion rate drops 15% — it detects the change, diagnoses the cause, and suggests fixes before you even check</p>
                     </div>
                 </div>
                 <div class="usecase-card mc-panel-dark">
                     <div class="usecase-inner">
                         <span class="uc-icon">💰</span>
                         <p>3am: your Facebook ads start wasting money — you get a Telegram ping before you wake up</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">📇</span>
+                        <p>A new lead fills out your form — HubSpot gets updated, a welcome sequence triggers, and you get a Telegram summary</p>
                     </div>
                 </div>
             </div>
@@ -653,7 +657,7 @@
             </div>
         </div>
             <div style="text-align:center;margin-top:40px;">
-                <a href="#pricing" class="mc-btn mc-btn-primary" style="font-size:12px;padding:16px 32px;">GET YOUR AI MARKETING TEAM — €34.90/MO</a>
+                <a href="#pricing" class="mc-btn mc-btn-primary eb-cta-mid" style="font-size:12px;padding:16px 32px;">GET YOUR AI MARKETING TEAM — €34.90/MO</a>
             </div>
         </div>
     </section>
