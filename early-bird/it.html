@@ -872,8 +872,8 @@ Controllerò competitorx.com ogni lunedì alle 9:00 e ti invierò un briefing co
 Primo report lunedì alle 9. Ti scrivo qui. <span class="tg-time">9:04</span>`, delay:0 },
         ];
 
-        // Wait for script.js to finish, then override
-        setTimeout(() => {
+        // Start Italian demo directly (EN demo skipped via __skipTgDemo)
+        {
             tgChat.innerHTML = '';
             let totalDelay = 400;
             chatScript.forEach(msg => {
@@ -900,7 +900,7 @@ Primo report lunedì alle 9. Ti scrivo qui. <span class="tg-time">9:04</span>`, 
                     totalDelay += 300;
                 }
             });
-        }, 500);
+        }
     })();
     </script>
 </body>
