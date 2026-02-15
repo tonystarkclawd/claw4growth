@@ -1,16 +1,16 @@
 // Claw4Growth Customer Dashboard
 
 const apps = [
-    { id: 'googlesuper', name: 'Google Suite', icon: 'G', sub: 'Drive, Gmail, Sheets, Calendar, Analytics', accounts: [] },
-    { id: 'instagram', name: 'Instagram', icon: 'IG', accounts: [] },
-    { id: 'meta', name: 'Meta Ads', icon: 'M', accounts: [] },
-    { id: 'linkedin', name: 'LinkedIn', icon: 'in', accounts: [] },
-    { id: 'canva', name: 'Canva', icon: 'Cv', accounts: [] },
-    { id: 'facebook', name: 'Facebook', icon: 'f', accounts: [] },
-    { id: 'tiktok', name: 'TikTok', icon: 'TT', accounts: [] },
-    { id: 'shopify', name: 'Shopify', icon: 'S', accounts: [] },
-    { id: 'hubspot', name: 'HubSpot', icon: 'H', accounts: [] },
-    { id: 'notion', name: 'Notion', icon: 'N', accounts: [] },
+    { id: 'googlesuper', name: 'Google Suite', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/google.svg', sub: 'Drive, Gmail, Sheets, Calendar, Ads, Analytics', accounts: [] },
+    { id: 'facebook', name: 'Facebook', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg', accounts: [] },
+    { id: 'meta', name: 'Meta Ads', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/meta.svg', accounts: [] },
+    { id: 'instagram', name: 'Instagram', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg', accounts: [] },
+    { id: 'linkedin', name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/linkedin.svg', accounts: [] },
+    { id: 'tiktok', name: 'TikTok', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/tiktok.svg', accounts: [] },
+    { id: 'stripe', name: 'Stripe', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/stripe.svg', accounts: [] },
+    { id: 'shopify', name: 'Shopify', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/shopify.svg', accounts: [] },
+    { id: 'hubspot', name: 'HubSpot', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/hubspot.svg', accounts: [] },
+    { id: 'notion', name: 'Notion', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/notion.svg', accounts: [] },
 ];
 
 // Demo: simulate some connected accounts
@@ -41,7 +41,7 @@ function renderApps() {
         card.innerHTML = `
             <div class="dash-app-header">
                 <div class="dash-app-info">
-                    <div class="dash-app-icon">${app.icon}</div>
+                    <div class="dash-app-icon"><img src="${app.icon}" alt="${app.name}" style="width:24px;height:24px;filter:invert(1);"></div>
                     <span class="dash-app-name">${app.name}</span>
                 </div>
                 <span class="dash-app-status ${connected ? 'on' : 'off'}">${connected ? 'CONNECTED' : 'NOT CONNECTED'}</span>
