@@ -305,11 +305,26 @@
         /* Responsive overrides */
         @media (max-width: 768px) {
             .int-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
-            .what-grid { grid-template-columns: 1fr; }
-            .usecase-grid { grid-template-columns: 1fr; }
+            .what-grid { grid-template-columns: 1fr !important; }
+            .usecase-grid { grid-template-columns: 1fr !important; }
+            .compare-grid { grid-template-columns: 1fr !important; }
+            .hero-mascot svg { max-width: 100px !important; height: auto !important; }
+            .hero-title { font-size: clamp(14px, 5vw, 24px) !important; }
+            .hero-sub { font-size: 13px !important; }
+            .mc-btn { font-size: 10px !important; padding: 14px 24px !important; }
+            .price-cta { font-size: 10px !important; padding: 16px 24px !important; }
+            .nav-cta-btn { font-size: 8px !important; padding: 8px 14px !important; }
+            .tg-phone { max-width: 100% !important; transform: none !important; }
+            .tg-chat { min-height: 300px !important; max-height: 380px !important; }
+            .features-grid { grid-template-columns: 1fr !important; }
         }
         @media (max-width: 480px) {
             .int-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+            .hero-mascot svg { max-width: 80px !important; }
+            .hero-title { font-size: clamp(12px, 5vw, 20px) !important; }
+            .mc-btn { font-size: 9px !important; padding: 12px 20px !important; }
+            .eb-marquee { font-size: 9px; padding: 4px 0; }
+            .nav { top: 22px; }
         }
     </style>
 </head>
