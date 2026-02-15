@@ -127,6 +127,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ===== TELEGRAM CHAT ANIMATION =====
+    if (!window.__skipTgDemo) {
     const tgChat = document.getElementById('tg-chat');
 
     const botAvatarSVG = `<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="60" cy="60" r="60" fill="#1a1a2e"/><path d="M60 25 C45 25 35 40 35 50 C35 60 42 72 50 75 L50 80 L54 80 L54 75 C54 75 57 76 60 75 L60 80 L64 80 L64 75 C72 72 79 60 79 50 C79 40 75 25 60 25Z" fill="url(#ab)"/><rect x="42" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><rect x="62" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><path d="M54 36 L62 36" stroke="#e0e0e0" stroke-width="1.2"/><circle cx="48" cy="36" r="2" fill="#00e5cc"/><circle cx="68" cy="36" r="2" fill="#00e5cc"/><defs><linearGradient id="ab" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs></svg>`;
@@ -320,6 +321,7 @@ First report drops Monday 9 AM. I'll ping you right here. <span class="tg-time">
             }
         });
     }
+    } // end __skipTgDemo check
 
     // ===== FORM HANDLING =====
     const forms = document.querySelectorAll('.waitlist-form');
