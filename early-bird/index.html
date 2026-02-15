@@ -51,16 +51,14 @@
         
         /* Force center everything — override base landing left alignment */
         .section-title, .section-sub { text-align: center !important; }
-        .what-grid, .usecase-grid, .compare-grid { max-width: 900px; margin: 0 auto !important; }
+        .what-grid, .usecase-grid, .compare-grid, .features-grid { max-width: 900px; margin: 0 auto !important; width: 100%; }
         .int-grid { justify-content: center; }
-        .container { display: flex !important; flex-direction: column !important; align-items: center !important; }
-        .hero-title { text-align: center !important; width: 100%; }
-        .what-section .container, .usecases-section .container, .pricing-section .container { align-items: center !important; }
+        .container { text-align: center; }
+        .hero .container { display: flex; flex-direction: column; align-items: center; max-width: 800px; }
+        .hero-title { text-align: center !important; width: 100%; font-size: clamp(18px, 4vw, 36px) !important; word-break: break-word; }
         .compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
         .what-grid { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
         .usecase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; width: 100%; }
-        .hero .container { max-width: 800px; }
-        .hero-title { font-size: clamp(18px, 4vw, 36px) !important; word-break: break-word; }
         @media (max-width: 768px) {
             .what-grid, .compare-grid { grid-template-columns: 1fr !important; }
             .usecase-grid { grid-template-columns: 1fr !important; }
