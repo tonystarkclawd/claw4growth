@@ -249,10 +249,19 @@
             color: var(--yellow);
             margin-bottom: 32px;
         }
+        .eb-cta {
+            font-size: 12px;
+            padding: 16px 36px;
+            width: fit-content;
+            max-width: 380px;
+        }
         .price-cta {
-            width: 100%;
+            width: fit-content;
+            max-width: 380px;
             font-size: 12px !important;
             padding: 18px 32px !important;
+            margin-left: auto;
+            margin-right: auto;
         }
         .price-note {
             font-family: var(--font-body);
@@ -315,7 +324,7 @@
             .tg-phone { max-width: 100% !important; transform: none !important; }
             .tg-chat { min-height: 340px !important; max-height: 400px !important; height: 340px !important; }
             /* Mid-page CTAs smaller on mobile */
-            .eb-cta-mid { font-size: 9px !important; padding: 14px 20px !important; }
+            .eb-cta { font-size: 10px !important; padding: 14px 28px !important; max-width: 320px !important; }
             /* Nav: smaller logo + CTA on mobile */
             .logo-icon { width: 22px !important; height: 22px !important; }
             .logo-text { font-size: 11px !important; }
@@ -323,6 +332,8 @@
             .nav-inner { padding: 0 12px !important; }
         }
         @media (max-width: 480px) {
+            .eb-cta { font-size: 8px !important; padding: 12px 20px !important; max-width: 280px !important; }
+            .price-cta { font-size: 9px !important; padding: 14px 24px !important; max-width: 300px !important; }
             .int-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
             .logo-icon { width: 18px !important; height: 18px !important; }
             .logo-text { font-size: 10px !important; }
@@ -404,7 +415,7 @@
                 An AI that connects to your tools and actually does the work — writes copy, spots wasted ad budget, monitors competitors, manages social. <strong>Not a chatbot. A marketing operator. 24/7 on autopilot.</strong>
             </p>
             <div style="margin-bottom: 32px;">
-                <a href="#pricing" class="mc-btn mc-btn-primary" style="font-size:12px;padding:18px 36px;">EARLY BIRD — €34.90/MO</a>
+                <a href="#pricing" class="mc-btn mc-btn-primary eb-cta">EARLY BIRD — €34.90/MO</a>
             </div>
             <div class="hero-stats">
                 <div class="stat-item mc-panel-dark">
@@ -562,7 +573,7 @@
             </div>
         </div>
             <div style="text-align:center;margin-top:40px;">
-                <a href="#pricing" class="mc-btn mc-btn-primary" style="font-size:12px;padding:16px 32px;">SEE EARLY BIRD PRICING ↓</a>
+                <a href="#pricing" class="mc-btn mc-btn-primary eb-cta">SEE PRICING ↓</a>
             </div>
         </div>
     </section>
@@ -660,7 +671,7 @@
             </div>
         </div>
             <div style="text-align:center;margin-top:40px;">
-                <a href="#pricing" class="mc-btn mc-btn-primary eb-cta-mid" style="font-size:12px;padding:16px 32px;">AI MARKETING TEAM — €34.90/MO</a>
+                <a href="#pricing" class="mc-btn mc-btn-primary eb-cta">AI TEAM — €34.90/MO</a>
             </div>
         </div>
     </section>
