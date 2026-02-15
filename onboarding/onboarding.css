@@ -328,8 +328,8 @@
 
 /* Plan cards */
 .ob-plans {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    justify-content: center;
     gap: 12px;
     width: 100%;
     max-width: 360px;
