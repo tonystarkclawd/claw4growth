@@ -45,10 +45,21 @@
         .hero-title { text-align: center; }
         .hero-sub { max-width: 600px; text-align: center; }
         
-        /* Center all sections */
-        .section-title, .section-sub { text-align: center; }
-        .what-grid, .usecase-grid, .compare-grid { max-width: 900px; margin: 0 auto; }
+        /* Force center everything — override base landing left alignment */
+        .section-title, .section-sub { text-align: center !important; }
+        .what-grid, .usecase-grid, .compare-grid { max-width: 900px; margin: 0 auto !important; }
         .int-grid { justify-content: center; }
+        .container { display: flex !important; flex-direction: column !important; align-items: center !important; }
+        .hero-title { text-align: center !important; width: 100%; }
+        .what-section .container, .usecases-section .container, .pricing-section .container { align-items: center !important; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .what-grid { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+        .usecase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; width: 100%; }
+        .hero .container { max-width: 800px; }
+        @media (max-width: 768px) {
+            .what-grid, .compare-grid { grid-template-columns: 1fr !important; }
+            .usecase-grid { grid-template-columns: 1fr !important; }
+        }
 
         /* Integration grid (not ticker) */
         .integrations-grid-section {
