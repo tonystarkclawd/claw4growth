@@ -343,6 +343,37 @@
     <!-- ===== HERO ===== -->
     <section class="hero">
         <div class="container">
+            <div class="hero-mascot hero-entrance" aria-hidden="true" style="margin-bottom: 24px;">
+                <style>
+                    .hero-mascot svg { width: 120px; height: 120px; }
+                    .hero-mascot .claw-left { animation: claw-snap-left 3s ease-in-out infinite; transform-origin: 28px 54px; }
+                    .hero-mascot .claw-right { animation: claw-snap-right 3s ease-in-out infinite; transform-origin: 92px 54px; }
+                    .hero-mascot .eye-glow { animation: eye-pulse 2s ease-in-out infinite; }
+                    .hero-mascot .antenna { animation: antenna-wave 4s ease-in-out infinite; }
+                    .hero-mascot .screen-bar { animation: bar-grow 2s ease-in-out infinite alternate; transform-origin: bottom; }
+                    .hero-mascot .screen-bar:nth-child(odd) { animation-delay: 0.3s; }
+                    @keyframes claw-snap-left { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-8deg); } }
+                    @keyframes claw-snap-right { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(8deg); } }
+                    @keyframes eye-pulse { 0%,100% { opacity: 1; r: 1.5; } 50% { opacity: 0.6; r: 2.5; } }
+                    @keyframes antenna-wave { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(3deg); } 75% { transform: rotate(-3deg); } }
+                    @keyframes bar-grow { 0% { transform: scaleY(0.7); } 100% { transform: scaleY(1); } }
+                </style>
+                <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="hero-lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient><linearGradient id="hero-sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5cc" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5cc" stop-opacity="0.1"/></linearGradient></defs>
+                    <path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#hero-lg)"/>
+                    <path class="claw-left" d="M24 48 C12 44 7 52 11 60 C15 68 24 63 28 54 C30 49 28 47 24 48Z" fill="url(#hero-lg)"/>
+                    <path class="claw-right" d="M96 48 C108 44 113 52 109 60 C105 68 96 63 92 54 C90 49 92 47 96 48Z" fill="url(#hero-lg)"/>
+                    <rect x="28" y="58" width="64" height="6" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.5"/>
+                    <rect x="32" y="38" width="56" height="20" rx="2" fill="#0a0f1a" stroke="#333" stroke-width="0.5"/>
+                    <rect class="screen-bar" x="38" y="50" width="4" height="6" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect class="screen-bar" x="44" y="47" width="4" height="9" rx="0.5" fill="#00e5cc" opacity="0.9"/><rect class="screen-bar" x="50" y="44" width="4" height="12" rx="0.5" fill="#ff4d4d" opacity="0.9"/><rect class="screen-bar" x="56" y="46" width="4" height="10" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect class="screen-bar" x="62" y="42" width="4" height="14" rx="0.5" fill="#00e5cc"/><rect class="screen-bar" x="68" y="48" width="4" height="8" rx="0.5" fill="#00e5cc" opacity="0.7"/><rect class="screen-bar" x="74" y="40" width="4" height="16" rx="0.5" fill="#ff4d4d"/><rect class="screen-bar" x="80" y="43" width="4" height="13" rx="0.5" fill="#00e5cc" opacity="0.9"/>
+                    <rect x="32" y="38" width="56" height="20" rx="2" fill="url(#hero-sg)"/>
+                    <path class="antenna" d="M47 18 Q38 8 33 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/><path class="antenna" d="M73 18 Q82 8 87 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/><path d="M37 30 L32 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/><path d="M83 30 L88 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="45" cy="31" r="4" fill="#0a0f1a"/><circle cx="75" cy="31" r="4" fill="#0a0f1a"/><circle class="eye-glow" cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle class="eye-glow" cx="76" cy="30" r="1.5" fill="#00e5cc"/>
+                    <path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/>
+                </svg>
+            </div>
+            <div class="highlight-box" style="font-size:8px;letter-spacing:2px;padding:8px 20px;border:1px solid var(--yellow);color:var(--yellow);margin-bottom:20px;">⬛ EARLY ACCESS — LIMITED SPOTS</div>
             <h1 class="hero-title">
                 YOUR MARKETING RUNS<br>
                 <span class="text-accent glitch-text" data-text="WHILE YOU SLEEP.">WHILE YOU SLEEP.</span>
@@ -386,23 +417,61 @@
         </div>
     </section>
 
-    <!-- ===== INTEGRATIONS GRID ===== -->
-    <section class="integrations-grid-section">
-        <p class="section-label">CONNECTS TO YOUR ENTIRE STACK</p>
-        <div class="int-grid">
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" alt="Drive"><span>Drive</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail"><span>Gmail</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlesheets.svg" alt="Sheets"><span>Sheets</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googleads.svg" alt="Google Ads"><span>Google Ads</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"><span>Meta Ads</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"><span>Facebook</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"><span>Instagram</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"><span>TikTok</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"><span>LinkedIn</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/canva.svg" alt="Canva"><span>Canva</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"><span>Shopify</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"><span>HubSpot</span></div>
-            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"><span>Notion</span></div>
+    <!-- ===== INTEGRATION LOGOS TICKER ===== -->
+    <section class="integrations-ticker">
+        <p class="ticker-label">CONNECTS TO YOUR ENTIRE STACK</p>
+        <div class="ticker-wrapper">
+            <div class="ticker-track" id="ticker-track">
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" alt="Drive"><span>Drive</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail"><span>Gmail</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlesheets.svg" alt="Sheets"><span>Sheets</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googleads.svg" alt="Google Ads"><span>Google Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"><span>Meta Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"><span>Facebook</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"><span>Instagram</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"><span>TikTok</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"><span>LinkedIn</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"><span>HubSpot</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"><span>Shopify</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"><span>Notion</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/canva.svg" alt="Canva"><span>Canva</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Telegram"><span>Telegram</span></div>
+                <!-- Duplicate for seamless loop -->
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" alt="Drive"><span>Drive</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail"><span>Gmail</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlesheets.svg" alt="Sheets"><span>Sheets</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googleads.svg" alt="Google Ads"><span>Google Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"><span>Meta Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"><span>Facebook</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"><span>Instagram</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"><span>TikTok</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"><span>LinkedIn</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"><span>HubSpot</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"><span>Shopify</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"><span>Notion</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/canva.svg" alt="Canva"><span>Canva</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Telegram"><span>Telegram</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TELEGRAM DEMO ===== -->
+    <section class="demo" id="demo">
+        <div class="container">
+            <div class="tg-phone mc-panel-dark">
+                <div class="tg-phone-inner">
+                    <div class="tg-label">/// LIVE DEMO — TELEGRAM</div>
+                    <div class="tg-header">
+                        <div class="tg-header-back"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg></div>
+                        <div class="tg-header-avatar"><svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36"><circle cx="60" cy="60" r="60" fill="#1a1a2e"/><path d="M60 25 C45 25 35 40 35 50 C35 60 42 72 50 75 L50 80 L54 80 L54 75 C54 75 57 76 60 75 L60 80 L64 80 L64 75 C72 72 79 60 79 50 C79 40 75 25 60 25Z" fill="url(#tg-lg)"/><rect x="42" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><rect x="62" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/><path d="M54 36 L62 36" stroke="#e0e0e0" stroke-width="1.2"/><circle cx="48" cy="36" r="2" fill="#00e5cc"/><circle cx="68" cy="36" r="2" fill="#00e5cc"/><defs><linearGradient id="tg-lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs></svg></div>
+                        <div class="tg-header-info"><span class="tg-header-name">Claw4Growth</span><span class="tg-header-status">bot</span></div>
+                        <div class="tg-header-dots">⋮</div>
+                    </div>
+                    <div class="tg-chat" id="tg-chat"></div>
+                    <div class="tg-input-bar"><div class="tg-input-attach">📎</div><div class="tg-input-field">Message</div><div class="tg-input-mic">🎤</div></div>
+                </div>
+            </div>
+            <p class="demo-caption">PROACTIVE REPORTS. ON-DEMAND AUDITS. SCHEDULED MONITORING. ALL ON TELEGRAM.</p>
         </div>
     </section>
 
@@ -541,6 +610,25 @@
         </div>
     </section>
 
+    <!-- ===== PRE-INSTALLED SKILLS ===== -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">
+                <span class="section-prefix">///</span>
+                12+ MARKETING SKILLS. <span class="text-accent">PRE-LOADED.</span>
+            </h2>
+            <p class="section-sub" style="text-align:center;">Not plugins to find. Not prompts to write. Skills that work from minute one.</p>
+            <div class="features-grid">
+                <div class="feature-card mc-panel-dark"><div class="feature-inner"><div class="feature-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3v18h18"/><path d="M7 16l4-8 4 4 5-9"/></svg></div><h3 class="feature-title">CRO ANALYSIS</h3><p>Point it at any URL. Get a full conversion audit — <strong>specific changes, priority ranked, with estimated impact.</strong></p><span class="feature-tag">RUNS ON CRON</span></div></div>
+                <div class="feature-card mc-panel-dark"><div class="feature-inner"><div class="feature-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg></div><h3 class="feature-title">SEO AUDIT & MONITORING</h3><p>Technical + content audit. Keyword gaps, cannibalization, <strong>a prioritized roadmap.</strong> Weekly cron monitors rankings.</p><span class="feature-tag">WEEKLY CRON</span></div></div>
+                <div class="feature-card mc-panel-dark"><div class="feature-inner"><div class="feature-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 8h4M7 11h8"/></svg></div><h3 class="feature-title">PAID MEDIA INTELLIGENCE</h3><p>Connect your ad accounts. <strong>Budget reallocation, creative insights, audience refinements</strong> that actually move ROAS.</p><span class="feature-tag">DATA-DRIVEN</span></div></div>
+                <div class="feature-card mc-panel-dark"><div class="feature-inner"><div class="feature-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div><h3 class="feature-title">COPY & CREATIVE</h3><p>Ad copy, landing pages, emails — <strong>backed by conversion frameworks, not vibes.</strong> In your brand voice, always.</p><span class="feature-tag">MEMORY-POWERED</span></div></div>
+                <div class="feature-card mc-panel-dark"><div class="feature-inner"><div class="feature-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg></div><h3 class="feature-title">COMPETITOR MONITORING</h3><p>Monday morning: competitors' pricing, features, content strategy — <strong>briefing in your Telegram.</strong></p><span class="feature-tag">PROACTIVE ALERTS</span></div></div>
+                <div class="feature-card mc-panel-dark"><div class="feature-inner"><div class="feature-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg></div><h3 class="feature-title">REPORTING & DASHBOARDS</h3><p>"Send me a performance summary every Friday." Done. <strong>No spreadsheet required.</strong></p><span class="feature-tag">AUTOMATED</span></div></div>
+            </div>
+        </div>
+    </section>
+
     <!-- ===== PRICING ===== -->
     <section class="pricing-section" id="pricing">
         <div class="container">
@@ -570,20 +658,6 @@
                     <p class="price-note">Cancel anytime. No lock-in. 5-minute setup.</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- ===== FINAL CTA ===== -->
-    <section class="final-cta">
-        <div class="container">
-            <h2 class="final-title">
-                STOP DOING MARKETING <span class="text-accent">ALONE.</span>
-            </h2>
-            <p class="final-sub">Your AI marketing team member is ready. It knows your tools, learns your brand, and works around the clock — so you can focus on strategy, not tasks.</p>
-            <div style="margin-bottom: 20px;">
-                <a href="/onboarding/" class="mc-btn mc-btn-primary" style="font-size:12px;padding:18px 36px;">GET EARLY BIRD ACCESS — €34.90/MO</a>
-            </div>
-            <p class="final-note">5-minute setup. No technical skills required.</p>
         </div>
     </section>
 
