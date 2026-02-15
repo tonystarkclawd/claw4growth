@@ -1357,20 +1357,7 @@ a {
 }
 .integrations-ticker::before,
 .integrations-ticker::after {
-    content: '';
-    position: absolute;
-    top: 0; bottom: 0;
-    width: 120px;
-    z-index: 2;
-    pointer-events: none;
-}
-.integrations-ticker::before {
-    left: 0;
-    background: linear-gradient(to right, var(--bg, #0a0f1a), transparent);
-}
-.integrations-ticker::after {
-    right: 0;
-    background: linear-gradient(to left, var(--bg, #0a0f1a), transparent);
+    display: none;
 }
 .ticker-label {
     font-family: 'Press Start 2P', monospace;
@@ -1438,6 +1425,5 @@ a {
     .ticker-item img { width: 32px; height: 32px; }
     .ticker-item span { font-size: 0.5rem; }
     .ticker-sub { font-size: 0.55rem; padding: 0 16px; }
-    .integrations-ticker::before,
-    .integrations-ticker::after { width: 40px; }
+    /* ticker fade removed */
 }
