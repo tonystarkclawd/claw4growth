@@ -1310,19 +1310,6 @@ a {
     }
 }
 
-@media (max-width: 768px) {
-    .mc-btn {
-        width: fit-content;
-        max-width: 85%;
-        font-size: 9px;
-        padding: 12px 20px;
-    }
-    .price-cta {
-        font-size: 10px !important;
-        padding: 14px 24px !important;
-    }
-}
-
 @media (max-width: 480px) {
     .hero-stats {
         grid-template-columns: repeat(2, 1fr);
@@ -1340,11 +1327,6 @@ a {
     .nav-cta-btn {
         font-size: 7px !important;
         padding: 8px 12px !important;
-    }
-
-    .mc-btn {
-        font-size: 8px;
-        padding: 10px 16px;
     }
 }
 
