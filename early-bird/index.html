@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claw4Growth — Your AI Marketing Team Member</title>
+    <meta name="description" content="An AI that connects to your marketing tools and works for you 24/7. Writes copy, analyzes campaigns, monitors competitors, manages social. Early Bird: €34.90/mo.">
+    <meta property="og:title" content="Claw4Growth — Your AI Marketing Team Member">
+    <meta property="og:description" content="An AI that connects to your tools and does marketing work for you 24/7. Early Bird: €34.90/mo — price locked forever.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦞</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* ===== EARLY BIRD OVERRIDES ===== */
+
+        /* Hide original marquee — we have our own */
+        .marquee-banner { display: none !important; }
+
+        /* Early bird marquee */
+        .eb-marquee {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--accent);
+            border-bottom: 4px solid #000;
+            padding: 6px 0;
+            overflow: hidden;
+        }
+        .eb-marquee .marquee-track span {
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* Nav adjustment */
+        .nav { top: 28px; }
+
+        /* Hero adjustments for marketer audience */
+        .hero { text-align: center; }
+        .hero .container { align-items: center; }
+        .hero-sub { max-width: 600px; text-align: center; }
+
+        /* Integration grid (not ticker) */
+        .integrations-grid-section {
+            position: relative;
+            z-index: 1;
+            padding: 60px 0;
+            text-align: center;
+            border-top: 4px solid #000;
+        }
+        .integrations-grid-section .section-label {
+            font-family: var(--font-pixel);
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: var(--cyan);
+            margin-bottom: 32px;
+            text-transform: uppercase;
+        }
+        .int-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 24px;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 var(--container-pad);
+        }
+        .int-grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .int-grid-item:hover {
+            opacity: 1;
+            transform: translateY(-4px);
+        }
+        .int-grid-item img {
+            width: 36px;
+            height: 36px;
+            filter: invert(1);
+        }
+        .int-grid-item span {
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* What It Does */
+        .what-section {
+            position: relative;
+            z-index: 1;
+            padding: var(--section-pad) 0;
+            border-top: 4px solid #000;
+        }
+        .what-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .what-card {
+            transition: transform 0.2s;
+        }
+        .what-card:hover { transform: scale(1.02); }
+        .what-inner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 24px 20px;
+        }
+        .what-inner .what-emoji {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .what-inner h3 {
+            font-size: 10px;
+            color: var(--yellow);
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+        .what-inner p {
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--text-body);
+            line-height: 1.75;
+        }
+
+        /* Use Cases */
+        .usecases-section {
+            position: relative;
+            z-index: 1;
+            padding: var(--section-pad) 0;
+            border-top: 4px solid #000;
+            background: var(--bg-surface);
+        }
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .usecase-card {
+            transition: transform 0.2s;
+        }
+        .usecase-card:hover { transform: scale(1.02); }
+        .usecase-inner {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 28px 20px;
+            text-align: center;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .usecase-inner .uc-icon {
+            font-size: 28px;
+        }
+        .usecase-inner p {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* Pricing */
+        .pricing-section {
+            position: relative;
+            z-index: 1;
+            padding: var(--section-pad) 0;
+            text-align: center;
+            border-top: 4px solid #000;
+        }
+        .price-card {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .price-inner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 48px 32px;
+            text-align: center;
+        }
+        .price-badge {
+            font-size: 9px;
+            color: #000;
+            background: var(--yellow);
+            padding: 6px 16px;
+            display: inline-block;
+            margin-bottom: 24px;
+            border: 2px solid #000;
+        }
+        .price-amount {
+            font-size: clamp(32px, 6vw, 52px);
+            color: var(--accent-bright);
+            text-shadow: 0 0 20px rgba(0,255,0,0.3);
+            margin-bottom: 8px;
+        }
+        .price-period {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .price-original {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .price-original s {
+            color: var(--red);
+        }
+        .price-lock {
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--yellow);
+            margin-bottom: 32px;
+        }
+        .price-cta {
+            width: 100%;
+            font-size: 12px !important;
+            padding: 18px 32px !important;
+        }
+        .price-note {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 16px;
+        }
+
+        /* Footer override */
+        .eb-footer {
+            position: relative;
+            z-index: 1;
+            padding: 32px 0;
+            border-top: 4px solid #000;
+            background: rgba(0,0,0,0.5);
+        }
+        .eb-footer-inner {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--container-pad);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+        }
+        .eb-footer-powered {
+            font-size: 8px;
+            color: #666;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .eb-footer-powered img {
+            width: 16px;
+            height: 16px;
+            opacity: 0.4;
+        }
+        .eb-footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        .eb-footer-links a {
+            font-size: 9px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .eb-footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive overrides */
+        @media (max-width: 768px) {
+            .int-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+            .what-grid { grid-template-columns: 1fr; }
+            .usecase-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 480px) {
+            .int-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MARQUEE ===== -->
+    <div class="eb-marquee">
+        <div class="marquee-track">
+            <span>🦞 EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER — EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>🦞 EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER — EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
+    <!-- ===== CRT OVERLAY ===== -->
+    <div class="crt-overlay"></div>
+
+    <!-- ===== FALLING TEXT ===== -->
+    <div class="falling-text-container" id="falling-text"></div>
+
+    <!-- ===== NAV ===== -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <span class="logo-icon" style="width:32px;height:32px;display:inline-block"><svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lobster-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient><linearGradient id="screen-glow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5cc" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5cc" stop-opacity="0.1"/></linearGradient></defs><path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#lobster-gradient)"/><path d="M24 48 C12 44 7 52 11 60 C15 68 24 63 28 54 C30 49 28 47 24 48Z" fill="url(#lobster-gradient)"/><path d="M96 48 C108 44 113 52 109 60 C105 68 96 63 92 54 C90 49 92 47 96 48Z" fill="url(#lobster-gradient)"/><rect x="28" y="58" width="64" height="6" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.5"/><rect x="32" y="38" width="56" height="20" rx="2" fill="#0a0f1a" stroke="#333" stroke-width="0.5"/><rect x="38" y="50" width="4" height="6" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect x="44" y="47" width="4" height="9" rx="0.5" fill="#00e5cc" opacity="0.9"/><rect x="50" y="44" width="4" height="12" rx="0.5" fill="#ff4d4d" opacity="0.9"/><rect x="56" y="46" width="4" height="10" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect x="62" y="42" width="4" height="14" rx="0.5" fill="#00e5cc"/><rect x="68" y="48" width="4" height="8" rx="0.5" fill="#00e5cc" opacity="0.7"/><rect x="74" y="40" width="4" height="16" rx="0.5" fill="#ff4d4d"/><rect x="80" y="43" width="4" height="13" rx="0.5" fill="#00e5cc" opacity="0.9"/><rect x="32" y="38" width="56" height="20" rx="2" fill="url(#screen-glow)"/><path d="M47 18 Q38 8 33 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/><path d="M73 18 Q82 8 87 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/><rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/><path d="M37 30 L32 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/><path d="M83 30 L88 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/><circle cx="45" cy="31" r="4" fill="#0a0f1a"/><circle cx="75" cy="31" r="4" fill="#0a0f1a"/><circle cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle cx="76" cy="30" r="1.5" fill="#00e5cc"/><path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/></svg></span>
+                <span class="logo-text">CLAW<span class="logo-accent">4</span>GROWTH</span>
+            </a>
+            <a href="/onboarding/" class="mc-btn mc-btn-primary nav-cta-btn">GET EARLY ACCESS</a>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">
+                YOUR AI<br>
+                <span class="text-accent glitch-text" data-text="MARKETING TEAM MEMBER.">MARKETING TEAM MEMBER.</span>
+            </h1>
+            <p class="hero-sub">
+                An AI that connects to your marketing tools and actually does the work — writes copy, analyzes campaigns, monitors competitors, manages social, and sends you reports. <strong>24/7. On autopilot.</strong>
+            </p>
+            <div style="margin-bottom: 32px;">
+                <a href="/onboarding/" class="mc-btn mc-btn-primary" style="font-size:12px;padding:18px 36px;">GET EARLY BIRD ACCESS — €34.90/MO</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">🧠</span>
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">ALWAYS ON</span>
+                    </div>
+                </div>
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">🔗</span>
+                        <span class="stat-number">12+</span>
+                        <span class="stat-label">INTEGRATIONS</span>
+                    </div>
+                </div>
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">📊</span>
+                        <span class="stat-number">AUTO</span>
+                        <span class="stat-label">REPORTS</span>
+                    </div>
+                </div>
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">⚡</span>
+                        <span class="stat-number">5min</span>
+                        <span class="stat-label">SETUP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INTEGRATIONS GRID ===== -->
+    <section class="integrations-grid-section">
+        <p class="section-label">CONNECTS TO YOUR ENTIRE STACK</p>
+        <div class="int-grid">
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" alt="Drive"><span>Drive</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail"><span>Gmail</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlesheets.svg" alt="Sheets"><span>Sheets</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googleads.svg" alt="Google Ads"><span>Google Ads</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"><span>Meta Ads</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"><span>Facebook</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"><span>Instagram</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"><span>TikTok</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"><span>LinkedIn</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/canva.svg" alt="Canva"><span>Canva</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"><span>Shopify</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"><span>HubSpot</span></div>
+            <div class="int-grid-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"><span>Notion</span></div>
+        </div>
+    </section>
+
+    <!-- ===== WHAT IT DOES ===== -->
+    <section class="what-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                WHAT IT ACTUALLY <span class="text-accent">DOES FOR YOU</span>
+            </h2>
+            <p class="section-sub">Think of it as a marketing assistant that never sleeps, never forgets, and gets better every week.</p>
+            <div class="what-grid">
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">✍️</span>
+                        <h3>WRITES YOUR COPY</h3>
+                        <p>Ad copy, social posts, email sequences, landing pages — all in your brand voice. It remembers your tone, your audience, your past winners. No more starting from a blank page.</p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">📊</span>
+                        <h3>ANALYZES YOUR CAMPAIGNS</h3>
+                        <p>Connects to your ad accounts and analytics. Spots what's working, what's bleeding budget, and tells you exactly what to change. Real recommendations, not vague tips.</p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">👁️</span>
+                        <h3>MONITORS YOUR COMPETITORS</h3>
+                        <p>Every Monday morning, a briefing in your inbox: what your competitors changed, launched, or tested. Pricing shifts, new landing pages, ad creative — you'll know before they announce it.</p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">📱</span>
+                        <h3>MANAGES YOUR SOCIAL</h3>
+                        <p>Drafts posts based on your content calendar, suggests engagement responses, and creates content ideas tailored to your niche. Keeps your channels active even when you're busy.</p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">📈</span>
+                        <h3>READS YOUR ANALYTICS</h3>
+                        <p>Pulls data from Google Analytics, your ad platforms, and your CRM. Turns numbers into plain-English insights. "Your homepage bounce rate spiked 15% — here's likely why."</p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">📬</span>
+                        <h3>SENDS YOU REPORTS</h3>
+                        <p>Automated weekly performance summaries. Campaign snapshots. SEO health checks. Delivered to your inbox or Telegram — on a schedule you set, without lifting a finger.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== USE CASES ===== -->
+    <section class="usecases-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                IMAGINE <span class="text-accent">THIS</span>
+            </h2>
+            <p class="section-sub">Real scenarios. Running automatically. Every single week.</p>
+            <div class="usecase-grid">
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">📋</span>
+                        <p>Monday morning competitor briefing in your inbox</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">📊</span>
+                        <p>Automated campaign performance reports every Friday</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">💡</span>
+                        <p>Content ideas based on your niche trends</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">🎯</span>
+                        <p>CRO suggestions from your landing page data</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">✍️</span>
+                        <p>Social media copy that sounds like you</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">💰</span>
+                        <p>Ad budget optimization alerts when something's off</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHY NOT CHATGPT ===== -->
+    <section class="objection" id="why-not-chatgpt">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                "WHY NOT JUST USE <span class="text-accent">CHATGPT?</span>"
+            </h2>
+            <p class="section-sub">Great question. Here's the honest answer.</p>
+            <div class="compare-grid">
+                <div class="compare-card mc-panel-dark">
+                    <div class="compare-inner compare-no">
+                        <div class="compare-header">
+                            <span class="compare-icon">✖</span>
+                            <span class="compare-label">CHATGPT / CLAUDE</span>
+                        </div>
+                        <ul class="compare-list">
+                            <li>Forgets everything after each chat</li>
+                            <li>Can't run tasks while you sleep</li>
+                            <li>Can't connect to your ad accounts or analytics</li>
+                            <li>Can't message you when something needs attention</li>
+                            <li>No persistent brand context</li>
+                            <li>You re-explain everything, every time</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="compare-card mc-panel-dark">
+                    <div class="compare-inner compare-yes">
+                        <div class="compare-header">
+                            <span class="compare-icon">✓</span>
+                            <span class="compare-label">CLAW4GROWTH</span>
+                        </div>
+                        <ul class="compare-list">
+                            <li><strong>Remembers everything</strong> — your brand, your data, your preferences. Always.</li>
+                            <li><strong>Works while you sleep</strong> — scheduled tasks run automatically, 24/7.</li>
+                            <li><strong>Connected to your tools</strong> — Google Ads, Meta, Analytics, Sheets, and more.</li>
+                            <li><strong>Proactive alerts</strong> — it messages YOU when something needs attention.</li>
+                            <li><strong>Multi-channel</strong> — chat on Telegram, Slack, or email. Wherever you work.</li>
+                            <li><strong>Gets better over time</strong> — learns your preferences, your audience, your wins.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <h2 class="section-title" style="text-align:center;">
+                <span class="section-prefix">///</span>
+                EARLY BIRD <span class="text-accent">PRICING</span>
+            </h2>
+            <p class="section-sub" style="text-align:center;">Limited spots. Once they're gone, the price goes up.</p>
+            <div class="price-card mc-panel-dark">
+                <div class="price-inner">
+                    <span class="price-badge">🦞 EARLY BIRD</span>
+                    <div class="price-amount">€34.90</div>
+                    <div class="price-period">/MONTH</div>
+                    <p class="price-original">Regular price: <s>€49.90/mo</s></p>
+                    <p class="price-lock">🔒 Price locked forever. No increases. Ever.</p>
+                    <a href="/onboarding/" class="mc-btn mc-btn-primary price-cta">GET EARLY BIRD ACCESS</a>
+                    <p class="price-note">Cancel anytime. No lock-in. No hidden fees.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FINAL CTA ===== -->
+    <section class="final-cta">
+        <div class="container">
+            <h2 class="final-title">
+                STOP DOING MARKETING <span class="text-accent">ALONE.</span>
+            </h2>
+            <p class="final-sub">Your AI marketing team member is ready. It knows your tools, learns your brand, and works around the clock — so you can focus on strategy, not tasks.</p>
+            <div style="margin-bottom: 20px;">
+                <a href="/onboarding/" class="mc-btn mc-btn-primary" style="font-size:12px;padding:18px 36px;">GET EARLY BIRD ACCESS — €34.90/MO</a>
+            </div>
+            <p class="final-note">5-minute setup. No technical skills required.</p>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="eb-footer">
+        <div class="eb-footer-inner">
+            <div class="eb-footer-powered">
+                POWERED BY OPENCLAW
+            </div>
+            <div class="eb-footer-links">
+                <a href="#">PRIVACY</a>
+                <a href="#">TERMS</a>
+                <a href="mailto:hello@claw4growth.com">CONTACT</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== MINIMAL JS: CRT + Falling Text + Nav Scroll ===== -->
+    <script>
+    // Falling text
+    (function() {
+        const words = ['MARKETING', 'GROWTH', 'ROAS', 'CRO', 'SEO', 'COPY', 'ADS', 'SOCIAL', 'EMAIL', 'DATA', 'ROI', 'LEADS', 'CONVERT', 'SCALE'];
+        const container = document.getElementById('falling-text');
+        if (!container) return;
+        function spawn() {
+            const el = document.createElement('span');
+            el.className = 'falling-word';
+            el.textContent = words[Math.floor(Math.random() * words.length)];
+            el.style.left = Math.random() * 100 + '%';
+            el.style.animationDuration = (8 + Math.random() * 12) + 's';
+            el.style.fontSize = (8 + Math.random() * 6) + 'px';
+            el.style.opacity = 0.06 + Math.random() * 0.08;
+            container.appendChild(el);
+            el.addEventListener('animationend', () => el.remove());
+        }
+        for (let i = 0; i < 15; i++) setTimeout(spawn, Math.random() * 5000);
+        setInterval(spawn, 800);
+    })();
+
+    // Nav scroll
+    (function() {
+        const nav = document.getElementById('nav');
+        if (!nav) return;
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    })();
+    </script>
+</body>
+</html>
