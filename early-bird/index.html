@@ -16,8 +16,9 @@
     <style>
         /* ===== EARLY BIRD OVERRIDES ===== */
 
-        /* Prevent horizontal overflow */
-        html, body { overflow-x: hidden !important; }
+        /* Prevent horizontal overflow from marquee */
+        html, body { overflow-x: hidden !important; max-width: 100vw !important; }
+        .eb-marquee { overflow: hidden !important; }
         
         /* Hide original marquee — we have our own */
         .marquee-banner { display: none !important; }
