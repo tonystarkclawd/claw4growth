@@ -1352,6 +1352,8 @@ a {
     text-align: center;
     overflow: hidden;
     position: relative;
+    max-width: var(--container-max);
+    margin: 0 auto;
 }
 .integrations-ticker::before,
 .integrations-ticker::after {
