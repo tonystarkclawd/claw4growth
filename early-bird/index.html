@@ -23,25 +23,11 @@
         /* Hide original marquee — we have our own */
         .marquee-banner { display: none !important; }
 
-        /* Early bird marquee */
-        .eb-marquee {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: var(--accent);
-            border-bottom: 4px solid #000;
-            padding: 6px 0;
-            overflow: hidden;
-        }
-        .eb-marquee .marquee-track span {
-            color: #000;
-            font-weight: 700;
-        }
+        /* Early bird marquee — HIDDEN */
+        .eb-marquee { display: none !important; }
 
         /* Nav adjustment */
-        .nav { top: 28px; }
+        .nav { top: 0; }
 
         /* Hero adjustments for marketer audience */
         .hero { text-align: center; }
@@ -706,5 +692,6 @@
         });
     })();
     </script>
+    <script src="../script.js"></script>
 </body>
 </html>
