@@ -373,7 +373,10 @@
                     <path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/>
                 </svg>
             </div>
-            <div class="highlight-box" style="font-size:8px;letter-spacing:2px;padding:8px 20px;border:1px solid var(--yellow);color:var(--yellow);margin-bottom:20px;">⬛ EARLY ACCESS — LIMITED SPOTS</div>
+            <div class="hero-badge hero-entrance">
+                <span class="badge-pulse"></span>
+                EARLY ACCESS — LIMITED SPOTS
+            </div>
             <h1 class="hero-title">
                 YOUR MARKETING RUNS<br>
                 <span class="text-accent glitch-text" data-text="WHILE YOU SLEEP.">WHILE YOU SLEEP.</span>
@@ -677,25 +680,7 @@
 
     <!-- ===== MINIMAL JS: CRT + Falling Text + Nav Scroll ===== -->
     <script>
-    // Falling text
-    (function() {
-        const words = ['MARKETING', 'GROWTH', 'ROAS', 'CRO', 'SEO', 'COPY', 'ADS', 'SOCIAL', 'EMAIL', 'DATA', 'ROI', 'LEADS', 'CONVERT', 'SCALE'];
-        const container = document.getElementById('falling-text');
-        if (!container) return;
-        function spawn() {
-            const el = document.createElement('span');
-            el.className = 'falling-word';
-            el.textContent = words[Math.floor(Math.random() * words.length)];
-            el.style.left = Math.random() * 100 + '%';
-            el.style.animationDuration = (8 + Math.random() * 12) + 's';
-            el.style.fontSize = (8 + Math.random() * 6) + 'px';
-            el.style.opacity = 0.06 + Math.random() * 0.08;
-            container.appendChild(el);
-            el.addEventListener('animationend', () => el.remove());
-        }
-        for (let i = 0; i < 15; i++) setTimeout(spawn, Math.random() * 5000);
-        setInterval(spawn, 800);
-    })();
+    // Falling text handled by ../script.js (25 static words, same as main landing)
 
     // Nav scroll
     (function() {
