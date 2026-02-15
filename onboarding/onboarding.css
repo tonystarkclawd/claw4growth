@@ -386,6 +386,13 @@
     letter-spacing: 1px;
 }
 
+.ob-plan-sub {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
 /* Deploy screen */
 .ob-deploy-loading, .ob-deploy-done {
     display: flex;

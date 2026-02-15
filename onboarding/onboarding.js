@@ -6,7 +6,7 @@ const state = {
     brand: { name: '', industry: '', description: '', website: '' },
     tone: '',
     connectedApps: [],
-    plan: 'monthly'
+    plan: 'earlybird'
 };
 
 function goToScreen(n) {
