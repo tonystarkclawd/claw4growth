@@ -1,561 +1,58 @@
-/* Onboarding-specific overrides — inherits landing style.css */
 
-.ob-progress {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 4px;
-    background: var(--bg-surface);
-    z-index: 100;
-}
-
-.ob-progress-bar {
-    height: 100%;
-    width: 14%;
-    background: var(--yellow);
-    transition: width 0.4s ease;
-    box-shadow: 0 0 10px var(--yellow);
-}
-
-.ob-container {
-    position: relative;
-    min-height: 100vh;
+/* Deploy success message */
+.ob-deploy-success {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 2;
-    padding: 40px 20px;
-}
-
-.ob-screen {
-    display: none;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    max-width: 500px;
-    width: 100%;
-    animation: screenIn 0.3s ease;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
 }
 
-.ob-screen.active {
-    display: flex;
-}
-
-@keyframes screenIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.ob-mascot {
-    margin-bottom: 24px;
-}
-
-.ob-title {
-    font-family: var(--font-pixel);
-    font-size: clamp(16px, 4vw, 22px);
-    color: var(--text);
-    margin-bottom: 12px;
-    line-height: 1.4;
-    letter-spacing: 1px;
-}
-
-.ob-subtitle {
-    font-family: var(--font-body);
-    font-size: 14px;
-    color: var(--text-muted);
-    margin-bottom: 32px;
-    line-height: 1.5;
-}
-
-/* Google button */
-.ob-btn-google {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    max-width: 360px;
-    padding: 14px 24px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 15px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.ob-btn-google:hover {
-    border-color: var(--accent-bright);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.1);
-}
-
-.ob-note {
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 16px;
-}
-
-/* Primary button */
-.ob-btn {
-    display: block;
-    width: 100%;
-    max-width: 360px;
-    padding: 14px 24px;
-    background: var(--accent);
-    border: none;
-    border-radius: 0;
-    color: #000;
-    font-family: var(--font-pixel);
-    font-size: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    margin-top: 8px;
-    box-shadow: 
-        inset 1px 1px 0 rgba(255,255,255,0.3),
-        inset -1px -1px 0 rgba(0,0,0,0.3),
-        0 0 20px rgba(93,186,59,0.2);
-}
-
-.ob-btn:hover {
-    filter: brightness(1.15);
-    box-shadow: 
-        inset 1px 1px 0 rgba(255,255,255,0.3),
-        inset -1px -1px 0 rgba(0,0,0,0.3),
-        0 0 30px rgba(93,186,59,0.4);
-}
-
-.ob-btn:disabled {
-    background: var(--bg-card);
-    color: var(--text-muted);
-    cursor: not-allowed;
-    box-shadow: none;
-}
-
-/* Form fields */
-.ob-field {
-    width: 100%;
-    max-width: 360px;
+.ob-deploy-success .ob-deploy-icon {
+    font-size: 48px;
     margin-bottom: 16px;
-    text-align: left;
+    animation: bounce 1s ease infinite;
 }
 
-.ob-label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-body);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.ob-optional {
-    color: var(--text-muted);
-    font-size: 10px;
-}
-
-.ob-input, .ob-select {
-    width: 100%;
-    padding: 12px 14px;
-    background: var(--bg-surface);
-    border: 1px solid var(--border);
-    border-radius: 0;
-    color: var(--text);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.ob-input:focus, .ob-select:focus {
-    border-color: var(--accent-bright);
-    box-shadow: 0 0 10px rgba(0,255,0,0.1);
-}
-
-.ob-input::placeholder {
-    color: var(--text-muted);
-}
-
-.ob-select {
-    appearance: none;
-    cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M6 8L1 3h10z' fill='%23888'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-}
-
-.ob-select option {
-    background: var(--bg-surface);
-    color: var(--text);
-}
-
-.ob-char-count {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-muted);
-    text-align: right;
-    margin-top: 4px;
-}
-
-/* Tone cards */
-.ob-tone-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    width: 100%;
-    max-width: 360px;
-    margin-bottom: 24px;
-}
-
-.ob-tone-card {
-    padding: 16px 12px;
-    background: var(--bg-card);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-}
-
-.ob-tone-card:hover {
-    border-color: var(--accent-dim);
-}
-
-.ob-tone-card.selected {
-    border-color: var(--accent-bright);
-    box-shadow: 0 0 15px rgba(0,255,0,0.15);
-}
-
-.ob-tone-name {
-    font-family: var(--font-pixel);
-    font-size: 10px;
-    color: var(--yellow);
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-}
-
-.ob-tone-desc {
-    font-family: var(--font-body);
-    font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.4;
-}
-
-/* App cards */
-.ob-apps-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    width: 100%;
-    max-width: 360px;
-    margin-bottom: 24px;
-}
-
-.ob-app-card {
-    padding: 16px 8px;
-    background: var(--bg-card);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-}
-
-.ob-app-card:hover {
-    border-color: var(--accent-dim);
-}
-
-.ob-app-card.connected {
-    border-color: var(--accent-bright);
-    box-shadow: 0 0 10px rgba(0,255,0,0.1);
-}
-
-.ob-app-icon {
+.ob-deploy-success h3 {
     font-family: var(--font-pixel);
     font-size: 16px;
     color: var(--yellow);
-    margin-bottom: 6px;
-}
-
-.ob-app-icon img {
-    width: 28px;
-    height: 28px;
-    filter: invert(1);
-}
-
-.ob-app-name {
-    font-family: var(--font-mono);
-    font-size: 10px;
-    color: var(--text-body);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.ob-app-sub {
-    font-family: var(--font-body);
-    font-size: 9px;
-    color: var(--text-muted);
-    margin-top: 4px;
-    line-height: 1.3;
-}
-
-.ob-app-card.connected .ob-app-icon::after {
-    content: ' ✓';
-    color: var(--accent-bright);
-    font-size: 12px;
-}
-
-.ob-skip {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 12px;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
-.ob-skip:hover {
-    color: var(--text-body);
-}
-
-/* Plan cards */
-.ob-plans {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    width: 100%;
-    margin: 0 auto 24px;
-}
-
-.ob-plan-card {
-    padding: 24px 12px;
-    background: var(--bg-card);
-    border: 2px solid var(--border);
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    position: relative;
-}
-
-.ob-plan-card:hover {
-    border-color: var(--accent-dim);
-}
-
-.ob-plan-card.selected {
-    border-color: var(--accent-bright);
-    box-shadow: 0 0 15px rgba(0,255,0,0.15);
-}
-
-.ob-plan-name {
-    font-family: var(--font-pixel);
-    font-size: 10px;
-    color: var(--text-body);
     margin-bottom: 12px;
-    letter-spacing: 2px;
+    line-height: 1.4;
 }
 
-.ob-plan-price {
-    font-family: var(--font-pixel);
-    font-size: 18px;
-    color: var(--yellow);
-}
-
-.ob-plan-price span {
-    font-size: 10px;
-    color: var(--text-muted);
-}
-
-.ob-plan-badge {
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--yellow);
-    color: #000;
-    font-family: var(--font-pixel);
-    font-size: 8px;
-    padding: 5px 14px;
-    letter-spacing: 1.5px;
-    white-space: nowrap;
-}
-
-.ob-plan-sub {
-    font-family: var(--font-body);
-    font-size: 11px;
-    color: var(--text-muted);
-    margin-top: 8px;
-}
-
-/* Deploy screen */
-.ob-deploy-loading, .ob-deploy-done {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.ob-deploy-text {
-    font-family: var(--font-pixel);
-    font-size: 14px;
-    color: var(--yellow);
-    margin-bottom: 24px;
-    animation: pulse 1.5s ease infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.ob-deploy-steps {
-    text-align: left;
+.ob-deploy-success p {
     font-family: var(--font-mono);
-    font-size: 12px;
+    font-size: 13px;
     color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
 }
 
-.ob-deploy-step {
-    padding: 6px 0;
-    opacity: 0.3;
-    transition: all 0.3s;
+.ob-deploy-success .ob-btn {
+    font-size: 12px;
+    padding: 12px 24px;
 }
 
-.ob-deploy-step.done {
-    opacity: 1;
-    color: var(--accent-bright);
-}
-
-.ob-deploy-step.done::before {
-    content: '> ';
-    color: var(--accent-bright);
-}
-
-/* Mascot power-up animation */
-.ob-mascot-nerd {
-    animation: float 3s ease-in-out infinite;
-}
-
-.ob-mascot-power {
-    animation: powerUp 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-
-@keyframes float {
+@keyframes bounce {
     0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
+    50% { transform: translateY(-10px); }
 }
 
-@keyframes powerUp {
-    0% { 
-        transform: scale(0.6) rotate(-5deg); 
-        opacity: 0;
-        filter: brightness(3) saturate(0);
-    }
-    40% {
-        transform: scale(1.15) rotate(2deg);
-        filter: brightness(2) saturate(0.5);
-    }
-    70% {
-        transform: scale(0.95) rotate(-1deg);
-        filter: brightness(1.2) saturate(1);
-    }
-    100% { 
-        transform: scale(1) rotate(0deg); 
-        opacity: 1;
-        filter: brightness(1) saturate(1);
-    }
-}
-
-/* Flash effect on transition */
-.ob-deploy-done {
-    position: relative;
-}
-
-.ob-deploy-done::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 200px;
-    height: 200px;
-    transform: translate(-50%, -50%);
-    background: radial-gradient(circle, rgba(0,229,204,0.3) 0%, transparent 70%);
-    border-radius: 50%;
-    animation: flashGlow 1s ease-out forwards;
-    pointer-events: none;
-}
-
-@keyframes flashGlow {
-    0% { transform: translate(-50%,-50%) scale(0); opacity: 1; }
-    50% { transform: translate(-50%,-50%) scale(2); opacity: 0.6; }
-    100% { transform: translate(-50%,-50%) scale(3); opacity: 0; }
-}
-
-.ob-btn-telegram {
-    display: inline-block;
-    text-decoration: none;
-    text-align: center;
-}
-
-/* Logo accent (the "4") */
-.logo-accent {
-    color: var(--yellow);
-}
-
-/* Mobile */
+/* Mobile adjustments for deploy success */
 @media (max-width: 480px) {
-    .ob-title {
+    .ob-deploy-success h3 {
         font-size: 14px;
     }
-    .ob-tone-grid {
-        grid-template-columns: 1fr;
+    
+    .ob-deploy-success p {
+        font-size: 12px;
     }
-    .ob-apps-grid {
-        grid-template-columns: repeat(2, 1fr);
+    
+    .ob-deploy-success .ob-deploy-icon {
+        font-size: 36px;
     }
-}
-
-/* App connection status */
-.ob-app-status {
-    font-size: 12px;
-    color: #666;
-    margin-top: 8px;
-    font-weight: 500;
-}
-
-.ob-app-card.connected {
-    border: 2px solid #4CAF50;
-    background: linear-gradient(135deg, rgba(76, 175, 80, 0.1) 0%, rgba(76, 175, 80, 0.05) 100%);
-}
-
-.ob-app-card.connected .ob-app-status {
-    color: #4CAF50;
-    font-weight: 600;
-}
-
-.ob-app-card.connecting {
-    opacity: 0.7;
-    border: 2px dashed #FFD700;
-}
-
-.ob-app-card.connecting .ob-app-status {
-    color: #FFD700;
-    animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-.ob-app-card.unsupported .ob-app-status {
-    color: #999;
-    font-style: italic;
 }
