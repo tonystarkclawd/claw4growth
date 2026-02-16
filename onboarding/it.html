@@ -123,6 +123,131 @@
         <div class="ob-screen" id="screen-6">
             <h1 class="ob-title">CONNETTI I TUOI STRUMENTI</h1>
             <p class="ob-subtitle">Il tuo operatore lavora meglio con accesso al tuo stack</p>
+                        <p class="ob-subtitle">Il tuo operatore funziona meglio con accesso ai tuoi strumenti</p>
+            <div class="ob-apps-grid">
+                <div class="ob-app-card" data-app="google" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google"></div>
+                    <div class="ob-app-name">Google Suite</div>
+                    <div class="ob-app-sub">Drive, Gmail, Sheets, Calendar, Ads, Analytics</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="facebook" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"></div>
+                    <div class="ob-app-name">Facebook</div>
+                    <div class="ob-app-sub">Pagine, Messenger, Meta Ads, Insights</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="instagram" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"></div>
+                    <div class="ob-app-name">Instagram</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="linkedin" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"></div>
+                    <div class="ob-app-name">LinkedIn</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="stripe" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg" alt="Stripe"></div>
+                    <div class="ob-app-name">Stripe</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="shopify" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"></div>
+                    <div class="ob-app-name">Shopify</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="hubspot" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"></div>
+                    <div class="ob-app-name">HubSpot</div>
+                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card" data-app="notion" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"></div>
+                    <div class="ob-app-name">Notion</div>
+                    <div class="ob-app-status"></div>
+                </div>
+            </div>
+
+            </div>
+            <button class="ob-btn" onclick="saveNameAndContinue()">CONTINUA</button>
+        </div>
+
+        <!-- SCREEN 3: Brand Info -->
+        <div class="ob-screen" id="screen-3">
+            <h1 class="ob-title">PARLAMI DEL TUO BRAND</h1>
+            <p class="ob-subtitle">Aiuta il tuo operatore a capire il tuo business</p>
+            <div class="ob-field">
+                <label class="ob-label">Nome del brand</label>
+                <input type="text" id="brandName" class="ob-input" placeholder="Il nome della tua azienda" autocomplete="off">
+            </div>
+            <div class="ob-field">
+                <label class="ob-label">Settore</label>
+                <select id="brandIndustry" class="ob-select">
+                    <option value="">Seleziona il tuo settore</option>
+                    <option value="saas">SaaS</option>
+                    <option value="ecommerce">E-commerce</option>
+                    <option value="agency">Agenzia</option>
+                    <option value="freelance">Freelance</option>
+                    <option value="creator">Creator</option>
+                    <option value="other">Altro</option>
+                </select>
+            </div>
+            <div class="ob-field">
+                <label class="ob-label">Descrizione in una riga</label>
+                <input type="text" id="brandDescription" class="ob-input" placeholder="Cosa fa il tuo brand?" maxlength="150" autocomplete="off">
+                <span class="ob-char-count"><span id="descCount">0</span>/150</span>
+            </div>
+            <div class="ob-field">
+                <label class="ob-label">URL del sito <span class="ob-optional">(opzionale)</span></label>
+                <input type="url" id="brandUrl" class="ob-input" placeholder="https://iltuobrand.com" autocomplete="off">
+            </div>
+            <button class="ob-btn" onclick="saveBrandAndContinue()">CONTINUA</button>
+        </div>
+
+        <!-- SCREEN 4: Tone Selection -->
+        <div class="ob-screen" id="screen-4">
+            <h1 class="ob-title">CHE TONO DEVE USARE IL TUO OPERATORE?</h1>
+            <p class="ob-subtitle">Scegli lo stile che rappresenta il tuo brand</p>
+            <div class="ob-tone-grid">
+                <div class="ob-tone-card" data-tone="professional" onclick="selectTone(this)">
+                    <div class="ob-tone-name">PROFESSIONALE</div>
+                    <div class="ob-tone-desc">Chiaro, curato, adatto al corporate</div>
+                </div>
+                <div class="ob-tone-card" data-tone="casual" onclick="selectTone(this)">
+                    <div class="ob-tone-name">INFORMALE</div>
+                    <div class="ob-tone-desc">Rilassato, amichevole, conversazionale</div>
+                </div>
+                <div class="ob-tone-card" data-tone="bold" onclick="selectTone(this)">
+                    <div class="ob-tone-name">DIRETTO</div>
+                    <div class="ob-tone-desc">Diretto, provocatorio, zero fuffa</div>
+                </div>
+                <div class="ob-tone-card" data-tone="friendly" onclick="selectTone(this)">
+                    <div class="ob-tone-name">AMICHEVOLE</div>
+                    <div class="ob-tone-desc">Caloroso, incoraggiante, accessibile</div>
+                </div>
+            </div>
+            <button class="ob-btn" id="toneContinueBtn" onclick="saveToneAndContinue()" disabled>CONTINUA</button>
+        </div>
+
+        <!-- SCREEN 5: Payment -->
+        <div class="ob-screen" id="screen-5">
+            <h1 class="ob-title">SCEGLI IL TUO PIANO</h1>
+            <p class="ob-subtitle">Cancella quando vuoi. Il tuo operatore si ferma quando lo fai tu.</p>
+            <div class="ob-plans">
+                <div class="ob-plan-card selected" data-plan="earlybird">
+                    <div class="ob-plan-badge">EARLY BIRD ACCESS</div>
+                    <div class="ob-plan-price">&euro;34.90<span>/mo</span></div>
+                    <div class="ob-plan-sub">Bloccato per sempre. Il prezzo standard sarà €49.90/mese</div>
+                </div>
+            </div>
+            <button class="ob-btn" onclick="startPayment()">AVVIA IL TUO OPERATORE</button>
+        </div>
+
+        <!-- SCREEN 6: Connect Apps -->
+        <div class="ob-screen" id="screen-6">
+            <h1 class="ob-title">CONNETTI I TUOI STRUMENTI</h1>
+            <p class="ob-subtitle">Il tuo operatore lavora meglio con accesso al tuo stack</p>
             <div class="ob-apps-grid">
                 <div class="ob-app-card" data-app="google" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google"></div>

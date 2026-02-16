@@ -122,52 +122,52 @@
         <!-- SCREEN 6: Connect Apps -->
         <div class="ob-screen" id="screen-6">
             <h1 class="ob-title">CONNECT YOUR TOOLS</h1>
-                        <p class="ob-subtitle">Your operator works better with access to your stack</p>
+            <p class="ob-subtitle">Your operator works better with access to your stack</p>
             <div class="ob-apps-grid">
                 <div class="ob-app-card" data-app="google" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/google.svg" alt="Google"></div>
                     <div class="ob-app-name">Google Suite</div>
                     <div class="ob-app-sub">Drive, Gmail, Sheets, Calendar, Ads, Analytics</div>
-                    <div class="ob-app-status"></div>
                 </div>
                 <div class="ob-app-card" data-app="facebook" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"></div>
                     <div class="ob-app-name">Facebook</div>
-                    <div class="ob-app-sub">Pages, Messenger, Meta Ads, Insights</div>
-                    <div class="ob-app-status"></div>
+                    <div class="ob-app-sub">Pages, Messenger, Insights</div>
+                </div>
+                <div class="ob-app-card" data-app="metaads" onclick="toggleApp(this)">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"></div>
+                    <div class="ob-app-name">Meta Ads</div>
+                    <div class="ob-app-sub">Ad Manager, Campaigns, Reporting</div>
                 </div>
                 <div class="ob-app-card" data-app="instagram" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"></div>
                     <div class="ob-app-name">Instagram</div>
-                    <div class="ob-app-status"></div>
                 </div>
                 <div class="ob-app-card" data-app="linkedin" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"></div>
                     <div class="ob-app-name">LinkedIn</div>
-                    <div class="ob-app-status"></div>
+                </div>
+                <div class="ob-app-card disabled" data-app="tiktok" onclick="return false" style="opacity:0.5;cursor:default">
+                    <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"></div>
+                    <div class="ob-app-name">TikTok <span style="font-size:10px;color:#666">(Soon)</span></div>
                 </div>
                 <div class="ob-app-card" data-app="stripe" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg" alt="Stripe"></div>
                     <div class="ob-app-name">Stripe</div>
-                    <div class="ob-app-status"></div>
                 </div>
-                <div class="ob-app-card" data-app="shopify" onclick="toggleApp(this)">
+                <div class="ob-app-card disabled" data-app="shopify" onclick="return false" style="opacity:0.5;cursor:default">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"></div>
-                    <div class="ob-app-name">Shopify</div>
-                    <div class="ob-app-status"></div>
+                    <div class="ob-app-name">Shopify <span style="font-size:10px;color:#666">(Soon)</span></div>
                 </div>
                 <div class="ob-app-card" data-app="hubspot" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"></div>
                     <div class="ob-app-name">HubSpot</div>
-                    <div class="ob-app-status"></div>
                 </div>
                 <div class="ob-app-card" data-app="notion" onclick="toggleApp(this)">
                     <div class="ob-app-icon"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"></div>
                     <div class="ob-app-name">Notion</div>
-                    <div class="ob-app-status"></div>
                 </div>
             </div>
-
             <button class="ob-btn" onclick="saveAppsAndContinue()">CONTINUE</button>
             <a href="#" class="ob-skip" onclick="skipApps()">Skip for now</a>
         </div>
