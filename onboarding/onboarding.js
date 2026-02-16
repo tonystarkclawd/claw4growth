@@ -52,7 +52,10 @@ function markAppConnected(app) {
     if (card) {
         card.classList.remove('connecting');
         card.classList.add('connected');
-        if (!state.connectedApps.includes(app)) state.connectedApps.push(app);
+        if (!state.connectedApps.includes(app)) {
+            state.connectedApps.push(app);
+            saveState();
+        }
         // Add visual feedback
         const statusEl = card.querySelector('.ob-app-status');
         if (statusEl) statusEl.textContent = '✓ Connected';
@@ -70,22 +73,77 @@ function showUnsupportedMessage(app) {
 }
 
 // Claw4Growth Onboarding Logic
+// Load state from localStorage if exists
+const savedState = JSON.parse(localStorage.getItem('c4g_onboarding_state') || '{}');
+
 const state = {
-    screen: 1,
+    screen: savedState.screen || 1,
     totalScreens: 7,
-    operatorName: '',
-    brand: { name: '', industry: '', description: '', website: '' },
-    tone: '',
-    connectedApps: [],
-    plan: 'earlybird'
+    operatorName: savedState.operatorName || '',
+    brand: savedState.brand || { name: '', industry: '', description: '', website: '' },
+    tone: savedState.tone || '',
+    connectedApps: savedState.connectedApps || [],
+    plan: savedState.plan || 'earlybird'
 };
+
+// Persist state to localStorage on every change
+function saveState() {
+    localStorage.setItem('c4g_onboarding_state', JSON.stringify(state));
+}
 
 function goToScreen(n) {
     document.querySelectorAll('.ob-screen').forEach(s => s.classList.remove('active'));
     document.getElementById('screen-' + n).classList.add('active');
     state.screen = n;
+    saveState();
     document.getElementById('progressBar').style.width = (n / state.totalScreens * 100) + '%';
 }
+
+// Restore saved state on page load
+(function restoreState() {
+    // Wait for DOM to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', doRestore);
+    } else {
+        doRestore();
+    }
+    
+    function doRestore() {
+        // Restore form fields
+        if (state.operatorName && document.getElementById('operatorName')) {
+            document.getElementById('operatorName').value = state.operatorName;
+        }
+        if (state.brand.name && document.getElementById('brandName')) {
+            document.getElementById('brandName').value = state.brand.name;
+        }
+        if (state.brand.industry && document.getElementById('brandIndustry')) {
+            document.getElementById('brandIndustry').value = state.brand.industry;
+        }
+        if (state.brand.description && document.getElementById('brandDescription')) {
+            document.getElementById('brandDescription').value = state.brand.description;
+            document.getElementById('descCount').textContent = state.brand.description.length;
+        }
+        if (state.brand.website && document.getElementById('brandWebsite')) {
+            document.getElementById('brandWebsite').value = state.brand.website;
+        }
+        if (state.tone) {
+            document.querySelectorAll('.ob-tone-card').forEach(c => {
+                if (c.dataset.tone === state.tone) c.classList.add('selected');
+            });
+            const toneBtn = document.getElementById('toneContinueBtn');
+            if (toneBtn) toneBtn.disabled = false;
+        }
+        // Restore connected apps visual state
+        state.connectedApps.forEach(app => {
+            const card = document.querySelector('[data-app="' + app + '"]');
+            if (card) {
+                card.classList.add('connected');
+                const statusEl = card.querySelector('.ob-app-status');
+                if (statusEl) statusEl.textContent = '✓ Connected';
+            }
+        });
+    }
+})();
 
 // Screen 2: Name
 function saveNameAndContinue() {
@@ -95,6 +153,7 @@ function saveNameAndContinue() {
         return;
     }
     state.operatorName = name;
+    saveState();
     goToScreen(3);
 }
 
@@ -106,17 +165,17 @@ document.getElementById('brandDescription')?.addEventListener('input', function(
 function saveBrandAndContinue() {
     const name = document.getElementById('brandName').value.trim();
     const industry = document.getElementById('brandIndustry').value;
+    const description = document.getElementById('brandDescription').value.trim();
+    const website = document.getElementById('brandWebsite').value.trim();
+    
     if (!name || !industry) {
         if (!name) document.getElementById('brandName').style.borderColor = '#ff5555';
         if (!industry) document.getElementById('brandIndustry').style.borderColor = '#ff5555';
         return;
     }
-    state.brand = {
-        name: name,
-        industry: industry,
-        description: document.getElementById('brandDescription').value.trim(),
-        website: document.getElementById('brandUrl').value.trim()
-    };
+    
+    state.brand = { name, industry, description, website };
+    saveState();
     goToScreen(4);
 }
 
@@ -125,21 +184,17 @@ function selectTone(el) {
     document.querySelectorAll('.ob-tone-card').forEach(c => c.classList.remove('selected'));
     el.classList.add('selected');
     state.tone = el.dataset.tone;
+    saveState();
     document.getElementById('toneContinueBtn').disabled = false;
 }
 
 function saveToneAndContinue() {
     if (!state.tone) return;
-    goToScreen(5); // → Payment
+    saveState();
+    goToScreen(5);
 }
 
 // Screen 5: Payment
-function selectPlan(el) {
-    document.querySelectorAll('.ob-plan-card').forEach(c => c.classList.remove('selected'));
-    el.classList.add('selected');
-    state.plan = el.dataset.plan;
-}
-
 function startPayment() {
     // Redirect to Stripe Checkout (test mode)
     window.location.href = 'https://app.claw4growth.com/api/checkout-public';
@@ -167,40 +222,24 @@ function toggleApp(el) {
     } else {
         el.classList.remove('connected');
         state.connectedApps = state.connectedApps.filter(a => a !== app);
+        saveState();
+        const statusEl = el.querySelector('.ob-app-status');
+        if (statusEl) statusEl.textContent = '';
     }
 }
 
-// Listen for OAuth callback
-window.addEventListener('message', function(e) {
-    if (e.data && e.data.composioConnected) {
-        const app = e.data.composioConnected;
-        const card = document.querySelector('[data-app="' + app + '"]');
-        if (card) {
-            card.classList.remove('connecting');
-            card.classList.add('connected');
-            if (!state.connectedApps.includes(app)) state.connectedApps.push(app);
-        }
-    }
-});
+function saveAppsAndContinue() { 
+    saveState();
+    goToScreen(7); 
+    simulateDeploy(); 
+}
 
-// Also check URL params for OAuth return
-(function checkOAuthReturn() {
-    const params = new URLSearchParams(window.location.search);
-    const connected = params.get('connected');
-    if (connected) {
-        const card = document.querySelector('[data-app="' + connected + '"]');
-        if (card) {
-            card.classList.remove('connecting');
-            card.classList.add('connected');
-            if (!state.connectedApps.includes(connected)) state.connectedApps.push(connected);
-        }
-        // Clean URL
-        window.history.replaceState({}, '', window.location.pathname);
-    }
-})();
-
-function saveAppsAndContinue() { goToScreen(7); simulateDeploy(); }
-function skipApps() { state.connectedApps = []; goToScreen(7); simulateDeploy(); }
+function skipApps() { 
+    state.connectedApps = []; 
+    saveState();
+    goToScreen(7); 
+    simulateDeploy(); 
+}
 
 // Screen 7: Deploy
 function simulateDeploy() {
@@ -211,25 +250,10 @@ function simulateDeploy() {
         setTimeout(() => {
             document.getElementById(id).classList.add('done');
             if (i === steps.length - 1) {
-                setTimeout(() => {
-                    document.getElementById('deployLoading').style.display = 'none';
-                    document.getElementById('deployDone').style.display = 'flex';
-                    document.getElementById('deployMessage').textContent = 
-                        'Meet ' + state.operatorName + ', your new marketing operator for ' + state.brand.name;
+                setTimeout(() => { 
+                    document.querySelector('.ob-deploy-container').innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Add your Telegram bot to start collaborating:</p><div class="ob-telegram-code"><a href="https://t.me/Claw4GrowthBot" target="_blank" class="ob-btn">Open @Claw4GrowthBot</a></div></div>'; 
                 }, 800);
             }
         }, delays[i]);
     });
 }
-
-// Enter key navigation
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        if (state.screen === 2) saveNameAndContinue();
-        else if (state.screen === 3) saveBrandAndContinue();
-        else if (state.screen === 4) saveToneAndContinue();
-    }
-});
-
-// Export state
-window.getOnboardingData = () => ({ ...state, timestamp: new Date().toISOString() });
