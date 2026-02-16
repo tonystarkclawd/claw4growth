@@ -76,14 +76,50 @@ function startPayment() {
 
 // Screen 6: Apps
 function toggleApp(el) {
-    el.classList.toggle('connected');
     const app = el.dataset.app;
-    if (el.classList.contains('connected')) {
-        if (!state.connectedApps.includes(app)) state.connectedApps.push(app);
+    // If not connected yet, launch Composio OAuth
+    if (!el.classList.contains('connected')) {
+        const entityId = state.name ? state.name.replace(/\s+/g, '_').toLowerCase() : 'default';
+        window.open(
+            'https://app.claw4growth.com/api/composio-connect?app=' + app + '&entityId=' + entityId,
+            'composio_oauth',
+            'width=600,height=700,popup=yes'
+        );
+        el.classList.add('connecting');
     } else {
+        el.classList.remove('connected');
         state.connectedApps = state.connectedApps.filter(a => a !== app);
     }
 }
+
+// Listen for OAuth callback
+window.addEventListener('message', function(e) {
+    if (e.data && e.data.composioConnected) {
+        const app = e.data.composioConnected;
+        const card = document.querySelector('[data-app="' + app + '"]');
+        if (card) {
+            card.classList.remove('connecting');
+            card.classList.add('connected');
+            if (!state.connectedApps.includes(app)) state.connectedApps.push(app);
+        }
+    }
+});
+
+// Also check URL params for OAuth return
+(function checkOAuthReturn() {
+    const params = new URLSearchParams(window.location.search);
+    const connected = params.get('connected');
+    if (connected) {
+        const card = document.querySelector('[data-app="' + connected + '"]');
+        if (card) {
+            card.classList.remove('connecting');
+            card.classList.add('connected');
+            if (!state.connectedApps.includes(connected)) state.connectedApps.push(connected);
+        }
+        // Clean URL
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+})();
 
 function saveAppsAndContinue() { goToScreen(7); simulateDeploy(); }
 function skipApps() { state.connectedApps = []; goToScreen(7); simulateDeploy(); }
