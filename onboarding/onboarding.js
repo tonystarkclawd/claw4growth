@@ -25,15 +25,15 @@ function loginWithGoogle() {
             return;
         }
     }
-    // If already logged in, skip to screen 2
-    if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
-        setTimeout(function() { goToScreen(2); }, 100);
-    }
-    // Handle step parameter (e.g. after Stripe checkout)
+    // Handle step parameter FIRST (e.g. after Stripe checkout or Composio OAuth)
     var step = params.get('step');
     if (step) {
         window.history.replaceState({}, '', window.location.pathname);
         setTimeout(function() { goToScreen(parseInt(step)); }, 100);
+    }
+    // If no step but logged in, go to screen 2
+    else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
+        setTimeout(function() { goToScreen(2); }, 100);
     }
 })();
 
