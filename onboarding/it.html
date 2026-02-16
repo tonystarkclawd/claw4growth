@@ -241,7 +241,11 @@
                     <div class="ob-plan-sub">Bloccato per sempre. Il prezzo standard sarà €49.90/mese</div>
                 </div>
             </div>
-            <button class="ob-btn" onclick="startPayment()">AVVIA IL TUO OPERATORE</button>
+            <button class="ob-btn" id="paymentBtn" onclick="startPayment()">AVVIA IL TUO OPERATORE</button>
+            <div id="paidMessage" style="display:none; text-align:center; margin-top:20px;">
+                <div style="color:#4ade80; font-size:18px; margin-bottom:10px;">✓ Già pagato</div>
+                <button class="ob-btn" onclick="goToScreen(6)">CONTINUA ALLE INTEGRAZIONI</button>
+            </div>
         </div>
 
         <!-- SCREEN 6: Connect Apps -->

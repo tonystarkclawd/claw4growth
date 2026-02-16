@@ -35,6 +35,8 @@ function loginWithGoogle() {
     
     if (checkoutSuccess) {
         window.history.replaceState({}, '', window.location.pathname);
+        state.paid = true;
+        saveState();
         setTimeout(function() { 
             goToScreen(6); 
         }, 100);
@@ -55,6 +57,14 @@ function loginWithGoogle() {
     // If no step but logged in, go to screen 2
     else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
         setTimeout(function() { goToScreen(2); }, 100);
+    }
+    // If no URL params but saved state exists, restore to saved screen (skip payment if already paid)
+    else if (state.screen > 1) {
+        if (state.screen === 5 && state.paid) {
+            setTimeout(function() { goToScreen(6); }, 100);
+        } else {
+            setTimeout(function() { goToScreen(state.screen); }, 100);
+        }
     }
 })();
 
@@ -94,7 +104,8 @@ const state = {
     brand: savedState.brand || { name: '', industry: '', description: '', website: '' },
     tone: savedState.tone || '',
     connectedApps: savedState.connectedApps || [],
-    plan: savedState.plan || 'earlybird'
+    plan: savedState.plan || 'earlybird',
+    paid: savedState.paid || false
 };
 
 // Persist state to localStorage on every change
@@ -108,6 +119,13 @@ function goToScreen(n) {
     state.screen = n;
     saveState();
     document.getElementById('progressBar').style.width = (n / state.totalScreens * 100) + '%';
+    // Show paid message on screen 5 if already paid
+    if (n === 5 && state.paid) {
+        const paymentBtn = document.getElementById('paymentBtn');
+        const paidMsg = document.getElementById('paidMessage');
+        if (paymentBtn) paymentBtn.style.display = 'none';
+        if (paidMsg) paidMsg.style.display = 'block';
+    }
 }
 
 // Restore saved state on page load
@@ -202,7 +220,12 @@ function selectTone(el) {
 function saveToneAndContinue() {
     if (!state.tone) return;
     saveState();
-    goToScreen(5);
+    // Skip payment if already paid
+    if (state.paid) {
+        goToScreen(6);
+    } else {
+        goToScreen(5);
+    }
 }
 
 // Screen 5: Payment
