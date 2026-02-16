@@ -27,15 +27,47 @@ function loginWithGoogle() {
     }
     // Handle step parameter FIRST (e.g. after Stripe checkout or Composio OAuth)
     var step = params.get('step');
+    var connected = params.get('connected');
+    var unsupported = params.get('unsupported');
+    
     if (step) {
         window.history.replaceState({}, '', window.location.pathname);
-        setTimeout(function() { goToScreen(parseInt(step)); }, 100);
+        setTimeout(function() { 
+            goToScreen(parseInt(step)); 
+            // After screen loads, mark connected apps
+            setTimeout(function() {
+                if (connected) markAppConnected(connected);
+                if (unsupported) showUnsupportedMessage(unsupported);
+            }, 200);
+        }, 100);
     }
     // If no step but logged in, go to screen 2
     else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
         setTimeout(function() { goToScreen(2); }, 100);
     }
 })();
+
+function markAppConnected(app) {
+    const card = document.querySelector('[data-app="' + app + '"]');
+    if (card) {
+        card.classList.remove('connecting');
+        card.classList.add('connected');
+        if (!state.connectedApps.includes(app)) state.connectedApps.push(app);
+        // Add visual feedback
+        const statusEl = card.querySelector('.ob-app-status');
+        if (statusEl) statusEl.textContent = '✓ Connected';
+    }
+}
+
+function showUnsupportedMessage(app) {
+    const card = document.querySelector('[data-app="' + app + '"]');
+    if (card) {
+        card.classList.remove('connecting');
+        card.classList.add('unsupported');
+        const statusEl = card.querySelector('.ob-app-status');
+        if (statusEl) statusEl.textContent = 'Coming Soon';
+    }
+}
 
 // Claw4Growth Onboarding Logic
 const state = {
