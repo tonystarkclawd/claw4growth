@@ -305,7 +305,7 @@ function simulateDeploy() {
                     setTimeout(() => {
                         const container = document.querySelector('.ob-deploy-container');
                         if (container) {
-                            container.innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Add your Telegram bot to start collaborating:</p><div class="ob-telegram-code"><a href="https://t.me/Claw4GrowthBot" target="_blank" class="ob-btn">Open @Claw4GrowthBot</a></div></div>'; 
+                            container.innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Your Telegram bot is being configured. You will receive the link via email within 2 minutes.</p><div class="ob-telegram-code"><span style="color:#666;font-size:12px;">@Claw4GrowthBot coming soon</span></div></div>'; 
                         }
                     }, 2500);
                 }, 800);
