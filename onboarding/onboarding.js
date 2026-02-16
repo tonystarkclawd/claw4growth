@@ -148,15 +148,22 @@ function startPayment() {
 // Screen 6: Apps
 function toggleApp(el) {
     const app = el.dataset.app;
+    // Check if app needs full redirect (Facebook, Instagram) vs popup
+    const needsRedirect = ['facebook', 'instagram', 'metaads'].includes(app);
+    
     // If not connected yet, launch Composio OAuth
     if (!el.classList.contains('connected')) {
         const entityId = state.name ? state.name.replace(/\s+/g, '_').toLowerCase() : 'default';
-        window.open(
-            'https://app.claw4growth.com/api/composio-connect?app=' + app + '&entityId=' + entityId,
-            'composio_oauth',
-            'width=600,height=700,popup=yes'
-        );
-        el.classList.add('connecting');
+        const authUrl = 'https://app.claw4growth.com/api/composio-connect?app=' + app + '&entityId=' + entityId;
+        
+        if (needsRedirect) {
+            // Full redirect for apps that don't work well with popup
+            window.location.href = authUrl;
+        } else {
+            // Popup for others
+            window.open(authUrl, 'composio_oauth', 'width=600,height=700,popup=yes');
+            el.classList.add('connecting');
+        }
     } else {
         el.classList.remove('connected');
         state.connectedApps = state.connectedApps.filter(a => a !== app);
