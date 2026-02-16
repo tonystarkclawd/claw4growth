@@ -295,10 +295,19 @@ function simulateDeploy() {
             }
             if (i === steps.length - 1) {
                 setTimeout(() => { 
-                    const container = document.querySelector('.ob-deploy-container');
-                    if (container) {
-                        container.innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Add your Telegram bot to start collaborating:</p><div class="ob-telegram-code"><a href="https://t.me/Claw4GrowthBot" target="_blank" class="ob-btn">Open @Claw4GrowthBot</a></div></div>'; 
-                    }
+                    // Hide nerd mascot, show power mascot
+                    const loadingEl = document.getElementById('deployLoading');
+                    const doneEl = document.getElementById('deployDone');
+                    if (loadingEl) loadingEl.style.display = 'none';
+                    if (doneEl) doneEl.style.display = 'block';
+                    
+                    // After showing power mascot, show success message
+                    setTimeout(() => {
+                        const container = document.querySelector('.ob-deploy-container');
+                        if (container) {
+                            container.innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Add your Telegram bot to start collaborating:</p><div class="ob-telegram-code"><a href="https://t.me/Claw4GrowthBot" target="_blank" class="ob-btn">Open @Claw4GrowthBot</a></div></div>'; 
+                        }
+                    }, 2500);
                 }, 800);
             }
         }, delays[i]);
