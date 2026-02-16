@@ -70,8 +70,8 @@ function selectPlan(el) {
 }
 
 function startPayment() {
-    // TODO: Stripe Checkout integration
-    goToScreen(6); // → Connect Apps
+    // Redirect to Stripe Checkout (test mode)
+    window.location.href = 'https://app.claw4growth.com/api/checkout-public';
 }
 
 // Screen 6: Apps
