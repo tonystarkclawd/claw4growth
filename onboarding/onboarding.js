@@ -1,3 +1,37 @@
+// Supabase config
+const SUPABASE_URL = 'https://frejiknxricrkkcgzwdh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZWppa254cmljcmtrY2d6d2RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQwNDcsImV4cCI6MjA4Njc1MDA0N30.dI_wSjcNHJZf-uw2TKNl4VK04vOAF-xWdv6f00E0C7M';
+
+function loginWithGoogle() {
+    const redirectTo = window.location.origin + window.location.pathname + '?auth=callback';
+    const authUrl = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
+    window.location.href = authUrl;
+}
+
+// Handle OAuth callback - check URL for auth tokens
+(function handleAuthCallback() {
+    const params = new URLSearchParams(window.location.search);
+    const hash = window.location.hash;
+    // Supabase returns tokens in hash fragment
+    if (hash && hash.includes('access_token')) {
+        const hashParams = new URLSearchParams(hash.substring(1));
+        const accessToken = hashParams.get('access_token');
+        if (accessToken) {
+            localStorage.setItem('c4g_access_token', accessToken);
+            localStorage.setItem('c4g_logged_in', 'true');
+            // Clean URL and go to screen 2
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(function() { goToScreen(2); }, 100);
+            return;
+        }
+    }
+    // If already logged in, skip to screen 2
+    if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
+        // Wait for DOM
+        setTimeout(function() { goToScreen(2); }, 100);
+    }
+})();
+
 // Claw4Growth Onboarding Logic
 const state = {
     screen: 1,
