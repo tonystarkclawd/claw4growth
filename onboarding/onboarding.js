@@ -30,14 +30,13 @@ function loginWithGoogle() {
     var connected = params.get('connected');
     var unsupported = params.get('unsupported');
     
-    // Handle Stripe checkout success - go directly to deploy screen
+    // Handle Stripe checkout success - go to integrations (Screen 6)
     var checkoutSuccess = params.get('checkout_success') || params.get('session_id');
     
     if (checkoutSuccess) {
         window.history.replaceState({}, '', window.location.pathname);
         setTimeout(function() { 
-            goToScreen(7); 
-            simulateDeploy();
+            goToScreen(6); 
         }, 100);
         return;
     }
