@@ -30,6 +30,18 @@ function loginWithGoogle() {
     var connected = params.get('connected');
     var unsupported = params.get('unsupported');
     
+    // Handle Stripe checkout success - go directly to deploy screen
+    var checkoutSuccess = params.get('checkout_success') || params.get('session_id');
+    
+    if (checkoutSuccess) {
+        window.history.replaceState({}, '', window.location.pathname);
+        setTimeout(function() { 
+            goToScreen(7); 
+            simulateDeploy();
+        }, 100);
+        return;
+    }
+    
     if (step) {
         window.history.replaceState({}, '', window.location.pathname);
         setTimeout(function() { 
@@ -246,12 +258,25 @@ function simulateDeploy() {
     const steps = ['ds1', 'ds2', 'ds3', 'ds4', 'ds5'];
     const delays = [800, 1500, 2200, 3200, 4000];
     
+    // Safety check: ensure deploy container exists
+    const deployContainer = document.querySelector('.ob-deploy-container');
+    if (!deployContainer) {
+        console.error('Deploy container not found');
+        return;
+    }
+    
     steps.forEach((id, i) => {
         setTimeout(() => {
-            document.getElementById(id).classList.add('done');
+            const el = document.getElementById(id);
+            if (el) {
+                el.classList.add('done');
+            }
             if (i === steps.length - 1) {
                 setTimeout(() => { 
-                    document.querySelector('.ob-deploy-container').innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Add your Telegram bot to start collaborating:</p><div class="ob-telegram-code"><a href="https://t.me/Claw4GrowthBot" target="_blank" class="ob-btn">Open @Claw4GrowthBot</a></div></div>'; 
+                    const container = document.querySelector('.ob-deploy-container');
+                    if (container) {
+                        container.innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Add your Telegram bot to start collaborating:</p><div class="ob-telegram-code"><a href="https://t.me/Claw4GrowthBot" target="_blank" class="ob-btn">Open @Claw4GrowthBot</a></div></div>'; 
+                    }
                 }, 800);
             }
         }, delays[i]);
