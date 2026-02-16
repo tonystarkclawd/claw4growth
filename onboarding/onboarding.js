@@ -203,8 +203,8 @@ function startPayment() {
 // Screen 6: Apps
 function toggleApp(el) {
     const app = el.dataset.app;
-    // Check if app needs full redirect (Facebook, Instagram) vs popup
-    const needsRedirect = ['facebook', 'instagram', 'metaads'].includes(app);
+    // Check if app needs full redirect vs popup
+    const needsRedirect = ['facebook', 'instagram', 'metaads', 'shopify', 'linkedin', 'notion', 'hubspot', 'stripe'].includes(app);
     
     // If not connected yet, launch Composio OAuth
     if (!el.classList.contains('connected')) {
