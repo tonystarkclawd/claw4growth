@@ -177,7 +177,7 @@ function saveBrandAndContinue() {
     const name = document.getElementById('brandName').value.trim();
     const industry = document.getElementById('brandIndustry').value;
     const description = document.getElementById('brandDescription').value.trim();
-    const website = document.getElementById('brandWebsite').value.trim();
+    const website = document.getElementById('brandUrl').value.trim();
     
     if (!name || !industry) {
         if (!name) document.getElementById('brandName').style.borderColor = '#ff5555';
