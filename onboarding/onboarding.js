@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://frejiknxricrkkcgzwdh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZWppa254cmljcmtrY2d6d2RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQwNDcsImV4cCI6MjA4Njc1MDA0N30.dI_wSjcNHJZf-uw2TKNl4VK04vOAF-xWdv6f00E0C7M';
 
 function loginWithGoogle() {
-    const redirectTo = window.location.origin + window.location.pathname + '?auth=callback';
+    const redirectTo = 'https://claw4growth.com/onboarding/';
     const authUrl = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
     window.location.href = authUrl;
 }
