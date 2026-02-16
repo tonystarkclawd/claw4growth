@@ -100,12 +100,16 @@ const savedState = JSON.parse(localStorage.getItem('c4g_onboarding_state') || '{
 const state = {
     screen: savedState.screen || 1,
     totalScreens: 7,
+    userId: savedState.userId || null,
+    userEmail: savedState.userEmail || null,
     operatorName: savedState.operatorName || '',
     brand: savedState.brand || { name: '', industry: '', description: '', website: '' },
     tone: savedState.tone || '',
     connectedApps: savedState.connectedApps || [],
     plan: savedState.plan || 'earlybird',
-    paid: savedState.paid || false
+    paid: savedState.paid || false,
+    instanceId: savedState.instanceId || null,
+    subdomain: savedState.subdomain || null
 };
 
 // Persist state to localStorage on every change
@@ -294,22 +298,74 @@ function simulateDeploy() {
                 el.classList.add('done');
             }
             if (i === steps.length - 1) {
-                setTimeout(() => { 
-                    // Hide nerd mascot, show power mascot
-                    const loadingEl = document.getElementById('deployLoading');
-                    const doneEl = document.getElementById('deployDone');
-                    if (loadingEl) loadingEl.style.display = 'none';
-                    if (doneEl) doneEl.style.display = 'block';
-                    
-                    // After showing power mascot, show success message
-                    setTimeout(() => {
-                        const container = document.querySelector('.ob-deploy-container');
-                        if (container) {
-                            container.innerHTML = '<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Go to your Dashboard to connect your Telegram bot and start collaborating.</p><a href="/dashboard" class="ob-btn">OPEN DASHBOARD</a></div>'; 
-                        }
-                    }, 2500);
-                }, 800);
+                // Trigger real deploy
+                triggerDeploy();
             }
         }, delays[i]);
     });
+}
+
+async function triggerDeploy() {
+    const deployData = {
+        userId: state.userId || localStorage.getItem('c4g_user_id'),
+        email: state.userEmail || localStorage.getItem('c4g_user_email'),
+        onboardingData: {
+            operatorName: state.operatorName,
+            brand: state.brand,
+            tone: state.tone,
+            connectedApps: state.connectedApps,
+        },
+        composioEntityId: state.operatorName ? state.operatorName.replace(/\s+/g, '_').toLowerCase() : null,
+    };
+    
+    try {
+        const response = await fetch('/api/deploy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(deployData),
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            state.instanceId = result.instanceId;
+            state.subdomain = result.subdomain;
+            saveState();
+            
+            setTimeout(() => {
+                const loadingEl = document.getElementById('deployLoading');
+                const doneEl = document.getElementById('deployDone');
+                if (loadingEl) loadingEl.style.display = 'none';
+                if (doneEl) doneEl.style.display = 'block';
+                
+                // Show success with dashboard link
+                setTimeout(() => {
+                    const container = document.querySelector('.ob-deploy-container');
+                    if (container) {
+                        container.innerHTML = `<div class="ob-deploy-success"><div class="ob-deploy-icon">⚡</div><h3>Your AI Marketing Team is Live!</h3><p>Your operator is running at:<br><code>${result.url}</code></p><p>Add your Telegram bot to start collaborating:</p><a href="${result.url}/dashboard" class="ob-btn">OPEN DASHBOARD</a></div>`;
+                    }
+                }, 2000);
+            }, 800);
+        } else {
+            showDeployError(result.error || 'Deploy failed');
+        }
+    } catch (error) {
+        console.error('Deploy error:', error);
+        showDeployError('Network error. Please try again.');
+    }
+}
+
+function showDeployError(message) {
+    const container = document.querySelector('.ob-deploy-container');
+    if (container) {
+        container.innerHTML = `<div class="ob-deploy-success"><div class="ob-deploy-icon" style="color:#ff5555;">✗</div><h3>Deploy Failed</h3><p>${message}</p><button class="ob-btn" onclick="retryDeploy()">RETRY</button></div>`;
+    }
+}
+
+function retryDeploy() {
+    const loadingEl = document.getElementById('deployLoading');
+    const doneEl = document.getElementById('deployDone');
+    if (loadingEl) loadingEl.style.display = 'block';
+    if (doneEl) doneEl.style.display = 'none';
+    simulateDeploy();
 }
