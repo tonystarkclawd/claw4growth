@@ -54,10 +54,6 @@ function loginWithGoogle() {
             }, 200);
         }, 100);
     }
-    // If no step but logged in, go to screen 2
-    else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
-        setTimeout(function() { goToScreen(2); }, 100);
-    }
     // If no URL params but saved state exists, restore to saved screen (skip payment if already paid)
     else if (state.screen > 1) {
         if (state.screen === 5 && state.paid) {
@@ -65,6 +61,10 @@ function loginWithGoogle() {
         } else {
             setTimeout(function() { goToScreen(state.screen); }, 100);
         }
+    }
+    // If no step but logged in, go to screen 2
+    else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
+        setTimeout(function() { goToScreen(2); }, 100);
     }
 })();
 
