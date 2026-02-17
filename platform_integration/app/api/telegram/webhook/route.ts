@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
         const statusEmoji = container.status === 'running' ? '🟢' : container.status === 'provisioning' ? '🟡' : '🔴';
         await sendTelegramResponse(chatId,
           `${statusEmoji} *Operator Status:* ${container.status}\n` +
-          `🌐 Dashboard: ${container.containerUrl}/dashboard`
+          `🌐 Dashboard: https://app.claw4growth.com/dashboard`
         );
       }
       return NextResponse.json({ ok: true });
@@ -166,9 +166,9 @@ async function handleStartCommand(
     const result = await approvePairing(pairingCode, telegramId);
 
     if (result.success && result.instanceId) {
-      // 1. Get container details (for URL)
-      const container = await findContainerForTelegramUser(telegramId);
-      const dashboardUrl = container ? `${container.containerUrl}/dashboard` : 'https://claw4growth.com/dashboard';
+      // Dashboard URL points to the C4G platform dashboard (Composio integrations etc.),
+      // NOT the per-container OpenClaw dashboard.
+      const dashboardUrl = 'https://app.claw4growth.com/dashboard';
 
       // 2. Get operator name
       let operatorName = 'Your Operator';
