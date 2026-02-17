@@ -43,19 +43,19 @@ export function getCaddyLabels(subdomain: string): Record<string, string> {
 export function getContainerResourceLimits(tier?: SubscriptionTier): Record<string, unknown> {
     const limits: Record<string, Record<string, unknown>> = {
         free: {
-            Memory: 256 * 1024 * 1024,      // 256MB
-            NanoCpus: 500_000_000,           // 0.5 CPU
-            PidsLimit: 100,
-        },
-        pro: {
-            Memory: 512 * 1024 * 1024,      // 512MB
+            Memory: 1024 * 1024 * 1024,     // 1GB
             NanoCpus: 1_000_000_000,        // 1 CPU
             PidsLimit: 200,
         },
-        enterprise: {
-            Memory: 1024 * 1024 * 1024,     // 1GB
+        pro: {
+            Memory: 2048 * 1024 * 1024,     // 2GB
             NanoCpus: 2_000_000_000,        // 2 CPU
             PidsLimit: 500,
+        },
+        enterprise: {
+            Memory: 4096 * 1024 * 1024,     // 4GB
+            NanoCpus: 4_000_000_000,        // 4 CPU
+            PidsLimit: 1000,
         },
     };
 
