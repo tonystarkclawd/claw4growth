@@ -62,7 +62,7 @@ Core promise:
 `/root/clawd/claw4growth`
 
 ### Imported wrapper modules (already copied)
-`/root/clawd/claw4growth/platform-integration/`
+`/root/clawd/claw4growth/platform_integration/`
 Contains:
 - Docker lifecycle module
 - Instance actions + DB access modules
@@ -91,7 +91,7 @@ Contains:
 
 ### C4G Integration Direction
 - Deploy API scaffold added: `api/deploy/route.ts`
-- Wrapper critical modules imported into C4G repo under `platform-integration/`
+- Wrapper critical modules imported into C4G repo under `platform_integration/`
 - Migration drafts present in C4G repo
 
 ### Ops
@@ -132,7 +132,7 @@ A paying user must be able to:
 ## Phase A — Infra Backbone (Priority 0)
 1. Provision dedicated VPS (Hetzner)
 2. Install Docker + Caddy/reverse proxy + TLS
-3. Wire provisioning module from `platform-integration/lib/docker/containers.ts`
+3. Wire provisioning module from `platform_integration/lib/docker/containers.ts`
 4. Add health endpoints + logs for provisioning status
 
 ## Phase B — Data + Deploy Reliability (Priority 0)
@@ -142,7 +142,7 @@ A paying user must be able to:
 4. Retry policy for transient failures
 
 ## Phase C — Dashboard Live Wiring (Priority 1)
-1. Move Telegram pages/components from `platform-integration` to active dashboard routes
+1. Move Telegram pages/components from `platform_integration` to active dashboard routes
 2. Wire `instance-actions` to active UI
 3. Add status cards + controls + errors
 
@@ -196,7 +196,7 @@ Must be fully C4G, not wrapper-generic:
 ## 10) Immediate Next Actions (for PC continuation)
 
 1. Start from repo: `claw4growth`
-2. Read: `platform-integration/docs/TRANSFER-MAP.md`
+2. Read: `platform_integration/docs/TRANSFER-MAP.md`
 3. Wire imported modules into active app routes
 4. Apply migrations to Supabase
 5. Implement Stripe webhook auto-deploy idempotency
