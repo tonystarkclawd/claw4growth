@@ -2,8 +2,9 @@
  * POST /api/deploy
  * 
  * Triggers automatic deployment after successful payment.
- * Creates instance record, provisions Docker container,
+ * Creates instance record in Supabase (status=provisioning),
  * generates Telegram pairing code for platform bot.
+ * Actual container provisioning is handled by the VPS worker.
  * 
  * Required body: { userId, email, onboardingData }
  */
@@ -12,8 +13,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import { generatePairingCode } from '@/lib/telegram/pairing';
-import { createAndStartContainer } from '@/lib/docker/containers';
-import { OnboardingData } from '@/lib/memory/memory-generator';
 
 const ALLOWED_ORIGINS = [
   'https://claw4growth.com',
@@ -75,14 +74,6 @@ function generateSubdomain(baseName: string = ''): string {
     fallback += chars[fallbackBytes[i] % chars.length];
   }
   return fallback;
-}
-
-function encrypt(text: string): string {
-  // Simple encryption using service role
-  // In production, use proper AES encryption
-  const key = process.env.ENCRYPTION_KEY || 'default-key-32-chars-long!!!!!';
-  const b64 = Buffer.from(text).toString('base64');
-  return `enc:${b64}`;
 }
 
 export async function POST(request: NextRequest) {
@@ -159,13 +150,8 @@ export async function POST(request: NextRequest) {
       // Non-fatal — user can generate one later from the dashboard
     }
 
-    // Trigger async provisioning (with onboarding data for memory injection)
-    provisionContainer(instance.id, subdomain, {
-      composioEntityId,
-      userId,
-      email,
-      onboardingData,
-    }).catch(console.error);
+    // Provisioning is handled by the VPS worker (polls for status=provisioning).
+    // The API just writes the intent to the database and returns immediately.
 
     return jsonWithCors(request, {
       success: true,
@@ -180,69 +166,6 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Deploy error:', error);
     return jsonWithCors(request, { error: 'Internal server error' }, 500);
-  }
-}
-
-/**
- * Async container provisioning.
- * 
- * In production, this will:
- * 1. Call Docker API on VPS via createAndStartContainer()
- * 2. Pass onboardingData for memory/soul file injection
- * 3. Update instance status based on container health
- * 
- * For now, simulates provisioning (TODO: wire to real Docker).
- */
-async function provisionContainer(
-  instanceId: string,
-  subdomain: string,
-  config: {
-    composioEntityId?: string;
-    userId: string;
-    email: string;
-    onboardingData?: Record<string, unknown>;
-  }
-) {
-  console.log(`[provision] Starting for instance ${instanceId}`);
-  console.log(`[provision] Onboarding data:`, JSON.stringify(config.onboardingData || {}));
-
-  try {
-    const containerId = await createAndStartContainer(
-      config.userId,
-      subdomain,
-      {
-        MINIMAX_API_KEY: process.env.MINIMAX_API_KEY || '',
-        COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY || '',
-        USER_ID: config.userId,
-        INSTANCE_ID: instanceId,
-        ...(config.composioEntityId ? { COMPOSIO_ENTITY_ID: config.composioEntityId } : {}),
-      },
-      {
-        openclawModelId: 'minimax/minimax-latest', // Default to MiniMax
-        onboardingData: (config.onboardingData as unknown) as OnboardingData,
-      }
-    );
-
-    await supabaseAdmin
-      .from('c4g_instances')
-      .update({
-        container_id: containerId,
-        status: 'running',
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', instanceId);
-
-    console.log(`[provision] Instance ${instanceId} is now running (container: ${containerId})`);
-  } catch (err: unknown) {
-    console.error(`[provision] Failed for instance ${instanceId}:`, err);
-    // Mark instance as failed so user can retry or contact support
-    await supabaseAdmin
-      .from('c4g_instances')
-      .update({
-        status: 'stopped', // or 'failed' if enum supports it
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', instanceId);
   }
 }
 
