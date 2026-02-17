@@ -84,14 +84,25 @@ function goToScreen(n) {
 
     if (step) {
         window.history.replaceState({}, '', window.location.pathname);
-        setTimeout(function () {
-            goToScreen(parseInt(step));
-            // After screen loads, mark connected apps
+        var targetStep = parseInt(step);
+        // Screen 6 (Connect Tools) removed — redirect to deploy
+        if (targetStep === 6) {
+            state.paid = true;
+            saveState();
             setTimeout(function () {
-                if (connected) markAppConnected(connected);
-                if (unsupported) showUnsupportedMessage(unsupported);
-            }, 200);
-        }, 100);
+                goToScreen(7);
+                simulateDeploy();
+            }, 100);
+        } else {
+            setTimeout(function () {
+                goToScreen(targetStep);
+                // After screen loads, mark connected apps
+                setTimeout(function () {
+                    if (connected) markAppConnected(connected);
+                    if (unsupported) showUnsupportedMessage(unsupported);
+                }, 200);
+            }, 100);
+        }
     }
     // If no URL params but saved state exists, restore to saved screen (skip payment if already paid)
     else if (state.screen > 1) {
