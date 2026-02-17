@@ -4,29 +4,19 @@
  * Handles pairing code generation, validation, and user pairing status.
  * Uses admin client for all operations since webhook handlers run outside user context.
  *
- * Required database schema - Run in Supabase SQL Editor:
- *
- * ```sql
- * -- Run in Supabase SQL Editor
- * CREATE TABLE telegram_pairings (
- *   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
- *   user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
- *   telegram_id BIGINT,
- *   code VARCHAR(8) NOT NULL UNIQUE,
- *   status VARCHAR(20) NOT NULL DEFAULT 'pending' CHECK (status IN ('pending', 'approved', 'expired')),
- *   expires_at TIMESTAMPTZ NOT NULL,
- *   created_at TIMESTAMPTZ DEFAULT NOW(),
- *   updated_at TIMESTAMPTZ DEFAULT NOW()
- * );
- * ALTER TABLE telegram_pairings ENABLE ROW LEVEL SECURITY;
- * CREATE POLICY "Users can read own pairings" ON telegram_pairings FOR SELECT USING (auth.uid() = user_id);
- * CREATE POLICY "Users can insert own pairings" ON telegram_pairings FOR INSERT WITH CHECK (auth.uid() = user_id);
- * CREATE POLICY "Service role full access" ON telegram_pairings FOR ALL USING (true) WITH CHECK (true);
- * ```
+ * Table: c4g_telegram_pairings (see supabase/migrations/005_c4g_schema.sql)
  */
 
-import { createAdminClient } from '@/lib/supabase/admin';
+import { createClient } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
+
+const TABLE = 'c4g_telegram_pairings';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 /**
  * Generate a random 6-character alphanumeric pairing code
@@ -42,17 +32,20 @@ function generateRandomCode(): string {
 }
 
 /**
- * Generate a pairing code for a user
+ * Generate a pairing code for a user.
+ * Expires any existing pending codes first.
  *
  * @param userId - The authenticated user's ID
+ * @param instanceId - The user's instance ID (for faster routing lookups)
  * @returns The 6-character pairing code
  */
-export async function generatePairingCode(userId: string): Promise<string> {
-  const admin = createAdminClient();
-
+export async function generatePairingCode(
+  userId: string,
+  instanceId?: string
+): Promise<string> {
   // Expire any existing pending codes for this user
-  await admin
-    .from('telegram_pairings')
+  await supabaseAdmin
+    .from(TABLE)
     .update({ status: 'expired' })
     .eq('user_id', userId)
     .eq('status', 'pending');
@@ -63,12 +56,18 @@ export async function generatePairingCode(userId: string): Promise<string> {
   expiresAt.setMinutes(expiresAt.getMinutes() + 15); // 15 minute expiry
 
   // Insert new pairing
-  const { error } = await admin.from('telegram_pairings').insert({
+  const insertData: Record<string, unknown> = {
     user_id: userId,
     code,
     expires_at: expiresAt.toISOString(),
     status: 'pending',
-  });
+  };
+
+  if (instanceId) {
+    insertData.instance_id = instanceId;
+  }
+
+  const { error } = await supabaseAdmin.from(TABLE).insert(insertData);
 
   if (error) {
     throw new Error(`Failed to create pairing code: ${error.message}`);
@@ -78,23 +77,22 @@ export async function generatePairingCode(userId: string): Promise<string> {
 }
 
 /**
- * Approve a pairing by code
+ * Approve a pairing by code.
+ * Called when user sends /start CODE to the platform bot.
  *
  * @param code - The pairing code from the deep link
  * @param telegramId - The Telegram user ID
- * @returns true if pairing was approved, false otherwise
+ * @returns true if pairing was approved, false if invalid/expired
  */
 export async function approvePairing(
   code: string,
   telegramId: number
 ): Promise<boolean> {
-  const admin = createAdminClient();
-
   // Find pending, non-expired pairing with this code
-  const { data: pairing } = await admin
-    .from('telegram_pairings')
+  const { data: pairing } = await supabaseAdmin
+    .from(TABLE)
     .select('*')
-    .eq('code', code)
+    .eq('code', code.toUpperCase())
     .eq('status', 'pending')
     .single();
 
@@ -107,20 +105,19 @@ export async function approvePairing(
   const expiresAt = new Date(pairing.expires_at);
   if (now > expiresAt) {
     // Mark as expired
-    await admin
-      .from('telegram_pairings')
+    await supabaseAdmin
+      .from(TABLE)
       .update({ status: 'expired' })
       .eq('id', pairing.id);
     return false;
   }
 
   // Approve pairing
-  const { error } = await admin
-    .from('telegram_pairings')
+  const { error } = await supabaseAdmin
+    .from(TABLE)
     .update({
       status: 'approved',
       telegram_id: telegramId,
-      updated_at: new Date().toISOString(),
     })
     .eq('id', pairing.id);
 
@@ -128,19 +125,17 @@ export async function approvePairing(
 }
 
 /**
- * Get user's pairing status
+ * Get user's approved pairing status.
  *
  * @param userId - The authenticated user's ID
  * @returns The pairing info or null if not paired
  */
 export async function getUserPairing(
   userId: string
-): Promise<{ telegram_id: number; status: string } | null> {
-  const admin = createAdminClient();
-
-  const { data } = await admin
-    .from('telegram_pairings')
-    .select('telegram_id, status')
+): Promise<{ telegram_id: number; status: string; instance_id: string } | null> {
+  const { data } = await supabaseAdmin
+    .from(TABLE)
+    .select('telegram_id, status, instance_id')
     .eq('user_id', userId)
     .eq('status', 'approved')
     .order('created_at', { ascending: false })

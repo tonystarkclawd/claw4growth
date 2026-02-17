@@ -9,6 +9,12 @@ import {
 } from '@/lib/docker/labels';
 import { brandConfig } from '@/lib/config/brand';
 import type { SubscriptionTier } from '@/types/billing';
+import {
+  generateBrandMemory,
+  generateSystemPrompt,
+  generateOpenClawConfigWithMemory,
+  type OnboardingData,
+} from '@/lib/memory/memory-generator';
 
 /** Image pull timeout: 5 minutes */
 const IMAGE_PULL_TIMEOUT_MS = 300_000;
@@ -53,6 +59,50 @@ async function writeOpenClawConfig(
 }
 
 /**
+ * Writes brand memory and system prompt files into the container's config volume.
+ * Creates:
+ *   /data/memory/brand.md — brand context, industry, tone
+ *   /data/system-prompt.md — agent personality and operational rules
+ *
+ * Uses a temporary busybox container to write files into the Docker volume.
+ */
+export async function writeMemoryFiles(
+  docker: Docker,
+  configVolumeName: string,
+  onboardingData: OnboardingData
+): Promise<void> {
+  await ensureImageExists(docker, BUSYBOX_IMAGE);
+
+  const brandMemory = generateBrandMemory(onboardingData);
+  const systemPrompt = generateSystemPrompt(onboardingData);
+
+  // Base64 encode both files to avoid shell interpolation issues
+  const brandB64 = Buffer.from(brandMemory).toString('base64');
+  const promptB64 = Buffer.from(systemPrompt).toString('base64');
+
+  const cmd = [
+    'sh', '-c',
+    `mkdir -p /data/memory && ` +
+    `echo '${brandB64}' | base64 -d > /data/memory/brand.md && ` +
+    `echo '${promptB64}' | base64 -d > /data/system-prompt.md && ` +
+    `chown -R 1000:1000 /data`,
+  ];
+
+  const tmpContainer = await docker.createContainer({
+    Image: BUSYBOX_IMAGE,
+    Cmd: cmd,
+    HostConfig: {
+      Binds: [`${configVolumeName}:/data`],
+    },
+  });
+  await tmpContainer.start();
+  await tmpContainer.wait();
+  try { await tmpContainer.remove(); } catch { /* already gone */ }
+
+  console.log(`[docker] Memory files written to volume ${configVolumeName}`);
+}
+
+/**
  * Ensures the deployed product Docker image exists on the VPS.
  * Pulls the image if not found locally, with a 5-minute timeout.
  *
@@ -94,6 +144,7 @@ async function ensureImageExists(docker: Docker, image: string): Promise<void> {
  * @param env - Environment variables to pass to the container (e.g., API keys)
  * @param options - Optional settings for container creation
  * @param options.openclawModelId - OpenClaw model ID (e.g., "anthropic/claude-opus-4-6") for config file
+ * @param options.onboardingData - Onboarding data to generate memory/soul files
  * @param options.tier - Subscription tier for resource limits (defaults to base limits)
  * @returns Container ID
  * @throws {Error} If container creation or start fails
@@ -102,7 +153,7 @@ export async function createAndStartContainer(
   userId: string,
   subdomain: string,
   env: Record<string, string>,
-  options?: { openclawModelId?: string; tier?: SubscriptionTier }
+  options?: { openclawModelId?: string; onboardingData?: OnboardingData; tier?: SubscriptionTier }
 ): Promise<string> {
   try {
     const docker = getDockerClient();
@@ -136,10 +187,18 @@ export async function createAndStartContainer(
       }
     }
 
-    // Write openclaw.json config if model ID is provided
+    // Write openclaw.json config (with memory paths if onboarding data provided)
     if (options?.openclawModelId) {
-      const configJson = generateOpenClawConfig(options.openclawModelId);
+      const hasMemory = !!options.onboardingData;
+      const configJson = hasMemory
+        ? generateOpenClawConfigWithMemory(options.openclawModelId, true)
+        : generateOpenClawConfig(options.openclawModelId);
       await writeOpenClawConfig(docker, configVolumeName, configJson);
+    }
+
+    // Write memory and soul files from onboarding data
+    if (options?.onboardingData) {
+      await writeMemoryFiles(docker, configVolumeName, options.onboardingData);
     }
 
     // Create per-container isolated network to prevent inter-container communication

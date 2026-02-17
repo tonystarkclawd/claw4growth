@@ -1,112 +1,181 @@
 /**
  * POST /api/telegram/webhook
- *
- * Telegram webhook handler for bot updates.
- * Validates webhook secret and handles /start command with pairing code.
- *
- * Note: Uses direct Telegram Bot API calls via fetch instead of Telegraf library.
- * Telegraf is designed for long-polling mode, not serverless webhook handlers.
+ * 
+ * Platform bot webhook handler.
+ * Routes messages from the single @Claw4GrowthBot to user containers.
+ * Handles /start for pairing and all other messages for routing.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { approvePairing } from '@/lib/telegram/pairing';
+import {
+  findContainerForTelegramUser,
+  forwardToContainer,
+  sendTelegramResponse,
+  sendTypingAction,
+} from '@/lib/telegram/router';
 
-interface TelegramUpdate {
-  update_id: number;
-  message?: {
-    message_id: number;
-    from?: {
-      id: number;
-      first_name: string;
-      username?: string;
-    };
-    chat: {
-      id: number;
-      type: string;
-    };
-    text?: string;
-  };
-}
-
-/**
- * Send a message via Telegram Bot API
- */
-async function sendTelegramMessage(
-  chatId: number,
-  text: string
-): Promise<void> {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  if (!botToken) {
-    console.error('TELEGRAM_BOT_TOKEN not configured');
-    return;
-  }
-
-  const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
-  await fetch(url, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text,
-      parse_mode: 'Markdown',
-    }),
-  });
-}
+const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET;
+const PLATFORM_BOT_TOKEN = process.env.PLATFORM_TELEGRAM_BOT_TOKEN!;
 
 export async function POST(request: NextRequest) {
-  // Validate webhook secret
-  const secretToken = request.headers.get('X-Telegram-Bot-Api-Secret-Token');
-  const expectedSecret = process.env.TELEGRAM_WEBHOOK_SECRET;
-
-  if (!expectedSecret || secretToken !== expectedSecret) {
-    console.error('Invalid webhook secret token');
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Verify webhook secret if configured
+  if (WEBHOOK_SECRET) {
+    const secretHeader = request.headers.get('x-telegram-bot-api-secret-token');
+    if (secretHeader !== WEBHOOK_SECRET) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
   }
 
   try {
-    // Parse update
-    const update: TelegramUpdate = await request.json();
+    const body = await request.json();
+    const message = body.message;
 
-    // Handle /start command
-    if (update.message?.text?.startsWith('/start')) {
-      const chatId = update.message.chat.id;
-      const telegramId = update.message.from?.id;
+    if (!message?.text || !message?.from?.id || !message?.chat?.id) {
+      // Ignore non-text messages (stickers, photos, etc.) for now
+      return NextResponse.json({ ok: true });
+    }
 
-      if (!telegramId) {
-        return NextResponse.json({ ok: true });
-      }
+    const telegramId = message.from.id;
+    const chatId = message.chat.id;
+    const text = message.text.trim();
 
-      // Extract code from /start parameter
-      const parts = update.message.text.split(' ');
-      if (parts.length < 2) {
-        await sendTelegramMessage(
-          chatId,
-          'Welcome! To pair your account, generate a pairing code from your dashboard.'
-        );
-        return NextResponse.json({ ok: true });
-      }
+    // ─── Handle /start command (pairing flow) ───────────────────────
+    if (text.startsWith('/start')) {
+      return await handleStartCommand(text, telegramId, chatId, message.from.first_name);
+    }
 
-      const code = parts[1];
+    // ─── Handle /help command ───────────────────────────────────────
+    if (text === '/help') {
+      await sendTelegramResponse(chatId,
+        `🤖 *Claw4Growth Bot*\n\n` +
+        `I'm your AI marketing operator. Here's how it works:\n\n` +
+        `1️⃣ Complete onboarding at claw4growth.com\n` +
+        `2️⃣ Pair your account with /start <code>\n` +
+        `3️⃣ Send me any marketing task!\n\n` +
+        `*Commands:*\n` +
+        `/start <code> — Pair your account\n` +
+        `/status — Check your operator status\n` +
+        `/help — Show this message`
+      );
+      return NextResponse.json({ ok: true });
+    }
 
-      // Attempt to approve pairing
-      const success = await approvePairing(code, telegramId);
-
-      if (success) {
-        await sendTelegramMessage(
-          chatId,
-          '✅ *Account paired successfully!*\n\nYour Telegram account is now connected.'
+    // ─── Handle /status command ─────────────────────────────────────
+    if (text === '/status') {
+      const container = await findContainerForTelegramUser(telegramId);
+      if (!container) {
+        await sendTelegramResponse(chatId,
+          `❌ No paired account found.\n\n` +
+          `Complete onboarding at claw4growth.com and use the pairing code to connect.`
         );
       } else {
-        await sendTelegramMessage(
-          chatId,
-          '❌ *Pairing failed*\n\nThe code is invalid or has expired. Please generate a new code from your dashboard.'
+        const statusEmoji = container.status === 'running' ? '🟢' : container.status === 'provisioning' ? '🟡' : '🔴';
+        await sendTelegramResponse(chatId,
+          `${statusEmoji} *Operator Status:* ${container.status}\n` +
+          `🌐 Dashboard: ${container.containerUrl}/dashboard`
         );
       }
+      return NextResponse.json({ ok: true });
     }
+
+    // ─── Route message to user's container ──────────────────────────
+    const container = await findContainerForTelegramUser(telegramId);
+
+    if (!container) {
+      await sendTelegramResponse(chatId,
+        `👋 Welcome to Claw4Growth!\n\n` +
+        `I don't see a paired account for your Telegram. To get started:\n\n` +
+        `1. Go to claw4growth.com and complete the onboarding\n` +
+        `2. After deployment, you'll get a pairing code\n` +
+        `3. Send me: /start YOUR_CODE`
+      );
+      return NextResponse.json({ ok: true });
+    }
+
+    if (container.status !== 'running') {
+      await sendTelegramResponse(chatId,
+        `⏳ Your operator is currently *${container.status}*.\n\n` +
+        `It should be ready soon. Try again in a minute!`
+      );
+      return NextResponse.json({ ok: true });
+    }
+
+    // Send typing indicator while processing
+    await sendTypingAction(chatId);
+
+    // Forward message to the user's OpenClaw container
+    const response = await forwardToContainer(container.containerUrl, text, telegramId);
+
+    // Send the response back to the user
+    await sendTelegramResponse(chatId, response);
 
     return NextResponse.json({ ok: true });
   } catch (error) {
-    console.error('Webhook error:', error);
-    return NextResponse.json({ ok: true }); // Return 200 to prevent retries
+    console.error('[webhook] Error processing update:', error);
+    return NextResponse.json({ ok: true }); // Always return 200 to Telegram
   }
+}
+
+/**
+ * Handles the /start command for pairing.
+ * /start <pairing_code> — pairs the Telegram account with a C4G user.
+ * /start (no code) — shows welcome/help message.
+ */
+async function handleStartCommand(
+  text: string,
+  telegramId: number,
+  chatId: number,
+  firstName: string
+) {
+  const parts = text.split(' ');
+  const pairingCode = parts[1];
+
+  if (!pairingCode) {
+    // No code provided, check if already paired
+    const container = await findContainerForTelegramUser(telegramId);
+    if (container) {
+      await sendTelegramResponse(chatId,
+        `👋 Welcome back, ${firstName}!\n\n` +
+        `Your operator is *${container.status}*. Just send me any marketing task and I'll handle it!`
+      );
+    } else {
+      await sendTelegramResponse(chatId,
+        `👋 Hey ${firstName}! Welcome to *Claw4Growth*.\n\n` +
+        `To connect your AI marketing operator:\n\n` +
+        `1. Complete onboarding at claw4growth.com\n` +
+        `2. After deployment, you'll receive a pairing code\n` +
+        `3. Come back here and send: /start YOUR_CODE\n\n` +
+        `Already have a code? Send it now: /start YOUR_CODE`
+      );
+    }
+    return NextResponse.json({ ok: true });
+  }
+
+  // Attempt to approve the pairing
+  try {
+    const success = await approvePairing(pairingCode, telegramId);
+    if (success) {
+      await sendTelegramResponse(chatId,
+        `✅ *Account paired successfully!*\n\n` +
+        `Your AI marketing operator is now connected to this chat.\n\n` +
+        `Try sending me a task like:\n` +
+        `• "Write 3 Instagram captions for my new product launch"\n` +
+        `• "Create a weekly content calendar for next week"\n` +
+        `• "Analyze my brand positioning and suggest improvements"`
+      );
+    } else {
+      await sendTelegramResponse(chatId,
+        `❌ Invalid or expired pairing code.\n\n` +
+        `Please check your code and try again, or generate a new one from your dashboard.`
+      );
+    }
+  } catch (error) {
+    console.error('[webhook] Pairing error:', error);
+    await sendTelegramResponse(chatId,
+      `⚠️ Something went wrong during pairing. Please try again.`
+    );
+  }
+
+  return NextResponse.json({ ok: true });
 }

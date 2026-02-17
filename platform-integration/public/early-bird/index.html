@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claw4Growth — Your AI Marketing Team Member</title>
+    <meta name="description" content="An AI that connects to your marketing tools and works for you 24/7. Writes copy, analyzes campaigns, monitors competitors, manages social. Early Bird: €34.90/mo.">
+    <meta property="og:title" content="Claw4Growth — Your AI Marketing Team Member">
+    <meta property="og:description" content="An AI that connects to your tools and does marketing work for you 24/7. Early Bird: €34.90/mo — price locked forever.">
+    <meta property="og:type" content="website">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        /* ===== EARLY BIRD OVERRIDES ===== */
+
+        /* Prevent horizontal overflow from marquee */
+        html, body { overflow-x: hidden !important; max-width: 100vw !important; }
+        .eb-marquee { overflow: hidden !important; }
+        
+        /* Hide original marquee — we have our own */
+        .marquee-banner { display: none !important; }
+
+        /* Early bird marquee — YELLOW */
+        .eb-marquee {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: #FFD700;
+            border-bottom: 4px solid #000;
+            padding: 6px 0;
+            overflow: hidden;
+        }
+        .eb-marquee .marquee-track span {
+            color: #000;
+            font-weight: 700;
+        }
+
+        /* Nav adjustment */
+        .nav { top: 28px; }
+
+        /* Hero adjustments for marketer audience */
+        .hero { text-align: left; }
+        .hero .container { align-items: flex-start; }
+        .hero-title { text-align: left; }
+        .hero-sub { max-width: 600px; text-align: left; }
+        .hero-badge { align-self: center; }
+        
+        /* Force left everything — override base landing alignment */
+        .section-title, .section-sub { text-align: left !important; }
+        .pricing-section .section-title, .pricing-section .section-sub { text-align: left !important; }
+        .what-grid, .usecase-grid, .compare-grid, .features-grid { max-width: 900px; margin: 0 auto !important; width: 100%; }
+        .int-grid { justify-content: center; }
+        /* Cards and content blocks: left-aligned (matches main LP) */
+        .feature-inner, .what-inner, .compare-inner, .compare-list, .usecase-inner p { text-align: left; }
+        .hero .container { display: flex; flex-direction: column; align-items: flex-start; max-width: 800px; }
+        .hero-mascot { align-self: center; }
+        .hero-badge { align-self: center !important; }
+        .hero .mc-btn { align-self: center !important; }
+        .hero-title { text-align: left !important; width: 100%; font-size: clamp(18px, 4vw, 36px) !important; word-break: break-word; }
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .what-grid { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+        .usecase-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; width: 100%; }
+        @media (max-width: 768px) {
+            .what-grid, .compare-grid { grid-template-columns: 1fr !important; }
+            .usecase-grid { grid-template-columns: 1fr !important; }
+        }
+
+        /* Integration grid (not ticker) */
+        .integrations-grid-section {
+            position: relative;
+            z-index: 1;
+            padding: 60px 0;
+            text-align: center;
+            border-top: 4px solid #000;
+        }
+        .integrations-grid-section .section-label {
+            font-family: var(--font-pixel);
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: var(--cyan);
+            margin-bottom: 32px;
+            text-transform: uppercase;
+        }
+        .int-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 24px;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 0 var(--container-pad);
+        }
+        .int-grid-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+            transition: opacity 0.3s, transform 0.3s;
+        }
+        .int-grid-item:hover {
+            opacity: 1;
+            transform: translateY(-4px);
+        }
+        .int-grid-item img {
+            width: 36px;
+            height: 36px;
+            filter: invert(1);
+        }
+        .int-grid-item span {
+            font-family: var(--font-mono);
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* What It Does */
+        .what-section {
+            position: relative;
+            z-index: 1;
+            padding: var(--section-pad) 0;
+            border-top: 4px solid #000;
+        }
+        .what-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .what-card {
+            transition: transform 0.2s;
+        }
+        .what-card:hover { transform: scale(1.02); }
+        .what-inner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 24px 20px;
+        }
+        .what-inner .what-emoji {
+            font-size: 24px;
+            margin-bottom: 12px;
+            display: block;
+        }
+        .what-inner h3 {
+            font-size: 10px;
+            color: var(--yellow);
+            margin-bottom: 10px;
+            letter-spacing: 0.02em;
+        }
+        .what-inner p {
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--text-body);
+            line-height: 1.75;
+        }
+
+        /* Use Cases */
+        .usecases-section {
+            position: relative;
+            z-index: 1;
+            padding: var(--section-pad) 0;
+            border-top: 4px solid #000;
+            background: var(--bg-surface);
+        }
+        .usecase-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+        .usecase-card {
+            transition: transform 0.2s;
+        }
+        .usecase-card:hover { transform: scale(1.02); }
+        .usecase-inner {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 28px 20px;
+            text-align: center;
+            min-height: 160px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .usecase-inner .uc-icon {
+            font-size: 28px;
+        }
+        .usecase-inner p {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* Pricing */
+        .pricing-section {
+            position: relative;
+            z-index: 1;
+            padding: var(--section-pad) 0;
+            text-align: center;
+            border-top: 4px solid #000;
+        }
+        .price-card {
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .price-inner {
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            padding: 48px 32px;
+            text-align: center;
+        }
+        .price-badge {
+            font-size: 9px;
+            color: #000;
+            background: var(--yellow);
+            padding: 6px 16px;
+            display: inline-block;
+            margin-bottom: 24px;
+            border: 2px solid #000;
+        }
+        .price-amount {
+            font-size: clamp(32px, 6vw, 52px);
+            color: var(--accent-bright);
+            text-shadow: 0 0 20px rgba(0,255,0,0.3);
+            margin-bottom: 8px;
+        }
+        .price-period {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .price-original {
+            font-family: var(--font-body);
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .price-original s {
+            color: var(--red);
+        }
+        .price-lock {
+            font-family: var(--font-body);
+            font-size: 13px;
+            color: var(--yellow);
+            margin-bottom: 32px;
+        }
+        .price-cta {
+            width: 100%;
+            font-size: 12px !important;
+            padding: 18px 32px !important;
+        }
+        .price-note {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 16px;
+        }
+
+        /* Footer override */
+        .eb-footer {
+            position: relative;
+            z-index: 1;
+            padding: 32px 0;
+            border-top: 4px solid #000;
+            background: rgba(0,0,0,0.5);
+        }
+        .eb-footer-inner {
+            max-width: var(--container-max);
+            margin: 0 auto;
+            padding: 0 var(--container-pad);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            text-align: center;
+        }
+        .eb-footer-powered {
+            font-size: 8px;
+            color: #666;
+            letter-spacing: 0.08em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .eb-footer-powered img {
+            width: 16px;
+            height: 16px;
+            opacity: 0.4;
+        }
+        .eb-footer-links {
+            display: flex;
+            gap: 24px;
+        }
+        .eb-footer-links a {
+            font-size: 9px;
+            color: var(--text-muted);
+            transition: color 0.2s;
+        }
+        .eb-footer-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Responsive overrides */
+        @media (max-width: 768px) {
+            .int-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
+            .what-grid { grid-template-columns: 1fr !important; }
+            .usecase-grid { grid-template-columns: 1fr !important; }
+            .compare-grid { grid-template-columns: 1fr !important; }
+            .features-grid { grid-template-columns: 1fr !important; }
+            .tg-phone { max-width: 100% !important; transform: none !important; }
+            .tg-chat { min-height: 340px !important; max-height: 400px !important; height: 340px !important; }
+            /* Mid-page CTAs smaller on mobile */
+            .eb-cta-mid { font-size: 9px !important; padding: 14px 20px !important; }
+            /* Nav: smaller logo + CTA on mobile */
+            .logo-icon { width: 22px !important; height: 22px !important; }
+            .logo-text { font-size: 11px !important; }
+            .nav-cta-btn { font-size: 7px !important; padding: 8px 12px !important; }
+            .nav-inner { padding: 0 12px !important; }
+        }
+        @media (max-width: 480px) {
+            .int-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+            .logo-icon { width: 18px !important; height: 18px !important; }
+            .logo-text { font-size: 10px !important; }
+            .nav-cta-btn { font-size: 6px !important; padding: 6px 10px !important; }
+            .eb-marquee { font-size: 9px; padding: 4px 0; }
+            .nav { top: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MARQUEE ===== -->
+    <div class="eb-marquee">
+        <div class="marquee-track">
+            <span>🦞 EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER — EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+            <span>🦞 EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER — EARLY BIRD — €34.90/MO — PRICE LOCKED FOREVER — LIMITED SPOTS — YOUR AI MARKETING TEAM MEMBER&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+    </div>
+
+    <!-- ===== CRT OVERLAY ===== -->
+    <div class="crt-overlay"></div>
+
+    <!-- ===== FALLING TEXT ===== -->
+    <div class="falling-text-container" id="falling-text"></div>
+
+    <!-- ===== NAV ===== -->
+    <nav class="nav" id="nav">
+        <div class="nav-inner">
+            <a href="#" class="logo">
+                <span class="logo-icon" style="width:32px;height:32px;display:inline-block"><svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="lobster-gradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient><linearGradient id="screen-glow" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5cc" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5cc" stop-opacity="0.1"/></linearGradient></defs><path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#lobster-gradient)"/><path d="M24 48 C12 44 7 52 11 60 C15 68 24 63 28 54 C30 49 28 47 24 48Z" fill="url(#lobster-gradient)"/><path d="M96 48 C108 44 113 52 109 60 C105 68 96 63 92 54 C90 49 92 47 96 48Z" fill="url(#lobster-gradient)"/><rect x="28" y="58" width="64" height="6" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.5"/><rect x="32" y="38" width="56" height="20" rx="2" fill="#0a0f1a" stroke="#333" stroke-width="0.5"/><rect x="38" y="50" width="4" height="6" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect x="44" y="47" width="4" height="9" rx="0.5" fill="#00e5cc" opacity="0.9"/><rect x="50" y="44" width="4" height="12" rx="0.5" fill="#ff4d4d" opacity="0.9"/><rect x="56" y="46" width="4" height="10" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect x="62" y="42" width="4" height="14" rx="0.5" fill="#00e5cc"/><rect x="68" y="48" width="4" height="8" rx="0.5" fill="#00e5cc" opacity="0.7"/><rect x="74" y="40" width="4" height="16" rx="0.5" fill="#ff4d4d"/><rect x="80" y="43" width="4" height="13" rx="0.5" fill="#00e5cc" opacity="0.9"/><rect x="32" y="38" width="56" height="20" rx="2" fill="url(#screen-glow)"/><path d="M47 18 Q38 8 33 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/><path d="M73 18 Q82 8 87 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/><rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/><path d="M37 30 L32 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/><path d="M83 30 L88 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/><circle cx="45" cy="31" r="4" fill="#0a0f1a"/><circle cx="75" cy="31" r="4" fill="#0a0f1a"/><circle cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle cx="76" cy="30" r="1.5" fill="#00e5cc"/><path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/></svg></span>
+                <span class="logo-text">CLAW<span class="logo-accent">4</span>GROWTH</span>
+            </a>
+            <a href="#pricing" class="mc-btn mc-btn-primary nav-cta-btn">GET EARLY ACCESS</a>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-mascot hero-entrance" aria-hidden="true" style="margin-bottom: 24px;">
+                <style>
+                    .hero-mascot svg { width: 120px; height: 120px; }
+                    .hero-mascot .claw-left { animation: claw-snap-left 3s ease-in-out infinite; transform-origin: 28px 54px; }
+                    .hero-mascot .claw-right { animation: claw-snap-right 3s ease-in-out infinite; transform-origin: 92px 54px; }
+                    .hero-mascot .eye-glow { animation: eye-pulse 2s ease-in-out infinite; }
+                    .hero-mascot .antenna { animation: antenna-wave 4s ease-in-out infinite; }
+                    .hero-mascot .screen-bar { animation: bar-grow 2s ease-in-out infinite alternate; transform-origin: bottom; }
+                    .hero-mascot .screen-bar:nth-child(odd) { animation-delay: 0.3s; }
+                    @keyframes claw-snap-left { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-8deg); } }
+                    @keyframes claw-snap-right { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(8deg); } }
+                    @keyframes eye-pulse { 0%,100% { opacity: 1; r: 1.5; } 50% { opacity: 0.6; r: 2.5; } }
+                    @keyframes antenna-wave { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(3deg); } 75% { transform: rotate(-3deg); } }
+                    @keyframes bar-grow { 0% { transform: scaleY(0.7); } 100% { transform: scaleY(1); } }
+                </style>
+                <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="hero-lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient><linearGradient id="hero-sg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#00e5cc" stop-opacity="0.3"/><stop offset="100%" stop-color="#00e5cc" stop-opacity="0.1"/></linearGradient></defs>
+                    <path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#hero-lg)"/>
+                    <path class="claw-left" d="M24 48 C12 44 7 52 11 60 C15 68 24 63 28 54 C30 49 28 47 24 48Z" fill="url(#hero-lg)"/>
+                    <path class="claw-right" d="M96 48 C108 44 113 52 109 60 C105 68 96 63 92 54 C90 49 92 47 96 48Z" fill="url(#hero-lg)"/>
+                    <rect x="28" y="58" width="64" height="6" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.5"/>
+                    <rect x="32" y="38" width="56" height="20" rx="2" fill="#0a0f1a" stroke="#333" stroke-width="0.5"/>
+                    <rect class="screen-bar" x="38" y="50" width="4" height="6" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect class="screen-bar" x="44" y="47" width="4" height="9" rx="0.5" fill="#00e5cc" opacity="0.9"/><rect class="screen-bar" x="50" y="44" width="4" height="12" rx="0.5" fill="#ff4d4d" opacity="0.9"/><rect class="screen-bar" x="56" y="46" width="4" height="10" rx="0.5" fill="#00e5cc" opacity="0.8"/><rect class="screen-bar" x="62" y="42" width="4" height="14" rx="0.5" fill="#00e5cc"/><rect class="screen-bar" x="68" y="48" width="4" height="8" rx="0.5" fill="#00e5cc" opacity="0.7"/><rect class="screen-bar" x="74" y="40" width="4" height="16" rx="0.5" fill="#ff4d4d"/><rect class="screen-bar" x="80" y="43" width="4" height="13" rx="0.5" fill="#00e5cc" opacity="0.9"/>
+                    <rect x="32" y="38" width="56" height="20" rx="2" fill="url(#hero-sg)"/>
+                    <path class="antenna" d="M47 18 Q38 8 33 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/><path class="antenna" d="M73 18 Q82 8 87 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/>
+                    <rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/><path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/><path d="M37 30 L32 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/><path d="M83 30 L88 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/>
+                    <circle cx="45" cy="31" r="4" fill="#0a0f1a"/><circle cx="75" cy="31" r="4" fill="#0a0f1a"/><circle class="eye-glow" cx="46" cy="30" r="1.5" fill="#00e5cc"/><circle class="eye-glow" cx="76" cy="30" r="1.5" fill="#00e5cc"/>
+                    <path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/><rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/><path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/><circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/>
+                </svg>
+            </div>
+            <div class="hero-badge hero-entrance">
+                <span class="badge-pulse"></span>
+                EARLY ACCESS — LIMITED SPOTS
+            </div>
+            <h1 class="hero-title">
+                YOUR MARKETING RUNS<br>
+                <span class="text-accent glitch-text" data-text="WHILE YOU SLEEP.">WHILE YOU SLEEP.</span>
+            </h1>
+            <p class="hero-sub">
+                An AI that connects to your tools and actually does the work — writes copy, spots wasted ad budget, monitors competitors, manages social. <strong>Not a chatbot. A marketing operator. 24/7 on autopilot.</strong>
+            </p>
+            <div style="margin-bottom: 32px; width: 100%; text-align: center;">
+                <a href="#pricing" class="mc-btn mc-btn-primary" style="font-size:12px;padding:18px 36px;">GET EARLY BIRD ACCESS — €34.90/MO</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">🧠</span>
+                        <span class="stat-number">24/7</span>
+                        <span class="stat-label">ALWAYS ON</span>
+                    </div>
+                </div>
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">🔗</span>
+                        <span class="stat-number">12+</span>
+                        <span class="stat-label">INTEGRATIONS</span>
+                    </div>
+                </div>
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">📊</span>
+                        <span class="stat-number">AUTO</span>
+                        <span class="stat-label">REPORTS</span>
+                    </div>
+                </div>
+                <div class="stat-item mc-panel-dark">
+                    <div class="stat-inner">
+                        <span class="stat-emoji">⚡</span>
+                        <span class="stat-number">5min</span>
+                        <span class="stat-label">SETUP</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INTEGRATION LOGOS TICKER ===== -->
+    <section class="integrations-ticker">
+        <p class="ticker-label">CONNECTS TO YOUR ENTIRE STACK</p>
+        <div class="ticker-wrapper">
+            <div class="ticker-track" id="ticker-track">
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" alt="Drive"><span>Drive</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail"><span>Gmail</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlesheets.svg" alt="Sheets"><span>Sheets</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googleads.svg" alt="Google Ads"><span>Google Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"><span>Meta Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"><span>Facebook</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"><span>Instagram</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"><span>TikTok</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"><span>LinkedIn</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"><span>HubSpot</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"><span>Shopify</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"><span>Notion</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg" alt="Stripe"><span>Stripe</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Telegram"><span>Telegram</span></div>
+                <!-- Duplicate for seamless loop -->
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googledrive.svg" alt="Drive"><span>Drive</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/gmail.svg" alt="Gmail"><span>Gmail</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googlesheets.svg" alt="Sheets"><span>Sheets</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/googleads.svg" alt="Google Ads"><span>Google Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/meta.svg" alt="Meta Ads"><span>Meta Ads</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/facebook.svg" alt="Facebook"><span>Facebook</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/instagram.svg" alt="Instagram"><span>Instagram</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/tiktok.svg" alt="TikTok"><span>TikTok</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/linkedin.svg" alt="LinkedIn"><span>LinkedIn</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/hubspot.svg" alt="HubSpot"><span>HubSpot</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/shopify.svg" alt="Shopify"><span>Shopify</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/notion.svg" alt="Notion"><span>Notion</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/stripe.svg" alt="Stripe"><span>Stripe</span></div>
+                <div class="ticker-item"><img src="https://cdn.jsdelivr.net/gh/simple-icons/simple-icons/icons/telegram.svg" alt="Telegram"><span>Telegram</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TELEGRAM DEMO ===== -->
+    <section class="demo" id="demo">
+        <div class="container">
+            <div class="tg-phone mc-panel-dark" style="min-height:500px;">
+                <div class="tg-phone-inner">
+                    <div class="tg-label">/// LIVE DEMO — TELEGRAM</div>
+                    <!-- Telegram Header -->
+                    <div class="tg-header">
+                        <div class="tg-header-back">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+                        </div>
+                        <div class="tg-header-avatar">
+                            <svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" width="36" height="36">
+                                <circle cx="60" cy="60" r="60" fill="#1a1a2e"/>
+                                <path d="M60 25 C45 25 35 40 35 50 C35 60 42 72 50 75 L50 80 L54 80 L54 75 C54 75 57 76 60 75 L60 80 L64 80 L64 75 C72 72 79 60 79 50 C79 40 75 25 60 25Z" fill="url(#tg-lg)"/>
+                                <rect x="42" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
+                                <rect x="62" y="32" width="12" height="8" rx="2" fill="none" stroke="#e0e0e0" stroke-width="1.5"/>
+                                <path d="M54 36 L62 36" stroke="#e0e0e0" stroke-width="1.2"/>
+                                <circle cx="48" cy="36" r="2" fill="#00e5cc"/>
+                                <circle cx="68" cy="36" r="2" fill="#00e5cc"/>
+                                <defs><linearGradient id="tg-lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#ff4d4d"/><stop offset="100%" stop-color="#991b1b"/></linearGradient></defs>
+                            </svg>
+                        </div>
+                        <div class="tg-header-info">
+                            <span class="tg-header-name">Claw4Growth</span>
+                            <span class="tg-header-status">bot</span>
+                        </div>
+                        <div class="tg-header-dots">⋮</div>
+                    </div>
+                    <!-- Chat Body -->
+                    <div class="tg-chat" id="tg-chat" style="min-height:420px;height:420px;">
+                        <!-- Populated by JS animation -->
+                    </div>
+                    <!-- Input Bar -->
+                    <div class="tg-input-bar">
+                        <div class="tg-input-attach">📎</div>
+                        <div class="tg-input-field">Message</div>
+                        <div class="tg-input-mic">🎤</div>
+                    </div>
+                </div>
+            </div>
+            <p class="demo-caption">PROACTIVE REPORTS. ON-DEMAND AUDITS. SCHEDULED MONITORING. ALL ON TELEGRAM. ALL BEFORE YOUR SECOND COFFEE.</p>
+        </div>
+    </section>
+
+    <!-- ===== WHAT IT DOES ===== -->
+    <section class="what-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                WHAT IT ACTUALLY <span class="text-accent">DOES FOR YOU</span>
+            </h2>
+            <p class="section-sub">Think of it as a marketing assistant that never sleeps, never forgets, and gets better every week.</p>
+            <div class="what-grid">
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">✍️</span>
+                        <h3>WRITES COPY & CONTENT</h3>
+                        <p>Ad copy, social posts, email sequences, landing pages — all in your brand voice. It researches trends on LinkedIn and X, then creates content ideas tailored to your niche. <strong>Save 5-10 hours/week.</strong></p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">📊</span>
+                        <h3>ANALYZES YOUR CAMPAIGNS & DATA</h3>
+                        <p>Connects to your ad accounts, Google Analytics, and CRM. Spots what's working, what's bleeding budget, and tells you exactly what to change. <strong>Stop burning money on ads that don't convert.</strong></p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">👁️</span>
+                        <h3>MONITORS COMPETITORS & SENDS REPORTS</h3>
+                        <p>Monday: competitor briefing in your inbox. Friday: campaign performance summary. Pricing shifts, new landing pages, ad creative — delivered automatically. <strong>Never get blindsided again.</strong></p>
+                    </div>
+                </div>
+                <div class="what-card mc-panel-dark">
+                    <div class="what-inner">
+                        <span class="what-emoji">🛒</span>
+                        <h3>PLUGS INTO YOUR E-COMMERCE</h3>
+                        <p>Connects to Shopify, HubSpot, and your CRM. Monitors conversion rates, flags drops before you notice, and suggests fixes based on your data. <strong>Your store runs smarter, not harder.</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div style="text-align:center;margin-top:40px;">
+                <a href="#pricing" class="mc-btn mc-btn-primary" style="font-size:12px;padding:16px 32px;">SEE EARLY BIRD PRICING ↓</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== USE CASES ===== -->
+    <section class="usecases-section">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                IMAGINE <span class="text-accent">THIS</span>
+            </h2>
+            <p class="section-sub">Real scenarios. Running automatically. Every single week.</p>
+            <div class="usecase-grid">
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">📋</span>
+                        <p>Monday 8am: a competitor briefing lands in your Telegram — pricing changes, new ads, content shifts</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">📊</span>
+                        <p>Friday 9am: a report shows which ads made money this week and which ones to kill</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">💡</span>
+                        <p>Wednesday: it scans LinkedIn, X, and industry blogs for trending topics — then sends you 5 ready-to-post content ideas</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">🛒</span>
+                        <p>Your Shopify conversion rate drops 15% — it detects the change, diagnoses the cause, and suggests fixes before you even check</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">💰</span>
+                        <p>3am: your Facebook ads start wasting money — you get a Telegram ping before you wake up</p>
+                    </div>
+                </div>
+                <div class="usecase-card mc-panel-dark">
+                    <div class="usecase-inner">
+                        <span class="uc-icon">📇</span>
+                        <p>A new lead fills out your form — HubSpot gets updated, a welcome sequence triggers, and you get a Telegram summary</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== WHY NOT CHATGPT ===== -->
+    <section class="objection" id="why-not-chatgpt">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                "WHY NOT JUST USE <span style="color:#ff4d4d;">CHATGPT / CLAUDE?</span>"
+            </h2>
+            <p class="section-sub">Great question. Here's the honest answer.</p>
+            <div class="compare-grid">
+                <div class="compare-card mc-panel-dark">
+                    <div class="compare-inner compare-no">
+                        <div class="compare-header">
+                            <span class="compare-icon">✖</span>
+                            <span class="compare-label">CHATGPT / CLAUDE</span>
+                        </div>
+                        <ul class="compare-list">
+                            <li>Has memory, but can't act on any of it</li>
+                            <li>Can't run tasks while you sleep</li>
+                            <li>Can't connect to your Google Ads at 3am and pause a failing campaign</li>
+                            <li>Can't message you when something needs attention</li>
+                            <li>No persistent brand context across sessions</li>
+                            <li>A tool you use. Not a team member that works for you.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="compare-card mc-panel-dark">
+                    <div class="compare-inner compare-yes">
+                        <div class="compare-header">
+                            <span class="compare-icon">✓</span>
+                            <span class="compare-label">CLAW4GROWTH</span>
+                        </div>
+                        <ul class="compare-list">
+                            <li><strong>Remembers everything</strong> — your brand, your data, your preferences. Always.</li>
+                            <li><strong>Works while you sleep</strong> — scheduled tasks run automatically, 24/7.</li>
+                            <li><strong>Connected to your tools</strong> — Google Ads, Meta, Analytics, Sheets, and more.</li>
+                            <li><strong>Proactive alerts</strong> — it messages YOU when something needs attention.</li>
+                            <li><strong>Multi-channel</strong> — chat on Telegram, Slack, or email. Wherever you work.</li>
+                            <li><strong>Gets better over time</strong> — learns your preferences, your audience, your wins.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+            <div style="text-align:center;margin-top:40px;">
+                <a href="#pricing" class="mc-btn mc-btn-primary eb-cta-mid" style="font-size:12px;padding:16px 32px;">GET YOUR AI MARKETING TEAM — €34.90/MO</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRE-INSTALLED SKILLS ===== -->
+    <section class="features" id="features">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                12+ MARKETING SKILLS. <span class="text-accent">PRE-LOADED.</span>
+            </h2>
+            <p class="section-sub">Not plugins to find. Not prompts to write. Skills that work from minute one.</p>
+            <div class="features-grid">
+                <div class="feature-card mc-panel-dark">
+                    <div class="feature-inner">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M3 3v18h18"/>
+                                <path d="M7 16l4-8 4 4 5-9"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">CRO & UX AUDIT</h3>
+                        <p>Point it at any URL. It crawls the page, evaluates conversion flow, visual hierarchy, and usability — then returns <strong>prioritized fixes with estimated impact.</strong> Schedule it to run automatically and catch regressions.</p>
+                        <span class="feature-tag">RUNS ON CRON</span>
+                    </div>
+                </div>
+                <div class="feature-card mc-panel-dark">
+                    <div class="feature-inner">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="11" cy="11" r="8"/>
+                                <path d="M21 21l-4.35-4.35"/>
+                                <path d="M11 8v6M8 11h6"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">SEO AUDIT & MONITORING</h3>
+                        <p>Technical + content audit. Keyword gaps, cannibalization, <strong>a prioritized roadmap.</strong> Set it to run weekly — it monitors rankings and alerts you on Telegram when something shifts.</p>
+                        <span class="feature-tag">WEEKLY CRON</span>
+                    </div>
+                </div>
+                <div class="feature-card mc-panel-dark">
+                    <div class="feature-inner">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <rect x="2" y="3" width="20" height="14" rx="2"/>
+                                <path d="M8 21h8M12 17v4"/>
+                                <path d="M7 8h4M7 11h8"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">PAID MEDIA INTELLIGENCE</h3>
+                        <p>Connects to your ad accounts, pulls campaign data, spots underperformers, suggests <strong>budget reallocation and audience refinements</strong> that actually move ROAS. Pauses bleeding campaigns before you wake up.</p>
+                        <span class="feature-tag">DATA-DRIVEN</span>
+                    </div>
+                </div>
+                <div class="feature-card mc-panel-dark">
+                    <div class="feature-inner">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M12 20h9"/>
+                                <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">COPY & CONTENT FACTORY</h3>
+                        <p>Ad copy, carousels, email sequences, social posts — all in your brand voice. It learns your tone, your audience, your past winners. <strong>Consistent, on-brand, always.</strong> Not vibes. Frameworks.</p>
+                        <span class="feature-tag">MEMORY-POWERED</span>
+                    </div>
+                </div>
+                <div class="feature-card mc-panel-dark">
+                    <div class="feature-inner">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7z"/>
+                                <circle cx="12" cy="12" r="3"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">COMPETITOR INTELLIGENCE</h3>
+                        <p>Every Monday: competitors' pricing changes, new features, ad creative updates, content shifts — <strong>delivered as a structured briefing on Telegram.</strong> Fully automated, zero manual research.</p>
+                        <span class="feature-tag">PROACTIVE ALERTS</span>
+                    </div>
+                </div>
+                <div class="feature-card mc-panel-dark">
+                    <div class="feature-inner">
+                        <div class="feature-icon-wrap">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
+                                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+                            </svg>
+                        </div>
+                        <h3 class="feature-title">REPORTING & DASHBOARDS</h3>
+                        <p>Pulls data from your connected tools, builds formatted reports, and delivers them where you want. "Send me a performance summary every Friday" — <strong>done, on Telegram.</strong> No spreadsheet wrangling.</p>
+                        <span class="feature-tag">AUTOMATED</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="pricing-section" id="pricing">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="section-prefix">///</span>
+                EARLY BIRD <span class="text-accent">PRICING</span>
+            </h2>
+            <p class="section-sub">Limited spots. Once they're gone, the price goes up.</p>
+            <div class="price-card mc-panel-dark">
+                <div class="price-inner">
+                    <span class="price-badge">🦞 EARLY BIRD — ONLY 10 SPOTS</span>
+                    <div class="price-amount">€34.90</div>
+                    <div class="price-period">/MONTH</div>
+                    <p class="price-original">Regular price: <s>€49.90/mo</s></p>
+                    <p class="price-lock">🔒 Price locked forever. No increases. Ever.</p>
+                    <ul style="list-style:none;padding:0;margin:0 0 24px;text-align:left;max-width:320px;margin-left:auto;margin-right:auto;">
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;border-bottom:1px solid var(--border);">✅ 12+ marketing integrations</li>
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;border-bottom:1px solid var(--border);">✅ Automated reports & alerts</li>
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;border-bottom:1px solid var(--border);">✅ Continuous updates & improvements</li>
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;border-bottom:1px solid var(--border);">✅ New skills added every month</li>
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;border-bottom:1px solid var(--border);">✅ Premium community access</li>
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;border-bottom:1px solid var(--border);">✅ Priority support</li>
+                        <li style="font-family:var(--font-body);font-size:13px;color:var(--text-body);padding:8px 0;">✅ Auto-updates — always the latest version</li>
+                    </ul>
+                    <p style="font-family:var(--font-body);font-size:12px;color:var(--yellow);margin-bottom:24px;">Less than a single freelancer hour. Working for you 24/7.</p>
+                    <a href="/onboarding/" class="mc-btn mc-btn-primary price-cta">CLAIM YOUR SPOT — €34.90/MO</a>
+                    <p style="font-family:var(--font-body);font-size:13px;color:var(--text-body);margin:16px 0 4px;">🛡️ <strong>30-day money-back guarantee.</strong> Not happy? Full refund, no questions asked.</p>
+                    <p class="price-note">Cancel anytime. No lock-in. 5-minute setup.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="logo-text">CLAW<span class="logo-accent">4</span>GROWTH</span>
+            </div>
+            <p class="footer-tagline">POWERED BY OPENCLAW · BUILT BY A MARKETER · FOR MARKETERS WHO MOVE FAST</p>
+            <div class="footer-links">
+                <a href="https://openclaw.ai" target="_blank" rel="noopener">OPENCLAW</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ===== MINIMAL JS: CRT + Falling Text + Nav Scroll ===== -->
+    <script>
+    // Falling text handled by ../script.js (25 static words, same as main landing)
+
+    // Nav scroll
+    (function() {
+        const nav = document.getElementById('nav');
+        if (!nav) return;
+        window.addEventListener('scroll', () => {
+            nav.classList.toggle('scrolled', window.scrollY > 50);
+        });
+    })();
+    </script>
+    <script src="../script.js"></script>
+</body>
+</html>

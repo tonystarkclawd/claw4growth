@@ -1,0 +1,80 @@
+<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lobster-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff4d4d"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="screen-glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00e5cc" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#00e5cc" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Body -->
+  <path d="M60 15 C35 15 20 37 20 55 C20 73 33 92 47 97 L47 107 L53 107 L53 97 C53 97 58 99 63 97 L63 107 L69 107 L69 97 C83 92 96 73 96 55 C96 37 85 15 60 15Z" fill="url(#lobster-gradient)"/>
+  
+  <!-- Left Claw holding laptop -->
+  <path d="M24 48 C12 44 7 52 11 60 C15 68 24 63 28 54 C30 49 28 47 24 48Z" fill="url(#lobster-gradient)"/>
+  
+  <!-- Right Claw holding laptop -->
+  <path d="M96 48 C108 44 113 52 109 60 C105 68 96 63 92 54 C90 49 92 47 96 48Z" fill="url(#lobster-gradient)"/>
+  
+  <!-- Laptop base -->
+  <rect x="28" y="58" width="64" height="6" rx="1" fill="#1a1a2e" stroke="#333" stroke-width="0.5"/>
+  
+  <!-- Laptop screen -->
+  <rect x="32" y="38" width="56" height="20" rx="2" fill="#0a0f1a" stroke="#333" stroke-width="0.5"/>
+  
+  <!-- Screen content - chart bars -->
+  <rect x="38" y="50" width="4" height="6" rx="0.5" fill="#00e5cc" opacity="0.8"/>
+  <rect x="44" y="47" width="4" height="9" rx="0.5" fill="#00e5cc" opacity="0.9"/>
+  <rect x="50" y="44" width="4" height="12" rx="0.5" fill="#ff4d4d" opacity="0.9"/>
+  <rect x="56" y="46" width="4" height="10" rx="0.5" fill="#00e5cc" opacity="0.8"/>
+  <rect x="62" y="42" width="4" height="14" rx="0.5" fill="#00e5cc"/>
+  <rect x="68" y="48" width="4" height="8" rx="0.5" fill="#00e5cc" opacity="0.7"/>
+  <rect x="74" y="40" width="4" height="16" rx="0.5" fill="#ff4d4d"/>
+  <rect x="80" y="43" width="4" height="13" rx="0.5" fill="#00e5cc" opacity="0.9"/>
+  
+  <!-- Screen glow -->
+  <rect x="32" y="38" width="56" height="20" rx="2" fill="url(#screen-glow)"/>
+  
+  <!-- Antenna -->
+  <path d="M47 18 Q38 8 33 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/>
+  <path d="M73 18 Q82 8 87 11" stroke="#ff4d4d" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Nerdy Glasses frame -->
+  <rect x="37" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+  <rect x="67" y="26" width="16" height="11" rx="3" fill="none" stroke="#e0e0e0" stroke-width="1.8"/>
+  <!-- Bridge -->
+  <path d="M53 31 L67 31" stroke="#e0e0e0" stroke-width="1.5"/>
+  <!-- Temple arms -->
+  <path d="M37 30 L32 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/>
+  <path d="M83 30 L88 28" stroke="#e0e0e0" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- Eyes behind glasses -->
+  <circle cx="45" cy="31" r="4" fill="#0a0f1a"/>
+  <circle cx="75" cy="31" r="4" fill="#0a0f1a"/>
+  <!-- Eye glow (cyan) -->
+  <circle cx="46" cy="30" r="1.5" fill="#00e5cc"/>
+  <circle cx="76" cy="30" r="1.5" fill="#00e5cc"/>
+  
+  <!-- Headset band -->
+  <path d="M30 24 Q30 12 60 10 Q90 12 90 24" stroke="#555" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Left earpiece -->
+  <rect x="26" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/>
+  <!-- Right earpiece -->
+  <rect x="87" y="22" width="7" height="10" rx="3" fill="#333" stroke="#555" stroke-width="0.5"/>
+  <!-- Mic boom -->
+  <path d="M27 30 Q20 35 22 40" stroke="#555" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+  <circle cx="22" cy="41" r="2.5" fill="#333" stroke="#00e5cc" stroke-width="0.5"/>
+  
+  <!-- Small marketing icons floating -->
+  <!-- Graph trending up -->
+  <path d="M100 15 L104 12 L107 14 L112 8" stroke="#00e5cc" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+  <circle cx="112" cy="8" r="1.5" fill="#00e5cc" opacity="0.5"/>
+  
+  <!-- Target/bullseye -->
+  <circle cx="10" cy="18" r="4" stroke="#ff4d4d" stroke-width="0.8" fill="none" opacity="0.4"/>
+  <circle cx="10" cy="18" r="2" stroke="#ff4d4d" stroke-width="0.8" fill="none" opacity="0.4"/>
+  <circle cx="10" cy="18" r="0.8" fill="#ff4d4d" opacity="0.4"/>
+</svg>
