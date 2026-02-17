@@ -14,9 +14,17 @@ import {
   sendTelegramResponse,
   sendTypingAction,
 } from '@/lib/telegram/router';
+import { createClient } from '@supabase/supabase-js';
 
 const WEBHOOK_SECRET = process.env.TELEGRAM_WEBHOOK_SECRET;
 const PLATFORM_BOT_TOKEN = process.env.PLATFORM_TELEGRAM_BOT_TOKEN!;
+
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
+  { auth: { autoRefreshToken: false, persistSession: false } }
+);
 
 export async function POST(request: NextRequest) {
   // Verify webhook secret if configured
@@ -87,8 +95,9 @@ export async function POST(request: NextRequest) {
         `👋 Welcome to Claw4Growth!\n\n` +
         `I don't see a paired account for your Telegram. To get started:\n\n` +
         `1. Go to claw4growth.com and complete the onboarding\n` +
-        `2. After deployment, you'll get a pairing code\n` +
-        `3. Send me: /start YOUR_CODE`
+        `2. After deployment, you'll receive a pairing code\n` +
+        `3. Send me: /start YOUR_CODE\n\n` +
+        `Already have a code? Send it now: /start YOUR_CODE`
       );
       return NextResponse.json({ ok: true });
     }
@@ -154,15 +163,38 @@ async function handleStartCommand(
 
   // Attempt to approve the pairing
   try {
-    const success = await approvePairing(pairingCode, telegramId);
-    if (success) {
+    const result = await approvePairing(pairingCode, telegramId);
+
+    if (result.success && result.instanceId) {
+      // 1. Get container details (for URL)
+      const container = await findContainerForTelegramUser(telegramId);
+      const dashboardUrl = container ? `${container.containerUrl}/dashboard` : 'https://claw4growth.com/dashboard';
+
+      // 2. Get operator name
+      let operatorName = 'Your Operator';
+      try {
+        const { data: config } = await supabaseAdmin
+          .from('c4g_instance_configs')
+          .select('onboarding_data')
+          .eq('instance_id', result.instanceId)
+          .single();
+
+        if (config?.onboarding_data?.operatorName) {
+          operatorName = config.onboarding_data.operatorName;
+        }
+      } catch (err) {
+        console.error('Error fetching operator name:', err);
+      }
+
+      // 3. Send welcome message
       await sendTelegramResponse(chatId,
-        `✅ *Account paired successfully!*\n\n` +
-        `Your AI marketing operator is now connected to this chat.\n\n` +
-        `Try sending me a task like:\n` +
-        `• "Write 3 Instagram captions for my new product launch"\n` +
-        `• "Create a weekly content calendar for next week"\n` +
-        `• "Analyze my brand positioning and suggest improvements"`
+        `✅ *Connected Successfully!*\n\n` +
+        `👋 Hi ${firstName}, I'm *${operatorName}*.\n` +
+        `I'm your new AI marketing team member.\n\n` +
+        `🚀 *Unlock my full potential:*\n` +
+        `I work best when connected to your tools (LinkedIn, Meta, Google, etc).\n\n` +
+        `👉 [Connect your apps here](${dashboardUrl})\n\n` +
+        `Once you're ready, just ask me to start working!`
       );
     } else {
       await sendTelegramResponse(chatId,

@@ -87,7 +87,7 @@ export async function generatePairingCode(
 export async function approvePairing(
   code: string,
   telegramId: number
-): Promise<boolean> {
+): Promise<{ success: boolean; instanceId?: string; userId?: string }> {
   // Find pending, non-expired pairing with this code
   const { data: pairing } = await supabaseAdmin
     .from(TABLE)
@@ -97,7 +97,7 @@ export async function approvePairing(
     .single();
 
   if (!pairing) {
-    return false;
+    return { success: false };
   }
 
   // Check if expired
@@ -109,7 +109,7 @@ export async function approvePairing(
       .from(TABLE)
       .update({ status: 'expired' })
       .eq('id', pairing.id);
-    return false;
+    return { success: false };
   }
 
   // Approve pairing
@@ -121,7 +121,15 @@ export async function approvePairing(
     })
     .eq('id', pairing.id);
 
-  return !error;
+  if (error) {
+    return { success: false };
+  }
+
+  return {
+    success: true,
+    instanceId: pairing.instance_id,
+    userId: pairing.user_id
+  };
 }
 
 /**
