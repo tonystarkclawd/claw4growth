@@ -31,7 +31,7 @@ export function getCaddyLabels(subdomain: string): Record<string, string> {
     const domain = `${subdomain}.claw4growth.com`;
     return {
         'caddy': domain,
-        'caddy.reverse_proxy': '{{upstreams 3000}}',
+        'caddy.reverse_proxy': '{{upstreams 18789}}',
         'managed-by': 'claw4growth',
         'c4g.subdomain': subdomain,
     };

@@ -79,7 +79,8 @@ async function deployCaddy() {
             },
             Env: [
                 'CADDY_INGRESS_NETWORKS=caddy'
-            ]
+            ],
+            Dns: ['8.8.8.8', '8.8.4.4']
         });
 
         await container.start();
