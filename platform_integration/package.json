@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@composio/client": "^0.1.0-alpha.56",
     "@supabase/supabase-js": "^2.49.1",
     "@types/dockerode": "^4.0.1",
     "dockerode": "^4.0.9",
