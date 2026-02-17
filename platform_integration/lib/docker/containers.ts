@@ -271,6 +271,34 @@ export async function createAndStartContainer(
     // Start the container
     await container.start();
 
+    // Deploy socat sidecar to expose OpenClaw on 0.0.0.0.
+    // OpenClaw binds only to 127.0.0.1:18789 (hardcoded). The sidecar
+    // shares the container's network namespace and forwards
+    // 0.0.0.0:<deployedProductPort> → 127.0.0.1:18789 so Caddy can reach it.
+    const OPENCLAW_INTERNAL_PORT = 18789;
+    const sidecarName = `${containerName}-sidecar`;
+    try {
+      // Remove existing sidecar if any
+      try { await docker.getContainer(sidecarName).remove({ force: true }); } catch { /* not found */ }
+
+      await ensureImageExists(docker, 'alpine:latest');
+      const sidecar = await docker.createContainer({
+        Image: 'alpine:latest',
+        name: sidecarName,
+        Cmd: ['sh', '-c', `apk add --no-cache socat && exec socat TCP-LISTEN:${brandConfig.app.deployedProductPort},fork,bind=0.0.0.0,reuseaddr TCP:127.0.0.1:${OPENCLAW_INTERNAL_PORT}`],
+        HostConfig: {
+          NetworkMode: `container:${container.id}`,
+          RestartPolicy: { Name: 'unless-stopped' },
+        },
+        Labels: { 'managed-by': 'claw4growth', 'c4g.role': 'sidecar', 'c4g.parent': containerName },
+      });
+      await sidecar.start();
+      console.log(`[docker] Sidecar ${sidecarName} started (0.0.0.0:${brandConfig.app.deployedProductPort} → 127.0.0.1:${OPENCLAW_INTERNAL_PORT})`);
+    } catch (sidecarErr) {
+      console.error(`[docker] Sidecar failed (non-fatal):`, sidecarErr);
+      // Non-fatal: container is running, just not reachable via Caddy yet
+    }
+
     return container.id;
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
@@ -371,6 +399,11 @@ export async function removeContainer(containerId: string): Promise<void> {
     // Inspect before removing to get container name for network cleanup
     const info = await container.inspect().catch(() => null);
     const containerName = info?.Name?.replace(/^\//, '') || containerId;
+
+    // Remove sidecar if exists
+    try {
+      await docker.getContainer(`${containerName}-sidecar`).remove({ force: true });
+    } catch { /* sidecar may not exist */ }
 
     // Remove the container and its volumes
     await container.remove({ v: true });
