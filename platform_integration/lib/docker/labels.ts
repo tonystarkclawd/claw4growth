@@ -3,6 +3,7 @@
  */
 
 import type { SubscriptionTier } from '@/types/billing';
+import { brandConfig } from '@/lib/config/brand';
 
 export const LABELS = {
     APP: 'c4g.app',
@@ -31,7 +32,7 @@ export function getCaddyLabels(subdomain: string): Record<string, string> {
     const domain = `${subdomain}.claw4growth.com`;
     return {
         'caddy': domain,
-        'caddy.reverse_proxy': '{{upstreams 18789}}',
+        'caddy.reverse_proxy': `{{upstreams ${brandConfig.app.deployedProductPort}}}`,
         'managed-by': 'claw4growth',
         'c4g.subdomain': subdomain,
     };

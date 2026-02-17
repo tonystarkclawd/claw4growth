@@ -2,7 +2,7 @@ export const brandConfig = {
     app: {
         name: 'Claw4Growth',
         deployedProduct: 'OpenClaw',
-        deployedProductPort: 3000,
+        deployedProductPort: 18789,
         tagline: 'Your AI Marketing Operator',
         supportEmail: 'hello@claw4growth.com',
     },

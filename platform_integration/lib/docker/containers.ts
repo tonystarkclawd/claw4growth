@@ -172,11 +172,8 @@ export async function createAndStartContainer(
     const productSlug = brandConfig.app.deployedProduct.toLowerCase().replace(/\s+/g, '-');
     const containerName = `${productSlug}-${userId}`;
 
-    // Determine memory limit for NODE_OPTIONS (approx 75% of container limit)
-    const memLimitBytes = (getContainerResourceLimits(options?.tier).Memory as number) || 2048 * 1024 * 1024;
-    const maxOldSpace = Math.floor(memLimitBytes / 1024 / 1024 * 0.75); // 75% of limit in MB
-
-    envArray.push(`NODE_OPTIONS=--max-old-space-size=${maxOldSpace}`);
+    // NOTE: Do NOT set NODE_OPTIONS here. OpenClaw manages its own memory
+    // internally and injecting --max-old-space-size causes startup crashes.
 
     // Create Docker volumes with size limits (tmpfs-backed, 1GB each)
     const configVolumeName = `${containerName}-config`;
