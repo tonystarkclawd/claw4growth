@@ -330,8 +330,11 @@ async function triggerDeploy() {
         composioEntityId: state.operatorName ? state.operatorName.replace(/\s+/g, '_').toLowerCase() : null,
     };
 
+    // Use relative /api/deploy (works on both localhost and production domain)
+    const apiUrl = '/api/deploy';
+
     try {
-        const response = await fetch('/api/deploy', {
+        const response = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(deployData),
@@ -344,49 +347,32 @@ async function triggerDeploy() {
             state.subdomain = result.subdomain;
             saveState();
 
+            // Show the power mascot glow-up
             setTimeout(() => {
                 const loadingEl = document.getElementById('deployLoading');
                 const doneEl = document.getElementById('deployDone');
                 if (loadingEl) loadingEl.style.display = 'none';
                 if (doneEl) doneEl.style.display = 'block';
 
-                // Build pairing UI
-                const pairingCode = result.pairingCode;
-                const botUsername = result.telegramBotUsername || 'Claw4GrowthBot';
-                const deepLink = pairingCode
-                    ? `https://t.me/${botUsername}?start=${pairingCode}`
-                    : `https://t.me/${botUsername}`;
+                // Update deploy message with operator name
+                const msgEl = document.getElementById('deployMessage');
+                if (msgEl && state.operatorName) {
+                    msgEl.textContent = state.operatorName + ' is ready to work';
+                }
 
-                setTimeout(() => {
-                    const container = document.querySelector('.ob-deploy-container');
-                    if (container) {
-                        container.innerHTML = `
-                            <div class="ob-deploy-success">
-                                <div class="ob-deploy-icon">⚡</div>
-                                <h3>Your AI Marketing Team is Live!</h3>
-                                <p>Your operator <strong>${state.operatorName}</strong> is being deployed.</p>
-                                
-                                <div style="margin: 24px 0; padding: 20px; background: rgba(0,229,204,0.08); border: 1px solid rgba(0,229,204,0.3); border-radius: 8px;">
-                                    <p style="margin: 0 0 12px 0; font-size: 11px; letter-spacing: 1px; color: var(--cyan, #00e5cc);">CONNECT VIA TELEGRAM</p>
-                                    ${pairingCode ? `
-                                        <p style="margin: 0 0 8px 0; font-size: 13px;">Your pairing code:</p>
-                                        <div style="font-family: var(--font-mono, 'JetBrains Mono', monospace); font-size: 28px; letter-spacing: 6px; color: var(--accent, #00ff41); margin: 8px 0 16px 0;">${pairingCode}</div>
-                                    ` : ''}
-                                    <a href="${deepLink}" target="_blank" class="ob-btn" style="display: inline-block; text-decoration: none; margin: 0;">
-                                        📱 OPEN IN TELEGRAM
-                                    </a>
-                                    <p style="margin: 12px 0 0 0; font-size: 11px; color: var(--text-muted, #666);">
-                                        Tap the button above → it opens @${botUsername} → your operator is ready to chat
-                                    </p>
-                                </div>
-                                
-                                <a href="${result.url}/dashboard" class="ob-btn" style="display: inline-block; text-decoration: none; background: transparent; border: 1px solid var(--border, #333);">
-                                    OPEN DASHBOARD
-                                </a>
-                            </div>`;
-                    }
-                }, 2000);
-            }, 800);
+                // Update Telegram link with pairing deep link
+                const telegramLinkEl = document.getElementById('telegramLink');
+                const botUsername = result.telegramBotUsername || 'Claw4Growth_bot';
+                const pairingCode = result.pairingCode;
+                const deepLink = pairingCode
+                    ? 'https://t.me/' + botUsername + '?start=' + pairingCode
+                    : 'https://t.me/' + botUsername;
+
+                if (telegramLinkEl) {
+                    telegramLinkEl.href = deepLink;
+                    telegramLinkEl.target = '_blank';
+                }
+            }, 1200);
         } else {
             showDeployError(result.error || 'Deploy failed');
         }
