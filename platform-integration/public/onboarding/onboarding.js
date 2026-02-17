@@ -13,7 +13,7 @@ const savedState = JSON.parse(localStorage.getItem('c4g_onboarding_state') || '{
 
 const state = {
     screen: savedState.screen || 1,
-    totalScreens: 7,
+    totalScreens: 6, // Screen 6 (Connect Tools) removed from flow
     userId: savedState.userId || null,
     userEmail: savedState.userEmail || null,
     operatorName: savedState.operatorName || '',
@@ -76,7 +76,8 @@ function goToScreen(n) {
         state.paid = true;
         saveState();
         setTimeout(function () {
-            goToScreen(6);
+            goToScreen(7);
+            simulateDeploy();
         }, 100);
         return;
     }
@@ -95,7 +96,7 @@ function goToScreen(n) {
     // If no URL params but saved state exists, restore to saved screen (skip payment if already paid)
     else if (state.screen > 1) {
         if (state.screen === 5 && state.paid) {
-            setTimeout(function () { goToScreen(6); }, 100);
+            setTimeout(function () { goToScreen(7); simulateDeploy(); }, 100);
         } else {
             setTimeout(function () { goToScreen(state.screen); }, 100);
         }
@@ -223,9 +224,10 @@ function selectTone(el) {
 function saveToneAndContinue() {
     if (!state.tone) return;
     saveState();
-    // Skip payment if already paid
+    // Skip payment if already paid — go directly to deploy
     if (state.paid) {
-        goToScreen(6);
+        goToScreen(7);
+        simulateDeploy();
     } else {
         goToScreen(5);
     }
