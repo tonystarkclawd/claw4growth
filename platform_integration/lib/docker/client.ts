@@ -1,31 +1,34 @@
-/**
- * Docker client for managing containers on the VPS.
- * Uses Dockerode to connect to the Docker daemon.
- * 
- * In production, DOCKER_HOST should point to the VPS Docker socket.
- * For Vercel deployment (no Docker), calls will fail gracefully at runtime.
- */
-
 import Docker from 'dockerode';
 
-let _client: Docker | null = null;
-
+/**
+ * Creates a Docker client connected to the Hetzner VPS via TLS.
+ *
+ * Required env vars:
+ *   DOCKER_HOST_IP - IP of the Hetzner VPS (e.g. 168.119.156.2)
+ *   DOCKER_TLS_CA - CA certificate (PEM string)
+ *   DOCKER_TLS_CERT - Client certificate (PEM string)
+ *   DOCKER_TLS_KEY - Client private key (PEM string)
+ */
 export function getDockerClient(): Docker {
-    if (!_client) {
-        const socketPath = process.env.DOCKER_SOCKET || '/var/run/docker.sock';
-        const host = process.env.DOCKER_HOST;
-        const port = process.env.DOCKER_PORT ? parseInt(process.env.DOCKER_PORT) : undefined;
+    const host = process.env.DOCKER_HOST_IP;
+    const ca = process.env.DOCKER_TLS_CA;
+    const cert = process.env.DOCKER_TLS_CERT;
+    const key = process.env.DOCKER_TLS_KEY;
 
-        if (host) {
-            _client = new Docker({ host, port: port || 2376 });
-        } else {
-            _client = new Docker({ socketPath });
-        }
+    if (!host || !ca || !cert || !key) {
+        console.warn(
+            'Docker TLS credentials not configured. Container operations will fail.',
+            { host: !!host, ca: !!ca, cert: !!cert, key: !!key }
+        );
+        // Return a client that will fail on use — better than crashing at import time
+        return new Docker();
     }
-    return _client;
-}
 
-export async function listContainers(): Promise<Docker.ContainerInfo[]> {
-    const docker = getDockerClient();
-    return docker.listContainers({ all: true });
+    return new Docker({
+        host,
+        port: 2376,
+        ca,
+        cert,
+        key,
+    });
 }
