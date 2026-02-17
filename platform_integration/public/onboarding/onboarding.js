@@ -57,9 +57,30 @@ function goToScreen(n) {
         if (accessToken) {
             localStorage.setItem('c4g_access_token', accessToken);
             localStorage.setItem('c4g_logged_in', 'true');
-            // Clean URL and go to screen 2
-            window.history.replaceState({}, '', window.location.pathname);
-            setTimeout(function () { goToScreen(2); }, 100);
+
+            // Fetch user details to get ID and Email
+            fetch(SUPABASE_URL + '/auth/v1/user', {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + accessToken
+                }
+            })
+                .then(r => r.json())
+                .then(user => {
+                    if (user && user.id) {
+                        state.userId = user.id;
+                        state.userEmail = user.email;
+                        localStorage.setItem('c4g_user_id', user.id);
+                        localStorage.setItem('c4g_user_email', user.email);
+                        saveState();
+                    }
+                })
+                .catch(e => console.error('Error fetching user:', e))
+                .finally(() => {
+                    // Clean URL and go to screen 2
+                    window.history.replaceState({}, '', window.location.pathname);
+                    setTimeout(function () { goToScreen(2); }, 100);
+                });
             return;
         }
     }
@@ -396,3 +417,33 @@ function retryDeploy() {
     if (doneEl) doneEl.style.display = 'none';
     simulateDeploy();
 }
+
+// Ensure user profile is loaded if token exists but ID is missing
+// This handles page reloads where auth callback isn't triggered
+function ensureUserProfile() {
+    const token = localStorage.getItem('c4g_access_token');
+    const userId = localStorage.getItem('c4g_user_id');
+    
+    if (token && !userId) {
+         fetch(SUPABASE_URL + '/auth/v1/user', {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+            .then(r => r.json())
+            .then(user => {
+                if (user && user.id) {
+                    state.userId = user.id;
+                    state.userEmail = user.email;
+                    localStorage.setItem('c4g_user_id', user.id);
+                    localStorage.setItem('c4g_user_email', user.email);
+                    saveState();
+                    console.log('User profile recovered:', user.id);
+                }
+            })
+            .catch(err => console.error('Failed to recover user profile:', err));
+    }
+}
+// Run check on load
+ensureUserProfile();
