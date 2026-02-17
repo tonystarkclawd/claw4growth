@@ -12,6 +12,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { randomBytes } from 'crypto';
 import { generatePairingCode } from '@/lib/telegram/pairing';
+import { createAndStartContainer } from '@/lib/docker/containers';
+import { OnboardingData } from '@/lib/memory/memory-generator';
 
 // Service role client for admin operations
 const supabaseAdmin = createClient(
@@ -173,42 +175,44 @@ async function provisionContainer(
   console.log(`[provision] Starting for instance ${instanceId}`);
   console.log(`[provision] Onboarding data:`, JSON.stringify(config.onboardingData || {}));
 
-  // TODO: Replace with real Docker provisioning:
-  //
-  // import { createAndStartContainer } from '@/lib/docker/containers';
-  // 
-  // const containerId = await createAndStartContainer(
-  //   config.userId,
-  //   subdomain,
-  //   {
-  //     OPENCLAW_API_KEY: process.env.OPENCLAW_API_KEY,
-  //     USER_ID: config.userId,
-  //     INSTANCE_ID: instanceId,
-  //   },
-  //   {
-  //     openclawModelId: 'minimax/minimax-latest',
-  //     onboardingData: config.onboardingData,
-  //   }
-  // );
-  //
-  // await supabaseAdmin
-  //   .from('c4g_instances')
-  //   .update({ container_id: containerId, status: 'running' })
-  //   .eq('id', instanceId);
+  try {
+    const containerId = await createAndStartContainer(
+      config.userId,
+      subdomain,
+      {
+        MINIMAX_API_KEY: process.env.MINIMAX_API_KEY || '',
+        COMPOSIO_API_KEY: process.env.COMPOSIO_API_KEY || '',
+        USER_ID: config.userId,
+        INSTANCE_ID: instanceId,
+        ...(config.composioEntityId ? { COMPOSIO_ENTITY_ID: config.composioEntityId } : {}),
+      },
+      {
+        openclawModelId: 'minimax/minimax-latest', // Default to MiniMax
+        onboardingData: (config.onboardingData as unknown) as OnboardingData,
+      }
+    );
 
-  // Simulated provisioning delay
-  await new Promise(resolve => setTimeout(resolve, 5000));
+    await supabaseAdmin
+      .from('c4g_instances')
+      .update({
+        container_id: containerId,
+        status: 'running',
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', instanceId);
 
-  // Update status to running
-  await supabaseAdmin
-    .from('c4g_instances')
-    .update({
-      status: 'running',
-      updated_at: new Date().toISOString(),
-    })
-    .eq('id', instanceId);
-
-  console.log(`[provision] Instance ${instanceId} is now running`);
+    console.log(`[provision] Instance ${instanceId} is now running (container: ${containerId})`);
+  } catch (err: unknown) {
+    console.error(`[provision] Failed for instance ${instanceId}:`, err);
+    // Mark instance as failed so user can retry or contact support
+    await supabaseAdmin
+      .from('c4g_instances')
+      .update({
+        status: 'stopped', // or 'failed' if enum supports it
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', instanceId);
+  }
 }
 
 export async function GET(request: NextRequest) {
