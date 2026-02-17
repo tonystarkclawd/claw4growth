@@ -22,14 +22,35 @@ const supabaseAdmin = createClient(
   { auth: { autoRefreshToken: false, persistSession: false } }
 );
 
-function generateSubdomain(): string {
+function generateSubdomain(baseName: string = ''): string {
+  // Slugify the base name: lowercase, remove non-alphanumeric, replace spaces with hyphens
+  const slug = baseName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .slice(0, 20); // Limit length
+
+  // Generate short random suffix (4 chars) for uniqueness
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
-  const bytes = randomBytes(8);
-  let subdomain = '';
-  for (let i = 0; i < 8; i++) {
-    subdomain += chars[bytes[i] % chars.length];
+  const bytes = randomBytes(4);
+  let suffix = '';
+  for (let i = 0; i < 4; i++) {
+    suffix += chars[bytes[i] % chars.length];
   }
-  return subdomain;
+
+  // If we have a valid slug, use it + suffix. Otherwise fallback to random 8 chars.
+  if (slug.length > 0) {
+    return `${slug}-${suffix}`;
+  }
+
+  // Fallback
+  const fallbackBytes = randomBytes(8);
+  let fallback = '';
+  for (let i = 0; i < 8; i++) {
+    fallback += chars[fallbackBytes[i] % chars.length];
+  }
+  return fallback;
 }
 
 function encrypt(text: string): string {
@@ -71,8 +92,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate unique subdomain
-    const subdomain = generateSubdomain();
+    // Generate human-readable subdomain (e.g. "my-brand-8x2a")
+    const brandName = onboardingData?.companyName || onboardingData?.operatorName || '';
+    const subdomain = generateSubdomain(brandName);
 
     // Create instance record
     const { data: instance, error: instanceError } = await supabaseAdmin
