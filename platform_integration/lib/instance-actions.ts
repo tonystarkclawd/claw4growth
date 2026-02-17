@@ -1,6 +1,6 @@
 'use server';
 
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import {
   getUserInstance,
   createInstance,
@@ -39,7 +39,7 @@ type ActionResponse = {
  * Authenticates the current user and returns user object
  */
 async function authenticateUser() {
-  const supabase = await createClient();
+  const supabase = createServerClient();
   const { data: { user }, error } = await supabase.auth.getUser();
 
   if (error || !user) {
@@ -161,8 +161,8 @@ export async function deployInstance(formData: FormData): Promise<ActionResponse
 
         // Resolve OpenClaw model ID and subscription tier for container creation
         const selectedModel = getModelById(config.modelPreference || DEFAULT_MODEL_ID);
-        const openclawModelId = selectedModel ? getOpenClawModelId(selectedModel) : undefined;
-        const tier = await getSubscriptionTierByUserId(user.id) ?? undefined;
+        const openclawModelId = selectedModel ? getOpenClawModelId(selectedModel.id) : undefined;
+        const tier = (await getSubscriptionTierByUserId(user.id) ?? undefined) as import('@/types/billing').SubscriptionTier | undefined;
 
         const containerId = await createAndStartContainer(user.id, subdomain, containerEnv, {
           openclawModelId,
@@ -423,8 +423,8 @@ export async function updateApiKeysAction(formData: FormData): Promise<ActionRes
 
         // Create new container with updated keys
         const selectedModel = getModelById(config.modelPreference || DEFAULT_MODEL_ID);
-        const openclawModelId = selectedModel ? getOpenClawModelId(selectedModel) : undefined;
-        const tier = await getSubscriptionTierByUserId(user.id) ?? undefined;
+        const openclawModelId = selectedModel ? getOpenClawModelId(selectedModel.id) : undefined;
+        const tier = (await getSubscriptionTierByUserId(user.id) ?? undefined) as import('@/types/billing').SubscriptionTier | undefined;
 
         const containerId = await createAndStartContainer(user.id, instance.subdomain, containerEnv, {
           openclawModelId,
@@ -506,8 +506,8 @@ export async function updateTelegramBotTokenAction(formData: FormData): Promise<
         }
 
         const selectedModel = getModelById(config.modelPreference || DEFAULT_MODEL_ID);
-        const openclawModelId = selectedModel ? getOpenClawModelId(selectedModel) : undefined;
-        const tier = await getSubscriptionTierByUserId(user.id) ?? undefined;
+        const openclawModelId = selectedModel ? getOpenClawModelId(selectedModel.id) : undefined;
+        const tier = (await getSubscriptionTierByUserId(user.id) ?? undefined) as import('@/types/billing').SubscriptionTier | undefined;
 
         const containerId = await createAndStartContainer(user.id, instance.subdomain, containerEnv, {
           openclawModelId,

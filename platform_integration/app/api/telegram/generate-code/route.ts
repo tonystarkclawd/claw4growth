@@ -6,12 +6,12 @@
  */
 
 import { NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import { generatePairingCode } from '@/lib/telegram/pairing';
 
 export async function POST() {
   // Check authentication
-  const supabase = await createClient();
+  const supabase = createServerClient();
   const {
     data: { user },
     error: authError,

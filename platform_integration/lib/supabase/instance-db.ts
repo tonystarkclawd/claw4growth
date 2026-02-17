@@ -1,4 +1,4 @@
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import { Instance, InstanceConfig, InstanceWithConfig, InstanceStatus } from '@/types/instance';
 import { encrypt, decrypt } from '@/lib/crypto';
 import { getModelById } from '@/lib/models/available-models';
@@ -13,7 +13,7 @@ import { getModelById } from '@/lib/models/available-models';
  * @throws {Error} If Supabase query fails
  */
 export async function getUserInstance(): Promise<InstanceWithConfig | null> {
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   const { data, error } = await supabase
     .from('instances')
@@ -45,7 +45,7 @@ export async function getUserInstance(): Promise<InstanceWithConfig | null> {
  * @throws {Error} If user already has an instance or Supabase query fails
  */
 export async function createInstance(subdomain: string): Promise<Instance> {
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   // Get the authenticated user ID
   const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -89,7 +89,7 @@ export async function updateInstanceStatus(
   containerId?: string,
   errorMessage?: string
 ): Promise<void> {
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   const updates: Partial<Instance> = {
     status,
@@ -121,7 +121,7 @@ export async function updateInstanceStatus(
  * @throws {Error} If Supabase query fails
  */
 export async function deleteInstance(instanceId: string): Promise<void> {
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   const { error } = await supabase
     .from('instances')
@@ -152,7 +152,7 @@ export async function upsertInstanceConfig(
     modelPreference?: string;
   }
 ): Promise<void> {
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   const configData: Partial<InstanceConfig> = {
     instance_id: instanceId,
@@ -205,7 +205,7 @@ export async function getInstanceConfig(
   telegramBotToken: string | null;
   modelPreference: string;
 }> {
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   const { data, error } = await supabase
     .from('instance_configs')
@@ -264,7 +264,7 @@ export async function updateModelPreference(modelId: string): Promise<boolean> {
     throw new Error(`Invalid model ID: ${modelId}`);
   }
 
-  const supabase = await createClient();
+  const supabase = createServerClient();
 
   // Get the authenticated user's instance
   const instance = await getUserInstance();

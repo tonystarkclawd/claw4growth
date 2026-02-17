@@ -6,6 +6,8 @@ const nextConfig = {
         serverActions: {
             bodySizeLimit: '2mb',
         },
+        // Exclude native Node.js modules from webpack bundling (Next.js 14 syntax)
+        serverComponentsExternalPackages: ['dockerode', 'ssh2', 'docker-modem'],
     },
 
     // Rewrites: serve the existing static HTML pages
