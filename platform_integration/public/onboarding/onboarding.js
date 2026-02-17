@@ -58,29 +58,29 @@ function goToScreen(n) {
             localStorage.setItem('c4g_access_token', accessToken);
             localStorage.setItem('c4g_logged_in', 'true');
 
-            // Fetch user details to get ID and Email
+            // Extract userId and email from Supabase session
             fetch(SUPABASE_URL + '/auth/v1/user', {
                 headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + accessToken
+                    'Authorization': 'Bearer ' + accessToken,
+                    'apikey': SUPABASE_ANON_KEY
                 }
-            })
-                .then(r => r.json())
-                .then(user => {
-                    if (user && user.id) {
-                        state.userId = user.id;
-                        state.userEmail = user.email;
-                        localStorage.setItem('c4g_user_id', user.id);
-                        localStorage.setItem('c4g_user_email', user.email);
-                        saveState();
-                    }
-                })
-                .catch(e => console.error('Error fetching user:', e))
-                .finally(() => {
-                    // Clean URL and go to screen 2
-                    window.history.replaceState({}, '', window.location.pathname);
-                    setTimeout(function () { goToScreen(2); }, 100);
-                });
+            }).then(function(r) { return r.json(); }).then(function(user) {
+                if (user && user.id) {
+                    state.userId = user.id;
+                    localStorage.setItem('c4g_user_id', user.id);
+                }
+                if (user && user.email) {
+                    state.userEmail = user.email;
+                    localStorage.setItem('c4g_user_email', user.email);
+                }
+                saveState();
+            }).catch(function(err) {
+                console.error('Failed to fetch user profile:', err);
+            });
+
+            // Clean URL and go to screen 2
+            window.history.replaceState({}, '', window.location.pathname);
+            setTimeout(function () { goToScreen(2); }, 100);
             return;
         }
     }
@@ -135,6 +135,19 @@ function goToScreen(n) {
     }
     // If no step but logged in, go to screen 2
     else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
+        // Ensure userId is loaded (might be missing if page was refreshed)
+        if (!state.userId) {
+            var token = localStorage.getItem('c4g_access_token');
+            if (token) {
+                fetch(SUPABASE_URL + '/auth/v1/user', {
+                    headers: { 'Authorization': 'Bearer ' + token, 'apikey': SUPABASE_ANON_KEY }
+                }).then(function(r) { return r.json(); }).then(function(user) {
+                    if (user && user.id) { state.userId = user.id; localStorage.setItem('c4g_user_id', user.id); }
+                    if (user && user.email) { state.userEmail = user.email; localStorage.setItem('c4g_user_email', user.email); }
+                    saveState();
+                }).catch(function(err) { console.error('Failed to fetch user profile:', err); });
+            }
+        }
         setTimeout(function () { goToScreen(2); }, 100);
     }
 })();
@@ -351,8 +364,8 @@ async function triggerDeploy() {
         composioEntityId: state.operatorName ? state.operatorName.replace(/\s+/g, '_').toLowerCase() : null,
     };
 
-    // Use relative /api/deploy (works on both localhost and production domain)
-    const apiUrl = '/api/deploy';
+    const API_BASE = 'https://app.claw4growth.com';
+    const apiUrl = API_BASE + '/api/deploy';
 
     try {
         const response = await fetch(apiUrl, {
@@ -417,33 +430,3 @@ function retryDeploy() {
     if (doneEl) doneEl.style.display = 'none';
     simulateDeploy();
 }
-
-// Ensure user profile is loaded if token exists but ID is missing
-// This handles page reloads where auth callback isn't triggered
-function ensureUserProfile() {
-    const token = localStorage.getItem('c4g_access_token');
-    const userId = localStorage.getItem('c4g_user_id');
-    
-    if (token && !userId) {
-         fetch(SUPABASE_URL + '/auth/v1/user', {
-                headers: {
-                    'apikey': SUPABASE_ANON_KEY,
-                    'Authorization': 'Bearer ' + token
-                }
-            })
-            .then(r => r.json())
-            .then(user => {
-                if (user && user.id) {
-                    state.userId = user.id;
-                    state.userEmail = user.email;
-                    localStorage.setItem('c4g_user_id', user.id);
-                    localStorage.setItem('c4g_user_email', user.email);
-                    saveState();
-                    console.log('User profile recovered:', user.id);
-                }
-            })
-            .catch(err => console.error('Failed to recover user profile:', err));
-    }
-}
-// Run check on load
-ensureUserProfile();

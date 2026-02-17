@@ -15,6 +15,30 @@ import { generatePairingCode } from '@/lib/telegram/pairing';
 import { createAndStartContainer } from '@/lib/docker/containers';
 import { OnboardingData } from '@/lib/memory/memory-generator';
 
+const ALLOWED_ORIGINS = [
+  'https://claw4growth.com',
+  'https://www.claw4growth.com',
+  'https://app.claw4growth.com',
+];
+
+function corsHeaders(request: NextRequest) {
+  const origin = request.headers.get('origin') || '';
+  const allowed = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  return {
+    'Access-Control-Allow-Origin': allowed,
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  };
+}
+
+export async function OPTIONS(request: NextRequest) {
+  return new NextResponse(null, { status: 204, headers: corsHeaders(request) });
+}
+
+function jsonWithCors(request: NextRequest, data: Record<string, unknown>, status = 200) {
+  return NextResponse.json(data, { status, headers: corsHeaders(request) });
+}
+
 // Service role client for admin operations
 const supabaseAdmin = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -72,10 +96,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     if (!userId || !email) {
-      return NextResponse.json(
-        { error: 'Missing required fields: userId, email' },
-        { status: 400 }
-      );
+      return jsonWithCors(request, { error: 'Missing required fields: userId, email' }, 400);
     }
 
     // Check if user already has an instance
@@ -86,10 +107,7 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (existingInstance) {
-      return NextResponse.json(
-        { error: 'Instance already exists for this user', instanceId: existingInstance.id },
-        { status: 409 }
-      );
+      return jsonWithCors(request, { error: 'Instance already exists for this user', instanceId: existingInstance.id }, 409);
     }
 
     // Generate human-readable subdomain (e.g. "my-brand-8x2a")
@@ -110,10 +128,7 @@ export async function POST(request: NextRequest) {
 
     if (instanceError || !instance) {
       console.error('Failed to create instance:', instanceError);
-      return NextResponse.json(
-        { error: 'Failed to create instance record' },
-        { status: 500 }
-      );
+      return jsonWithCors(request, { error: 'Failed to create instance record' }, 500);
     }
 
     // Create config record with onboarding data
@@ -132,10 +147,7 @@ export async function POST(request: NextRequest) {
       console.error('Failed to create config:', configError);
       // Rollback instance
       await supabaseAdmin.from('c4g_instances').delete().eq('id', instance.id);
-      return NextResponse.json(
-        { error: 'Failed to create instance config' },
-        { status: 500 }
-      );
+      return jsonWithCors(request, { error: 'Failed to create instance config' }, 500);
     }
 
     // Generate pairing code for the platform bot
@@ -155,7 +167,7 @@ export async function POST(request: NextRequest) {
       onboardingData,
     }).catch(console.error);
 
-    return NextResponse.json({
+    return jsonWithCors(request, {
       success: true,
       instanceId: instance.id,
       subdomain,
@@ -167,10 +179,7 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error('Deploy error:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    return jsonWithCors(request, { error: 'Internal server error' }, 500);
   }
 }
 
@@ -243,7 +252,7 @@ export async function GET(request: NextRequest) {
   const userId = searchParams.get('userId');
 
   if (!userId) {
-    return NextResponse.json({ error: 'Missing userId' }, { status: 400 });
+    return jsonWithCors(request, { error: 'Missing userId' }, 400);
   }
 
   const { data: instance } = await supabaseAdmin
@@ -253,10 +262,10 @@ export async function GET(request: NextRequest) {
     .single();
 
   if (!instance) {
-    return NextResponse.json({ exists: false });
+    return jsonWithCors(request, { exists: false });
   }
 
-  return NextResponse.json({
+  return jsonWithCors(request, {
     exists: true,
     instanceId: instance.id,
     status: instance.status,

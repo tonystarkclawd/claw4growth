@@ -57,6 +57,27 @@ function goToScreen(n) {
         if (accessToken) {
             localStorage.setItem('c4g_access_token', accessToken);
             localStorage.setItem('c4g_logged_in', 'true');
+
+            // Extract userId and email from Supabase session
+            fetch(SUPABASE_URL + '/auth/v1/user', {
+                headers: {
+                    'Authorization': 'Bearer ' + accessToken,
+                    'apikey': SUPABASE_ANON_KEY
+                }
+            }).then(function(r) { return r.json(); }).then(function(user) {
+                if (user && user.id) {
+                    state.userId = user.id;
+                    localStorage.setItem('c4g_user_id', user.id);
+                }
+                if (user && user.email) {
+                    state.userEmail = user.email;
+                    localStorage.setItem('c4g_user_email', user.email);
+                }
+                saveState();
+            }).catch(function(err) {
+                console.error('Failed to fetch user profile:', err);
+            });
+
             // Clean URL and go to screen 2
             window.history.replaceState({}, '', window.location.pathname);
             setTimeout(function () { goToScreen(2); }, 100);
@@ -114,6 +135,19 @@ function goToScreen(n) {
     }
     // If no step but logged in, go to screen 2
     else if (params.get('auth') === 'callback' || localStorage.getItem('c4g_logged_in') === 'true') {
+        // Ensure userId is loaded (might be missing if page was refreshed)
+        if (!state.userId) {
+            var token = localStorage.getItem('c4g_access_token');
+            if (token) {
+                fetch(SUPABASE_URL + '/auth/v1/user', {
+                    headers: { 'Authorization': 'Bearer ' + token, 'apikey': SUPABASE_ANON_KEY }
+                }).then(function(r) { return r.json(); }).then(function(user) {
+                    if (user && user.id) { state.userId = user.id; localStorage.setItem('c4g_user_id', user.id); }
+                    if (user && user.email) { state.userEmail = user.email; localStorage.setItem('c4g_user_email', user.email); }
+                    saveState();
+                }).catch(function(err) { console.error('Failed to fetch user profile:', err); });
+            }
+        }
         setTimeout(function () { goToScreen(2); }, 100);
     }
 })();
@@ -330,8 +364,8 @@ async function triggerDeploy() {
         composioEntityId: state.operatorName ? state.operatorName.replace(/\s+/g, '_').toLowerCase() : null,
     };
 
-    // Use relative /api/deploy (works on both localhost and production domain)
-    const apiUrl = '/api/deploy';
+    const API_BASE = 'https://app.claw4growth.com';
+    const apiUrl = API_BASE + '/api/deploy';
 
     try {
         const response = await fetch(apiUrl, {

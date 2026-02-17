@@ -16,10 +16,10 @@ export async function getUserInstance(): Promise<InstanceWithConfig | null> {
   const supabase = createServerClient();
 
   const { data, error } = await supabase
-    .from('instances')
+    .from('c4g_instances')
     .select(`
       *,
-      config:instance_configs(*)
+      config:c4g_instance_configs(*)
     `)
     .single();
 
@@ -55,7 +55,7 @@ export async function createInstance(subdomain: string): Promise<Instance> {
   }
 
   const { data, error } = await supabase
-    .from('instances')
+    .from('c4g_instances')
     .insert({
       user_id: user.id,
       subdomain,
@@ -105,7 +105,7 @@ export async function updateInstanceStatus(
   }
 
   const { error } = await supabase
-    .from('instances')
+    .from('c4g_instances')
     .update(updates)
     .eq('id', instanceId);
 
@@ -124,7 +124,7 @@ export async function deleteInstance(instanceId: string): Promise<void> {
   const supabase = createServerClient();
 
   const { error } = await supabase
-    .from('instances')
+    .from('c4g_instances')
     .delete()
     .eq('id', instanceId);
 
@@ -182,7 +182,7 @@ export async function upsertInstanceConfig(
   }
 
   const { error } = await supabase
-    .from('instance_configs')
+    .from('c4g_instance_configs')
     .upsert(configData, { onConflict: 'instance_id' });
 
   if (error) {
@@ -208,7 +208,7 @@ export async function getInstanceConfig(
   const supabase = createServerClient();
 
   const { data, error } = await supabase
-    .from('instance_configs')
+    .from('c4g_instance_configs')
     .select('*')
     .eq('instance_id', instanceId)
     .single();
@@ -274,7 +274,7 @@ export async function updateModelPreference(modelId: string): Promise<boolean> {
 
   // Update the model preference
   const { error } = await supabase
-    .from('instance_configs')
+    .from('c4g_instance_configs')
     .upsert({
       instance_id: instance.id,
       model_preference: modelId,
