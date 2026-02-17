@@ -81,15 +81,20 @@ export async function POST(request: NextRequest) {
 
         // Fetch the subscription details from Stripe
         const subscription = await stripe.subscriptions.retrieve(subscriptionId);
+        const firstItem = subscription.items.data[0];
 
         await upsertSubscription({
           user_id: userId,
           stripe_customer_id: customerId,
           stripe_subscription_id: subscriptionId,
-          stripe_price_id: subscription.items.data[0]?.price.id || null,
+          stripe_price_id: firstItem?.price.id || null,
           status: 'active',
-          current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-          current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+          current_period_start: firstItem?.current_period_start
+            ? new Date(firstItem.current_period_start * 1000).toISOString()
+            : new Date().toISOString(),
+          current_period_end: firstItem?.current_period_end
+            ? new Date(firstItem.current_period_end * 1000).toISOString()
+            : null,
         });
 
         console.log(`[stripe-webhook] Subscription created for user ${userId}`);
@@ -108,13 +113,18 @@ export async function POST(request: NextRequest) {
           .single();
 
         if (existingSub) {
+          const item = subscription.items.data[0];
           await upsertSubscription({
             user_id: existingSub.user_id,
             stripe_customer_id: customerId,
             stripe_subscription_id: subscription.id,
             status: subscription.status === 'active' ? 'active' : subscription.status === 'past_due' ? 'past_due' : 'unpaid',
-            current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-            current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+            current_period_start: item?.current_period_start
+              ? new Date(item.current_period_start * 1000).toISOString()
+              : undefined,
+            current_period_end: item?.current_period_end
+              ? new Date(item.current_period_end * 1000).toISOString()
+              : undefined,
           });
           console.log(`[stripe-webhook] Subscription updated for user ${existingSub.user_id}`);
         }
