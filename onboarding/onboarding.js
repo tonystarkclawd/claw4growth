@@ -399,7 +399,7 @@ async function triggerDeploy() {
 function showDeployError(message) {
     const container = document.querySelector('.ob-deploy-container');
     if (container) {
-        container.innerHTML = `<div class="ob-deploy-success"><div class="ob-deploy-icon" style="color:#ff5555;">✗</div><h3>Deploy Failed</h3><p>${message}</p><button class="ob-btn" onclick="retryDeploy()">RETRY</button></div>`;
+        container.innerHTML = `<div class="ob-deploy-success"><div class="ob-deploy-icon" style="color:#ff5555;">✗</div><h3>Deploy Failed</h3><p>${message}</p><button class="ob-btn" onclick="retryDeploy()">RETRY</button><p style="margin-top:20px; font-size:11px; color:#666; font-family:var(--font-mono, monospace);">Persistent issues? Contact <a href="mailto:hello@claw4growth.com" style="color:var(--yellow, #f5c842);">hello@claw4growth.com</a></p></div>`;
     }
 }
 
