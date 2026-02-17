@@ -32,21 +32,22 @@ const docker = new Docker({
     key: env.DOCKER_TLS_KEY,
 });
 
-async function debug() {
-    console.log('🔍 Connecting to VPS Docker...');
+async function checkPorts() {
+    console.log('🕵️‍♀️ Checking VPS ports via temporary container...');
     try {
-        const containers = await docker.listContainers({ all: true });
-        console.log(`Found ${containers.length} containers.`);
-
-        containers.forEach(c => {
-            console.log(`\n📦 ${c.Names[0]} (${c.Image})`);
-            console.log(`   Status: ${c.Status}`);
-            console.log(`   Ports: ${JSON.stringify(c.Ports)}`);
-        });
-
+        // Run busybox with host networking to check ports
+        await docker.run(
+            'busybox',
+            ['netstat', '-tulpn'],
+            process.stdout,
+            {
+                HostConfig: { NetworkMode: 'host' },
+                AutoRemove: true
+            }
+        );
     } catch (err) {
-        console.error('❌ Error debugging VPS:', err);
+        console.error('❌ Error checking ports:', err);
     }
 }
 
-debug();
+checkPorts();

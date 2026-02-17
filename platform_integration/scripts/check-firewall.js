@@ -32,21 +32,28 @@ const docker = new Docker({
     key: env.DOCKER_TLS_KEY,
 });
 
-async function debug() {
-    console.log('🔍 Connecting to VPS Docker...');
+async function checkUFW() {
+    console.log('🛡️ Checking UFW Status...');
     try {
-        const containers = await docker.listContainers({ all: true });
-        console.log(`Found ${containers.length} containers.`);
+        // 1. Pull alpine if needed
+        await docker.pull('alpine:latest');
 
-        containers.forEach(c => {
-            console.log(`\n📦 ${c.Names[0]} (${c.Image})`);
-            console.log(`   Status: ${c.Status}`);
-            console.log(`   Ports: ${JSON.stringify(c.Ports)}`);
-        });
-
+        // 2. Run ufw status via privileged container
+        await docker.run(
+            'alpine:latest',
+            ['sh', '-c', 'apk add --no-cache ufw; ufw status; echo "Checked UFW"'],
+            process.stdout,
+            {
+                HostConfig: {
+                    NetworkMode: 'host',
+                    Privileged: true
+                },
+                AutoRemove: true
+            }
+        );
     } catch (err) {
-        console.error('❌ Error debugging VPS:', err);
+        console.error('❌ Error checking UFW:', err);
     }
 }
 
-debug();
+checkUFW();

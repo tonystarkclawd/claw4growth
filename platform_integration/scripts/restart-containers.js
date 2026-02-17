@@ -32,21 +32,35 @@ const docker = new Docker({
     key: env.DOCKER_TLS_KEY,
 });
 
-async function debug() {
-    console.log('🔍 Connecting to VPS Docker...');
+async function restartContainers() {
+    console.log('🔄 Restarting Caddy and OpenClaw containers...');
     try {
         const containers = await docker.listContainers({ all: true });
-        console.log(`Found ${containers.length} containers.`);
 
-        containers.forEach(c => {
-            console.log(`\n📦 ${c.Names[0]} (${c.Image})`);
-            console.log(`   Status: ${c.Status}`);
-            console.log(`   Ports: ${JSON.stringify(c.Ports)}`);
-        });
+        // Find containers to restart
+        const targets = containers.filter(c =>
+            c.Names.some(n => n.includes('caddy') || n.includes('openclaw'))
+        );
+
+        if (targets.length === 0) {
+            console.log('⚠️ No relevant containers found to restart.');
+            return;
+        }
+
+        for (const c of targets) {
+            console.log(`🚀 Starting ${c.Names[0]} (${c.Status})...`);
+            try {
+                await docker.getContainer(c.Id).start();
+                console.log('   ✅ Started');
+            } catch (err) {
+                console.error(`   ❌ Failed: ${err.message}`);
+            }
+        }
+        console.log('Done.');
 
     } catch (err) {
-        console.error('❌ Error debugging VPS:', err);
+        console.error('❌ Error restarting containers:', err);
     }
 }
 
-debug();
+restartContainers();

@@ -32,21 +32,38 @@ const docker = new Docker({
     key: env.DOCKER_TLS_KEY,
 });
 
-async function debug() {
-    console.log('🔍 Connecting to VPS Docker...');
+async function debugCaddy() {
+    console.log('🔍 Connecting to VPS Docker (Caddy Logs)...');
     try {
         const containers = await docker.listContainers({ all: true });
-        console.log(`Found ${containers.length} containers.`);
 
-        containers.forEach(c => {
-            console.log(`\n📦 ${c.Names[0]} (${c.Image})`);
-            console.log(`   Status: ${c.Status}`);
-            console.log(`   Ports: ${JSON.stringify(c.Ports)}`);
+        // Find Caddy container
+        const caddy = containers.find(c => c.Names.some(n => n.includes('caddy')));
+
+        if (!caddy) {
+            console.log('❌ Caddy container not found!');
+            return;
+        }
+
+        console.log(`\n📋 Inspecting Caddy: ${caddy.Names[0]} (${caddy.Id.substring(0, 12)})`);
+        console.log(`Status: ${caddy.Status}`);
+
+        const container = docker.getContainer(caddy.Id);
+
+        // Get logs
+        const logs = await container.logs({
+            stdout: true,
+            stderr: true,
+            tail: 100, // Get more logs for SSL debugging
+            timestamps: true
         });
 
+        console.log('\n📜 Last 100 log lines:');
+        console.log(logs.toString('utf8'));
+
     } catch (err) {
-        console.error('❌ Error debugging VPS:', err);
+        console.error('❌ Error debugging Caddy:', err);
     }
 }
 
-debug();
+debugCaddy();

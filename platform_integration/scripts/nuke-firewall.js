@@ -32,21 +32,28 @@ const docker = new Docker({
     key: env.DOCKER_TLS_KEY,
 });
 
-async function debug() {
-    console.log('🔍 Connecting to VPS Docker...');
+async function nukeFirewall() {
+    console.log('🧨 Nuking VPS Firewall (UFW + IPTables)...');
     try {
-        const containers = await docker.listContainers({ all: true });
-        console.log(`Found ${containers.length} containers.`);
+        // 1. Pull alpine if needed
+        await docker.pull('alpine:latest');
 
-        containers.forEach(c => {
-            console.log(`\n📦 ${c.Names[0]} (${c.Image})`);
-            console.log(`   Status: ${c.Status}`);
-            console.log(`   Ports: ${JSON.stringify(c.Ports)}`);
-        });
-
+        // 2. Run commands via privileged container
+        await docker.run(
+            'alpine:latest',
+            ['sh', '-c', 'apk add --no-cache ufw iptables; ufw disable; iptables -F; iptables -X; echo "Firewall Nuked"'],
+            process.stdout,
+            {
+                HostConfig: {
+                    NetworkMode: 'host',
+                    Privileged: true
+                },
+                AutoRemove: true
+            }
+        );
     } catch (err) {
-        console.error('❌ Error debugging VPS:', err);
+        console.error('❌ Error nuking firewall:', err);
     }
 }
 
-debug();
+nukeFirewall();

@@ -164,6 +164,10 @@ export async function createAndStartContainer(
     // Convert env object to Docker format: ["KEY=VALUE", ...]
     const envArray = Object.entries(env).map(([key, value]) => `${key}=${value}`);
 
+    // Force binding to all interfaces for Docker networking
+    envArray.push('HOST=0.0.0.0');
+    envArray.push(`PORT=${brandConfig.app.deployedProductPort}`);
+
     // Generate container name from brandConfig
     const productSlug = brandConfig.app.deployedProduct.toLowerCase().replace(/\s+/g, '-');
     const containerName = `${productSlug}-${userId}`;
