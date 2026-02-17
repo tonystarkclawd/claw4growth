@@ -4,7 +4,8 @@
 .ob-container {
     max-width: 600px;
     margin: 0 auto;
-    padding: 100px 20px 60px; /* Space for fixed progress bar + nav */
+    padding: 100px 20px 60px;
+    /* Space for fixed progress bar + nav */
     position: relative;
     z-index: 10;
     min-height: 100vh;
@@ -26,10 +27,10 @@
 
 .ob-progress-bar {
     height: 100%;
-    background: var(--accent);
+    background: var(--yellow, #f5c842);
     width: 0%;
     transition: width 0.4s ease;
-    box-shadow: 0 0 10px var(--accent);
+    box-shadow: 0 0 10px var(--yellow, #f5c842);
 }
 
 /* Screens */
@@ -43,8 +44,15 @@
 }
 
 @keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== TYPOGRAPHY ===== */
@@ -82,7 +90,8 @@
     letter-spacing: 1px;
 }
 
-.ob-input, .ob-select {
+.ob-input,
+.ob-select {
     width: 100%;
     background: var(--bg-surface);
     border: 2px solid var(--border);
@@ -92,10 +101,12 @@
     font-size: 16px;
     outline: none;
     transition: border-color 0.2s;
-    border-radius: 0; /* Minecraft style sharp corners */
+    border-radius: 0;
+    /* Minecraft style sharp corners */
 }
 
-.ob-input:focus, .ob-select:focus {
+.ob-input:focus,
+.ob-select:focus {
     border-color: var(--accent);
     background: #1a221a;
 }
@@ -135,9 +146,9 @@
     border: 4px solid #000;
     cursor: pointer;
     text-transform: uppercase;
-    box-shadow: 
-        inset -4px -4px rgba(0,0,0,0.4), 
-        inset 4px 4px rgba(255,255,255,0.3);
+    box-shadow:
+        inset -4px -4px rgba(0, 0, 0, 0.4),
+        inset 4px 4px rgba(255, 255, 255, 0.3);
     transition: transform 0.1s;
     margin-top: 16px;
 }
@@ -233,7 +244,9 @@
 }
 
 /* Plans */
-.ob-plans { margin-bottom: 24px; }
+.ob-plans {
+    margin-bottom: 24px;
+}
 
 .ob-plan-card {
     background: var(--bg-card);
@@ -261,7 +274,8 @@
 
 .ob-plan-price {
     font-family: var(--font-pixel);
-    font-size: 24px; /* Increased */
+    font-size: 24px;
+    /* Increased */
     color: #fff;
     margin-bottom: 8px;
 }
@@ -340,7 +354,8 @@
     font-family: var(--font-mono);
     font-size: 9px;
     color: #666;
-    display: none; /* Keep clean */
+    display: none;
+    /* Keep clean */
 }
 
 /* Checkmark based on status */
@@ -376,8 +391,15 @@
 }
 
 @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .ob-deploy-text {
@@ -434,7 +456,11 @@
     color: var(--accent);
 }
 
-@keyframes blink { 50% { opacity: 0; } }
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}
 
 /* Deploy Done State */
 .ob-deploy-done {
@@ -452,7 +478,8 @@
 }
 
 .ob-btn-telegram {
-    background: #229ED9; /* Telegram blue */
+    background: #229ED9;
+    /* Telegram blue */
     color: #fff;
     border-color: #0d6ba1;
 }
@@ -464,14 +491,16 @@
 
 /* Mobile Responsiveness */
 @media (max-width: 480px) {
-    .ob-tone-grid, .ob-apps-grid {
+
+    .ob-tone-grid,
+    .ob-apps-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .ob-container {
         padding-top: 80px;
     }
-    
+
     .ob-title {
         font-size: 16px;
     }
