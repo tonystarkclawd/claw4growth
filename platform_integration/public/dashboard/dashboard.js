@@ -177,22 +177,34 @@ function renderApps() {
 
 // ===== RENDER: SUBSCRIPTION =====
 
+// Price per tier (EUR)
+var TIER_PRICES = {
+    pro: '€49.90',
+    enterprise: 'Custom',
+};
+
 function renderSubscription() {
     var sub = dashState.subscription;
     var planNameEl = document.getElementById('planName');
     var planPriceEl = document.getElementById('planPrice');
     var nextBillingEl = document.getElementById('nextBilling');
+    var usageSection = document.getElementById('usageSection');
 
     if (!sub) {
         if (planNameEl) planNameEl.textContent = 'NO ACTIVE PLAN';
         if (planPriceEl) planPriceEl.textContent = '—';
         if (nextBillingEl) nextBillingEl.textContent = '—';
+        if (usageSection) usageSection.style.display = 'none';
         return;
     }
 
+    var tier = (sub.tier || 'pro');
     if (planNameEl) {
-        var tierLabel = (sub.tier || 'pro').toUpperCase();
-        planNameEl.textContent = tierLabel + ' MONTHLY';
+        planNameEl.textContent = tier.toUpperCase() + ' MONTHLY';
+    }
+
+    if (planPriceEl) {
+        planPriceEl.textContent = TIER_PRICES[tier] || '€49.90';
     }
 
     if (nextBillingEl && sub.current_period_end) {
@@ -203,6 +215,9 @@ function renderSubscription() {
     if (sub.status === 'canceled') {
         if (planNameEl) planNameEl.textContent += ' (CANCELED)';
     }
+
+    // Hide usage bar — tracking not yet implemented
+    if (usageSection) usageSection.style.display = 'none';
 }
 
 // ===== ACTIONS =====
