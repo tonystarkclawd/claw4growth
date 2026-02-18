@@ -5,13 +5,25 @@ const SUPABASE_URL = 'https://frejiknxricrkkcgzwdh.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZyZWppa254cmljcmtrY2d6d2RoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzExNzQwNDcsImV4cCI6MjA4Njc1MDA0N30.dI_wSjcNHJZf-uw2TKNl4VK04vOAF-xWdv6f00E0C7M';
 
 // ===== APP DEFINITIONS =====
+// Groups: apps with a `group` key are rendered inside a collapsible section.
 const apps = [
-    { id: 'googlesuper', name: 'Google Suite', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/google.svg', sub: 'Drive, Gmail, Sheets, Calendar, Ads, Analytics' },
-    { id: 'facebook', name: 'Facebook', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg', sub: 'Pages, Messenger, Meta Ads, Insights' },
-    { id: 'instagram', name: 'Instagram', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg' },
+    // — Google —
+    { id: 'gmail',              name: 'Gmail',              icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/gmail.svg',            sub: 'Email, contacts, drafts',          group: 'Google' },
+    { id: 'googlecalendar',     name: 'Google Calendar',    icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googlecalendar.svg',   sub: 'Events, scheduling',               group: 'Google' },
+    { id: 'googlesheets',       name: 'Google Sheets',      icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googlesheets.svg',     sub: 'Spreadsheets, data tracking',      group: 'Google' },
+    { id: 'googledrive',        name: 'Google Drive',       icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googledrive.svg',      sub: 'Files, folders, sharing',           group: 'Google' },
+    { id: 'googledocs',         name: 'Google Docs',        icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googledocs.svg',       sub: 'Documents, reports',                group: 'Google' },
+    { id: 'google_analytics',   name: 'Google Analytics',   icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleanalytics.svg',  sub: 'GA4 reports, audiences, events',    group: 'Google' },
+    { id: 'googleads',          name: 'Google Ads',         icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleads.svg',        sub: 'Campaigns, customer lists',         group: 'Google' },
+    // — Meta —
+    { id: 'facebook',           name: 'Facebook',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg',         sub: 'Pages, Messenger, insights',        group: 'Meta' },
+    { id: 'instagram',          name: 'Instagram',          icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg',        sub: 'Posts, stories, DMs, analytics',    group: 'Meta' },
+    { id: 'metaads',            name: 'Meta Ads',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/meta.svg',             sub: 'Ad campaigns, audiences, insights', group: 'Meta', comingSoon: true },
+    // — Other —
     { id: 'linkedin', name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/linkedin.svg' },
+    { id: 'reddit', name: 'Reddit', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/reddit.svg', sub: 'Posts, comments, subreddit search' },
     { id: 'stripe', name: 'Stripe', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/stripe.svg' },
-    { id: 'shopify', name: 'Shopify', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/shopify.svg' },
+    { id: 'shopify', name: 'Shopify', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/shopify.svg', sub: 'Products, orders, customers, inventory', inputField: { key: 'subdomain', label: 'Store name (e.g. my-store)', placeholder: 'my-store' } },
     { id: 'hubspot', name: 'HubSpot', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/hubspot.svg' },
     { id: 'notion', name: 'Notion', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/notion.svg' },
 ];
@@ -159,28 +171,102 @@ function renderApps() {
     if (!grid) return;
     grid.innerHTML = '';
 
+    // Group apps by their group key; ungrouped apps rendered individually
+    var groups = {};
+    var ungrouped = [];
     apps.forEach(function(app) {
-        var conn = dashState.connections[app.id] || {};
-        var connected = !!conn.connected;
-        var card = document.createElement('div');
-        card.className = 'dash-app-card' + (connected ? ' connected' : '');
-
-        card.innerHTML =
-            '<div class="dash-app-header">' +
-                '<div class="dash-app-info">' +
-                    '<div class="dash-app-icon"><img src="' + app.icon + '" alt="' + app.name + '" style="width:24px;height:24px;filter:invert(1);"></div>' +
-                    '<span class="dash-app-name">' + app.name + '</span>' +
-                '</div>' +
-                '<span class="dash-app-status ' + (connected ? 'on' : 'off') + '">' + (connected ? 'CONNECTED' : 'NOT CONNECTED') + '</span>' +
-            '</div>' +
-            (app.sub ? '<div class="dash-app-sub">' + app.sub + '</div>' : '') +
-            (connected
-                ? '<button class="dash-app-btn disconnect" onclick="disconnectApp(\'' + app.id + '\', \'' + (conn.connectionId || '') + '\')">DISCONNECT</button>'
-                : '<button class="dash-app-btn connect" onclick="connectApp(\'' + app.id + '\')">CONNECT</button>'
-            );
-
-        grid.appendChild(card);
+        if (app.group) {
+            if (!groups[app.group]) groups[app.group] = [];
+            groups[app.group].push(app);
+        } else {
+            ungrouped.push(app);
+        }
     });
+
+    // Render groups first
+    var groupOrder = ['Google', 'Meta'];
+    groupOrder.forEach(function(groupName) {
+        var groupApps = groups[groupName];
+        if (!groupApps) return;
+
+        var section = document.createElement('div');
+        section.className = 'dash-app-group';
+
+        // Count connected in group
+        var connCount = 0;
+        groupApps.forEach(function(a) {
+            if (dashState.connections[a.id] && dashState.connections[a.id].connected) connCount++;
+        });
+
+        var header = document.createElement('div');
+        header.className = 'dash-app-group-header';
+        header.innerHTML =
+            '<span class="dash-app-group-name">' + groupName + '</span>' +
+            '<span class="dash-app-group-count">' + connCount + '/' + groupApps.length + ' connected</span>' +
+            '<span class="dash-app-group-toggle">▼</span>';
+        header.onclick = function() {
+            var inner = section.querySelector('.dash-app-group-inner');
+            var toggle = header.querySelector('.dash-app-group-toggle');
+            if (inner.style.display === 'none') {
+                inner.style.display = '';
+                toggle.textContent = '▼';
+            } else {
+                inner.style.display = 'none';
+                toggle.textContent = '▶';
+            }
+        };
+        section.appendChild(header);
+
+        var inner = document.createElement('div');
+        inner.className = 'dash-app-group-inner';
+        groupApps.forEach(function(app) {
+            inner.appendChild(renderAppCard(app));
+        });
+        section.appendChild(inner);
+        grid.appendChild(section);
+    });
+
+    // Render ungrouped apps
+    ungrouped.forEach(function(app) {
+        grid.appendChild(renderAppCard(app));
+    });
+}
+
+function renderAppCard(app) {
+    var conn = dashState.connections[app.id] || {};
+    var connected = !!conn.connected;
+    var card = document.createElement('div');
+    card.className = 'dash-app-card' + (connected ? ' connected' : '') + (app.comingSoon ? ' coming-soon' : '');
+
+    var btnHtml;
+    var inputHtml = '';
+    if (app.comingSoon) {
+        btnHtml = '<button class="dash-app-btn coming-soon" disabled>COMING SOON</button>';
+    } else if (connected) {
+        btnHtml = '<button class="dash-app-btn disconnect" onclick="disconnectApp(\'' + app.id + '\', \'' + (conn.connectionId || '') + '\')">DISCONNECT</button>';
+    } else if (app.inputField) {
+        var f = app.inputField;
+        inputHtml = '<div class="dash-app-input-row">' +
+            '<input type="text" id="input_' + app.id + '_' + f.key + '" class="dash-app-input" placeholder="' + (f.placeholder || f.label) + '">' +
+            '</div>';
+        btnHtml = '<button class="dash-app-btn connect" onclick="connectAppWithInput(\'' + app.id + '\', \'' + f.key + '\')">CONNECT</button>';
+    } else {
+        btnHtml = '<button class="dash-app-btn connect" onclick="connectApp(\'' + app.id + '\')">CONNECT</button>';
+    }
+
+    card.innerHTML =
+        '<div class="dash-app-header">' +
+            '<div class="dash-app-info">' +
+                '<div class="dash-app-icon"><img src="' + app.icon + '" alt="' + app.name + '" style="width:24px;height:24px;filter:invert(1);"></div>' +
+                '<span class="dash-app-name">' + app.name + '</span>' +
+            '</div>' +
+            '<span class="dash-app-status ' + (connected ? 'on' : 'off') + '">' + (connected ? 'CONNECTED' : (app.comingSoon ? 'COMING SOON' : 'NOT CONNECTED')) + '</span>' +
+        '</div>' +
+        (app.sub ? '<div class="dash-app-sub">' + app.sub + '</div>' : '') +
+        inputHtml +
+        btnHtml;
+
+    return card;
 }
 
 // ===== RENDER: SUBSCRIPTION =====
@@ -243,11 +329,20 @@ function renderSubscription() {
 
 function connectApp(appId) {
     var entityId = dashState.entityId || 'default';
-    var composioAppMap = {
-        googlesuper: 'google',
-    };
-    var composioApp = composioAppMap[appId] || appId;
-    var url = API_BASE + '/api/composio-connect?app=' + composioApp + '&entityId=' + entityId + '&redirectTo=/dashboard/';
+    var url = API_BASE + '/api/composio-connect?app=' + appId + '&entityId=' + entityId + '&redirectTo=/dashboard/';
+    window.location.href = url;
+}
+
+function connectAppWithInput(appId, fieldKey) {
+    var input = document.getElementById('input_' + appId + '_' + fieldKey);
+    var value = input ? input.value.trim() : '';
+    if (!value) {
+        input.style.borderColor = 'var(--red)';
+        input.focus();
+        return;
+    }
+    var entityId = dashState.entityId || 'default';
+    var url = API_BASE + '/api/composio-connect?app=' + appId + '&entityId=' + entityId + '&redirectTo=/dashboard/&' + fieldKey + '=' + encodeURIComponent(value);
     window.location.href = url;
 }
 

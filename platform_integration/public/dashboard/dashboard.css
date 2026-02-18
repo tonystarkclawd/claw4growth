@@ -151,8 +151,92 @@
     border-color: var(--accent);
 }
 
-.dash-app-card.dash-app-coming {
+.dash-app-card.dash-app-coming,
+.dash-app-card.coming-soon {
     opacity: 0.5;
+}
+
+.dash-app-btn.coming-soon {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px dashed var(--border);
+    cursor: default;
+}
+
+/* App groups (Google, Meta) */
+.dash-app-group {
+    grid-column: 1 / -1;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+    margin-bottom: 4px;
+}
+
+.dash-app-group-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+}
+
+.dash-app-group-header:hover {
+    background: rgba(255,255,255,0.03);
+}
+
+.dash-app-group-name {
+    font-family: var(--font-pixel);
+    font-size: 11px;
+    color: var(--yellow);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.dash-app-group-count {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.dash-app-group-toggle {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text-muted);
+}
+
+.dash-app-group-inner {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    padding: 0 12px 12px;
+}
+
+/* Input field for apps that need extra data (e.g. Shopify store name) */
+.dash-app-input-row {
+    margin-bottom: 8px;
+}
+
+.dash-app-input {
+    width: 100%;
+    padding: 8px 10px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+
+.dash-app-input:focus {
+    border-color: var(--accent);
+}
+
+.dash-app-input::placeholder {
+    color: var(--text-muted);
+    opacity: 0.6;
 }
 
 .dash-app-header {

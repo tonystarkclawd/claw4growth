@@ -23,10 +23,21 @@ const composio = new Composio({
  * Must stay in sync with composio-connect/route.ts APP_MAP.
  */
 const DASHBOARD_TO_COMPOSIO: Record<string, string> = {
-    googlesuper: 'gmail',        // Google Suite — Composio returns 'gmail' as toolkit slug
+    // Google services (individual)
+    gmail: 'gmail',
+    googlecalendar: 'googlecalendar',
+    googlesheets: 'googlesheets',
+    googledrive: 'googledrive',
+    googledocs: 'googledocs',
+    google_analytics: 'google_analytics',
+    googleads: 'googleads',
+    // Meta services
     facebook: 'facebook',
     instagram: 'instagram',
+    metaads: 'metaads',
+    // Other
     linkedin: 'linkedin',
+    reddit: 'reddit',
     stripe: 'stripe',
     shopify: 'shopify',
     hubspot: 'hubspot',

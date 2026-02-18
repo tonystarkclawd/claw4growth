@@ -11,14 +11,25 @@ const composio = new Composio({
  * Google Suite maps to gmail (which has the broadest Google OAuth scopes).
  */
 const AUTH_CONFIG_MAP: Record<string, string> = {
-    google: 'ac_wBMMUfAOJDLY',      // gmail (Google Suite umbrella)
-    facebook: 'ac_B6oGhWz03WAe',    // facebook
-    instagram: 'ac_w_KXVqOyLCyy',   // instagram
-    linkedin: 'ac_4Z-6WTXR0QcT',    // linkedin
-    stripe: 'ac_PQayaEbMegy1',      // stripe
-    shopify: 'ac_FKufei5EYb2N',     // shopify (custom auth)
-    hubspot: 'ac_tP_F4SXOvlNi',    // hubspot
-    notion: 'ac_TV1QEGMyebUW',      // notion
+    // Google services (individual)
+    gmail: 'ac_wBMMUfAOJDLY',
+    googlecalendar: 'ac_p1ZaQqPzTlNP',
+    googlesheets: 'ac_teL4nmno385E',
+    googledrive: 'ac_u9qKr-pONcBz',
+    googledocs: 'ac_mFdTE8GSOhFz',
+    google_analytics: 'ac_UgKgM36aNi1C',
+    googleads: 'ac_DfrrMF3eZdcX',
+    // Meta services
+    facebook: 'ac_B6oGhWz03WAe',
+    instagram: 'ac_w_KXVqOyLCyy',
+    // metaads: requires custom Facebook App (coming soon)
+    // Other
+    linkedin: 'ac_4Z-6WTXR0QcT',
+    reddit: 'ac_EQYV_LpMdwRQ',
+    stripe: 'ac_PQayaEbMegy1',
+    shopify: 'ac_FKufei5EYb2N',
+    hubspot: 'ac_tP_F4SXOvlNi',
+    notion: 'ac_TV1QEGMyebUW',
 };
 
 /**
@@ -32,6 +43,14 @@ const AUTH_CONFIG_MAP: Record<string, string> = {
  *   - entityId: unique identifier for the user/entity in Composio
  *   - redirectTo: path to redirect after OAuth (e.g. '/dashboard/')
  */
+/**
+ * Apps that require extra input fields during connection.
+ * Key = app ID, value = list of query param names to collect and pass to Composio.
+ */
+const APP_INPUT_FIELDS: Record<string, string[]> = {
+    shopify: ['subdomain'],
+};
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const app = searchParams.get('app');
@@ -45,6 +64,14 @@ export async function GET(request: Request) {
     const authConfigId = AUTH_CONFIG_MAP[app.toLowerCase()];
     if (!authConfigId) {
         return NextResponse.json({ error: `Unknown app: ${app}` }, { status: 400 });
+    }
+
+    // Collect extra input fields for this app (e.g. subdomain for Shopify)
+    const inputFields = APP_INPUT_FIELDS[app.toLowerCase()] || [];
+    const connectionData: Record<string, string> = {};
+    for (const field of inputFields) {
+        const val = searchParams.get(field);
+        if (val) connectionData[field] = val;
     }
 
     // Determine redirect URL after OAuth completes
@@ -63,6 +90,7 @@ export async function GET(request: Request) {
             connection: {
                 user_id: entityId,
                 callback_url: callbackUrl,
+                ...(Object.keys(connectionData).length > 0 ? { data: connectionData } : {}),
             },
         });
 

@@ -22,6 +22,7 @@ const DOCKER_NETWORK = 'caddy';
 const OPENCLAW_INTERNAL_PORT = 18789;
 const SIDECAR_EXTERNAL_PORT = 18790;
 const CONTAINER_STATE_BASE = '/opt/c4g/containers';
+const COMPOSIO_BRIDGE_DIR = '/opt/c4g/composio-bridge';
 const OPENCLAW_MODEL = 'c4g/MiniMax-M2.5';
 const LLM_PROXY_HOST = '172.18.0.1';  // Caddy network gateway — reachable from containers
 const LLM_PROXY_PORT = 18800;
@@ -183,6 +184,7 @@ async function provisionInstance(instance) {
         Binds: [
           `${stateDir}:/data/openclaw-state`,
           `${workspaceDir}:/data/openclaw-state/workspace`,
+          `${COMPOSIO_BRIDGE_DIR}:/opt/composio-bridge:ro`,
         ],
         Tmpfs: {
           '/tmp': 'rw,nosuid,size=500m',
@@ -295,6 +297,68 @@ async function provisionInstance(instance) {
         `Delete this file — you don't need it anymore.`,
       ].join('\n'));
 
+      // COMPOSIO.md — instructions for using connected app integrations
+      await writeFile(`${wsPath}/COMPOSIO.md`, [
+        '# App Integrations (Composio)',
+        '',
+        'You have access to connected apps via the Composio bridge.',
+        'The user connected these apps through the Claw4Growth dashboard.',
+        '',
+        '## How to Use',
+        '',
+        'Run commands via Bash using the bridge script:',
+        '',
+        '### List connected apps',
+        '```bash',
+        'node /opt/composio-bridge/composio-bridge.js list-apps $USER_ID',
+        '```',
+        '',
+        '### List available tools for an app',
+        '```bash',
+        'node /opt/composio-bridge/composio-bridge.js list-tools $USER_ID gmail',
+        '```',
+        '',
+        '### Execute a tool',
+        '```bash',
+        `node /opt/composio-bridge/composio-bridge.js execute $USER_ID TOOL_SLUG '{"param":"value"}'`,
+        '```',
+        '',
+        '## Common Tools',
+        '',
+        '### Gmail',
+        '- `GMAIL_SEND_EMAIL` — args: `{"to":"email","subject":"...","body":"..."}`',
+        '- `GMAIL_FETCH_EMAILS` — args: `{"max_results":5}`',
+        '- `GMAIL_GET_PROFILE` — no args needed',
+        '- `GMAIL_CREATE_EMAIL_DRAFT` — args: `{"to":"email","subject":"...","body":"..."}`',
+        '',
+        '### Google Calendar',
+        '- `GOOGLECALENDAR_CREATE_EVENT` — args: `{"summary":"...","start":{"dateTime":"..."},"end":{"dateTime":"..."}}`',
+        '- `GOOGLECALENDAR_EVENTS_LIST` — args: `{"calendarId":"primary"}`',
+        '- `GOOGLECALENDAR_FIND_FREE_SLOTS` — find available time slots',
+        '',
+        '### Notion',
+        '- `NOTION_SEARCH_PAGES` — args: `{"query":"..."}`',
+        '- `NOTION_CREATE_PAGE` — create a new page',
+        '',
+        '### Facebook / Instagram',
+        '- `FACEBOOK_CREATE_POST` — args: `{"message":"..."}`',
+        '- `INSTAGRAM_CREATE_MEDIA` — create Instagram post',
+        '',
+        '### LinkedIn',
+        '- `LINKEDIN_CREATE_POST` — args: `{"text":"..."}`',
+        '',
+        '### Stripe',
+        '- `STRIPE_LIST_CUSTOMERS` — list customers',
+        '- `STRIPE_LIST_PAYMENTS` — list payments',
+        '',
+        '## Important',
+        '',
+        '- Always run `list-apps` first to see what the user has connected',
+        '- If a tool fails, check if the app is connected',
+        '- The bridge output is JSON — parse and present results clearly to the user',
+        '- NEVER show raw JSON to the user — summarize the results in a friendly way',
+      ].join('\n'));
+
       // Reindex memory
       try {
         await container.exec({
@@ -303,7 +367,7 @@ async function provisionInstance(instance) {
         }).then(exec => exec.start());
       } catch {}
 
-      console.log(`[provisioner] Identity + memory files written for ${opName} / ${brand.name}`);
+      console.log(`[provisioner] Identity + memory + Composio files written for ${opName} / ${brand.name}`);
     }
 
     // 8. Update Supabase → running
