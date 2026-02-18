@@ -219,6 +219,18 @@ function renderApps() {
 
         var inner = document.createElement('div');
         inner.className = 'dash-app-group-inner';
+
+        // Google verification callout
+        if (groupName === 'Google') {
+            var callout = document.createElement('div');
+            callout.className = 'dash-google-callout';
+            callout.innerHTML =
+                '<strong>Note:</strong> Our Google integration is being verified by Google. ' +
+                'When connecting, you may see a warning screen. ' +
+                'Click <strong>"Advanced"</strong> then <strong>"Go to claw4growth.com (unsafe)"</strong> to proceed safely.';
+            inner.appendChild(callout);
+        }
+
         groupApps.forEach(function(app) {
             inner.appendChild(renderAppCard(app));
         });

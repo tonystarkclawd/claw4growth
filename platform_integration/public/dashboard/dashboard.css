@@ -212,6 +212,21 @@
     padding: 0 12px 12px;
 }
 
+.dash-google-callout {
+    grid-column: 1 / -1;
+    background: rgba(255, 193, 7, 0.08);
+    border: 1px solid rgba(255, 193, 7, 0.25);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.dash-google-callout strong {
+    color: #ffc107;
+}
+
 /* Input field for apps that need extra data (e.g. Shopify store name) */
 .dash-app-input-row {
     margin-bottom: 8px;
