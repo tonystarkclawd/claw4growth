@@ -70,11 +70,16 @@ function logout() {
 (function init() {
     var token = getToken();
     if (!token) {
-        // Show login screen, hide dashboard
         showLoginScreen();
         return;
     }
-    // Authenticated — load data (login screen hidden after instance check)
+    // Token exists — hide login immediately, show loading state
+    var login = document.getElementById('loginScreen');
+    var nav = document.getElementById('dashNav');
+    var main = document.getElementById('dashMain');
+    if (login) login.style.display = 'none';
+    if (nav) nav.style.display = '';
+    if (main) { main.style.display = ''; main.style.opacity = '0.5'; }
     loadDashboard(token);
 })();
 
@@ -126,6 +131,8 @@ function loadDashboard(token) {
         dashState.entityId = data.user.id || 'default';
 
         hideLoginScreen();
+        var main = document.getElementById('dashMain');
+        if (main) main.style.opacity = '';
         renderNavUser();
         renderApps();
         renderSubscription();

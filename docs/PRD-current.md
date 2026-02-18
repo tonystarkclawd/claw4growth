@@ -1,8 +1,8 @@
 # Claw4Growth — PRD (Current State)
-**Last update:** 2026-02-17 (UTC)  
-**Owner:** Luca  
-**Execution:** Tony + Pieter  
-**Status:** Build phase (MVP infra wiring)
+**Last update:** 2026-02-18 (UTC)
+**Owner:** Luca
+**Execution:** Tony + Pieter
+**Status:** Build phase (MVP infra live)
 
 ---
 
@@ -47,10 +47,16 @@ Core promise:
 ### Backend
 - API routes for deploy/provisioning, Telegram, integrations, Stripe webhook handling
 - Supabase for auth + persistence
-- Docker provisioning on dedicated VPS
+- Docker provisioning on dedicated VPS (168.119.156.2)
+
+### LLM Proxy (provider-agnostic)
+- Proxy HTTP su VPS (:18800) tra container e provider reale
+- Auth via Bearer token = Supabase user UUID
+- Budget cap €20/mese per utente con tracking in `c4g_api_usage`
+- Cambio provider senza toccare i container (basta modificare `.env` del proxy)
 
 ### Runtime
-- Per-customer OpenClaw container
+- Per-customer OpenClaw container (model: `openai/MiniMax-M2.5` via proxy)
 - Per-customer workspace/memory/context
 - Composio integrations linked per customer
 
@@ -94,23 +100,37 @@ Contains:
 - Wrapper critical modules imported into C4G repo under `platform_integration/`
 - Migration drafts present in C4G repo
 
+### Infra & Provisioning (Phase A/B)
+- VPS Hetzner provisionato (168.119.156.2) con Docker + Caddy
+- Provisioner live come systemd service (`c4g-provisioner`)
+- Container auto-provisioning da Supabase polling funzionante
+- Supabase migrations applicate (instances, configs, api_usage)
+
+### LLM Proxy & Usage Tracking (2026-02-18)
+- LLM proxy provider-agnostic live su VPS (:18800)
+- Budget cap €20/mese per utente con pre-check
+- Token usage logging in `c4g_api_usage`
+- Container puntano al proxy via `OPENAI_BASE_URL`
+- Dashboard mostra barra usage reale (€X.XX / €20.00)
+
+### Dashboard
+- Subscription info con prezzo reale
+- Integration grid con connect/disconnect OAuth via Composio
+- API usage bar live da dati reali
+
 ### Ops
 - Cron model emergency switch to GPT done (temporary)
 - Backup/restore plan for cron model settings created
 
 ## ⚠️ Partially Done / Needs Wiring
-- Deploy API exists but provisioning is still partially mocked
-- Instance lifecycle code imported but not fully wired into active dashboard routes
 - Telegram pages imported but not connected to active C4G runtime
-- Supabase schema SQL present but needs apply/verify against production project
+- Instance start/stop/restart actions not yet in dashboard UI
 
 ## ❌ Missing for true MVP completion
 1. Stripe webhook → automatic deploy trigger (robust, idempotent)
-2. Docker provisioning live on dedicated VPS
-3. Dashboard integration in active app (not just imported files)
-4. Telegram BYOB flow end-to-end in active dashboard
-5. Instance status polling and start/stop/restart actions in live UI
-6. Production env setup + secrets management + health checks
+2. Telegram BYOB flow end-to-end in active dashboard
+3. Instance status polling and start/stop/restart actions in live UI
+4. Error recovery + retry for transient provisioning failures
 
 ---
 
@@ -187,9 +207,18 @@ Must be fully C4G, not wrapper-generic:
   - `DEPLOYED_PRODUCT_PORT`
   - `PLATFORM_TELEGRAM_BOT_TOKEN` (optional fallback)
 
+- LLM Proxy (VPS):
+  - `LLM_PROVIDER_BASE_URL` (e.g. `https://api.minimax.chat/v1`)
+  - `LLM_PROVIDER_API_KEY`
+  - `MONTHLY_BUDGET_EUR` (default: 20)
+
 - Telegram (BYOB flow pages/webhook):
   - `TELEGRAM_BOT_USERNAME` (if platform bot used for pairing)
   - `TELEGRAM_WEBHOOK_SECRET`
+
+- Integrations:
+  - `COMPOSIO_API_KEY`
+  - `C4G_GATEWAY_TOKEN`
 
 ---
 
