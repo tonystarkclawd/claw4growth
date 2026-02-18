@@ -406,7 +406,7 @@ function connectAppWithInput(appId, fieldKey) {
 }
 
 // Google apps using direct OAuth (not Composio)
-var GOOGLE_DIRECT_APPS = ['googleads'];
+var GOOGLE_DIRECT_APPS = ['googleads', 'gmail', 'googlecalendar', 'googledrive', 'googledocs', 'googlesheets', 'google_analytics'];
 
 function disconnectApp(appId, connectionId) {
     if (!confirm('Disconnect ' + appId + '? Your operator will lose access to this tool.')) {
