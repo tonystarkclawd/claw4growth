@@ -22,7 +22,7 @@ const AUTH_CONFIG_MAP: Record<string, string> = {
     // Meta services
     facebook: 'ac_B6oGhWz03WAe',
     instagram: 'ac_w_KXVqOyLCyy',
-    // metaads: requires custom Facebook App (coming soon)
+    metaads: 'ac_QxTnSDL1vZaq',
     // Other
     linkedin: 'ac_4Z-6WTXR0QcT',
     reddit: 'ac_EQYV_LpMdwRQ',

@@ -18,7 +18,7 @@ const apps = [
     // — Meta —
     { id: 'facebook',           name: 'Facebook',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg',         sub: 'Pages, Messenger, insights',        group: 'Meta' },
     { id: 'instagram',          name: 'Instagram',          icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg',        sub: 'Posts, stories, DMs, analytics',    group: 'Meta' },
-    { id: 'metaads',            name: 'Meta Ads',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/meta.svg',             sub: 'Ad campaigns, audiences, insights', group: 'Meta', comingSoon: true },
+    { id: 'metaads',            name: 'Meta Ads',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/meta.svg',             sub: 'Ad campaigns, audiences, insights', group: 'Meta' },
     // — Other —
     { id: 'linkedin', name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/linkedin.svg' },
     { id: 'reddit', name: 'Reddit', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/reddit.svg', sub: 'Posts, comments, subreddit search' },
