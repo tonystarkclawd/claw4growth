@@ -6,45 +6,20 @@ const composio = new Composio({
 });
 
 /**
- * App name mapping: our internal names → Composio toolkit slugs
+ * Dashboard app ID → Composio auth config ID
+ * These are the existing auth configs from our Composio project.
+ * Google Suite maps to gmail (which has the broadest Google OAuth scopes).
  */
-const APP_MAP: Record<string, string> = {
-    google: 'google',
-    facebook: 'facebook',
-    instagram: 'instagram',
-    metaads: 'facebook_ads',
-    shopify: 'shopify',
-    linkedin: 'linkedin',
-    notion: 'notion',
-    hubspot: 'hubspot',
-    stripe: 'stripe',
-    twitter: 'twitter',
-    tiktok: 'tiktok',
-    google_analytics: 'googleanalytics',
+const AUTH_CONFIG_MAP: Record<string, string> = {
+    google: 'ac_wBMMUfAOJDLY',      // gmail (Google Suite umbrella)
+    facebook: 'ac_B6oGhWz03WAe',    // facebook
+    instagram: 'ac_w_KXVqOyLCyy',   // instagram
+    linkedin: 'ac_4Z-6WTXR0QcT',    // linkedin
+    stripe: 'ac_PQayaEbMegy1',      // stripe
+    shopify: 'ac_FKufei5EYb2N',     // shopify (custom auth)
+    hubspot: 'ac_tP_F4SXOvlNi',    // hubspot
+    notion: 'ac_TV1QEGMyebUW',      // notion
 };
-
-/**
- * Finds or creates a Composio auth config for the given toolkit slug.
- * Uses Composio-managed auth (default OAuth credentials).
- */
-async function getOrCreateAuthConfig(toolkitSlug: string): Promise<string> {
-    // Check for existing auth config
-    const existing = await composio.authConfigs.list({
-        toolkit_slug: toolkitSlug,
-    });
-
-    if (existing?.items?.length) {
-        return existing.items[0].id;
-    }
-
-    // Create a new auth config with Composio-managed credentials
-    const created = await composio.authConfigs.create({
-        toolkit: { slug: toolkitSlug },
-        auth_config: { type: 'use_composio_managed_auth' },
-    });
-
-    return created.auth_config.id;
-}
 
 /**
  * GET /api/composio-connect
@@ -67,8 +42,8 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing app parameter' }, { status: 400 });
     }
 
-    const toolkitSlug = APP_MAP[app.toLowerCase()];
-    if (!toolkitSlug) {
+    const authConfigId = AUTH_CONFIG_MAP[app.toLowerCase()];
+    if (!authConfigId) {
         return NextResponse.json({ error: `Unknown app: ${app}` }, { status: 400 });
     }
 
@@ -81,9 +56,6 @@ export async function GET(request: Request) {
         : `${origin}/onboarding/?step=app-connected&app=${app}`;
 
     try {
-        // Get or create auth config for this app
-        const authConfigId = await getOrCreateAuthConfig(toolkitSlug);
-
         const response = await composio.connectedAccounts.create({
             auth_config: {
                 id: authConfigId,
