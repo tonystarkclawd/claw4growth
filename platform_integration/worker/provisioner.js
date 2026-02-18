@@ -21,6 +21,8 @@ const OPENCLAW_IMAGE = 'ghcr.io/openclaw/openclaw:latest';
 const DOCKER_NETWORK = 'caddy';
 const OPENCLAW_INTERNAL_PORT = 18789;
 const SIDECAR_EXTERNAL_PORT = 18790;
+const CONTAINER_STATE_BASE = '/opt/c4g/containers';
+const OPENCLAW_MODEL = 'minimax/MiniMax-M2.5';
 
 // ─── Load env ────────────────────────────────────────────
 const envPath = process.env.C4G_ENV || path.resolve(__dirname, '.env');
@@ -89,18 +91,6 @@ async function ensureImage(image) {
   }
 }
 
-async function writeToVolume(volumeName, commands) {
-  await ensureImage('busybox:latest');
-  const tmp = await docker.createContainer({
-    Image: 'busybox:latest',
-    Cmd: ['sh', '-c', commands],
-    HostConfig: { Binds: [`${volumeName}:/data`] },
-  });
-  await tmp.start();
-  await tmp.wait();
-  try { await tmp.remove(); } catch {}
-}
-
 // ─── Provision one instance ──────────────────────────────
 async function provisionInstance(instance) {
   const startTime = Date.now();
@@ -114,52 +104,52 @@ async function provisionInstance(instance) {
 
     // Container naming
     const containerName = `openclaw-${instance.user_id}`;
-    const configVolume = `${containerName}-config`;
-    const workspaceVolume = `${containerName}-workspace`;
     const sidecarName = `${containerName}-sidecar`;
-    const isolatedNetName = `c4g-isolated-${containerName}`;
+
+    // Host paths for persistent state (bind mounts — OpenClaw overwrites Docker volumes with tmpfs)
+    const stateDir = `${CONTAINER_STATE_BASE}/${instance.subdomain}/state`;
+    const workspaceDir = `${CONTAINER_STATE_BASE}/${instance.subdomain}/workspace`;
 
     // 1. Ensure image
     await ensureImage(OPENCLAW_IMAGE);
 
-    // 2. Create volumes
-    for (const vol of [configVolume, workspaceVolume]) {
-      try { await docker.createVolume({ Name: vol, Driver: 'local' }); }
-      catch (e) { if (!e.message?.includes('already exists')) throw e; }
-    }
+    // 2. Create host directories and write openclaw.json
+    const { execSync } = require('child_process');
+    execSync(`mkdir -p "${stateDir}" "${workspaceDir}" && chown -R 1000:1000 "${CONTAINER_STATE_BASE}/${instance.subdomain}"`);
 
-    // 3. Write openclaw.json
+    const gatewayToken = envVars.C4G_GATEWAY_TOKEN || 'c4g-gw-default-token';
     const openclawConfig = JSON.stringify({
-      agent: { model: config.model_preference === 'minimax' ? 'minimax/minimax-latest' : 'anthropic/claude-opus-4-6' },
-      gateway: { host: '0.0.0.0', port: OPENCLAW_INTERNAL_PORT },
-    });
-    const cfgB64 = Buffer.from(openclawConfig).toString('base64');
-    await writeToVolume(configVolume,
-      `mkdir -p /data && echo '${cfgB64}' | base64 -d > /data/openclaw.json && chown -R 1000:1000 /data`
-    );
+      agents: { defaults: { model: { primary: OPENCLAW_MODEL } } },
+      gateway: {
+        port: OPENCLAW_INTERNAL_PORT,
+        auth: { mode: 'token' },
+        controlUi: { dangerouslyDisableDeviceAuth: true },
+        http: { endpoints: { chatCompletions: { enabled: true } } },
+      },
+    }, null, 2);
+    fs.writeFileSync(path.join(stateDir, 'openclaw.json'), openclawConfig);
+    execSync(`chown 1000:1000 "${path.join(stateDir, 'openclaw.json')}"`);
+    console.log(`[provisioner] Config written to ${stateDir}/openclaw.json`);
 
-    // 4. Write memory files
+    // 3. Write memory files if onboarding data exists
     if (onboarding.brand) {
       const brand = onboarding.brand;
+      const memoryDir = path.join(stateDir, 'memory');
+      execSync(`mkdir -p "${memoryDir}" && chown 1000:1000 "${memoryDir}"`);
       const brandMd = `# Brand: ${brand.name}\n## Industry: ${brand.industry}\n## Description: ${brand.description || 'N/A'}\n## Tone: ${onboarding.tone || 'professional'}\n## Website: ${brand.website || 'N/A'}`;
       const sysPrompt = `You are ${onboarding.operatorName || 'an AI operator'}, a marketing operator for ${brand.name}. Your tone is ${onboarding.tone || 'professional'}. You help with digital marketing tasks.`;
-      const brandB64 = Buffer.from(brandMd).toString('base64');
-      const promptB64 = Buffer.from(sysPrompt).toString('base64');
-      await writeToVolume(configVolume,
-        `mkdir -p /data/memory && echo '${brandB64}' | base64 -d > /data/memory/brand.md && echo '${promptB64}' | base64 -d > /data/system-prompt.md && chown -R 1000:1000 /data`
-      );
+      fs.writeFileSync(path.join(memoryDir, 'brand.md'), brandMd);
+      fs.writeFileSync(path.join(stateDir, 'system-prompt.md'), sysPrompt);
+      execSync(`chown -R 1000:1000 "${stateDir}"`);
+      console.log(`[provisioner] Memory files written`);
     }
 
-    // 5. Create isolated network
-    try { await docker.createNetwork({ Name: isolatedNetName, Driver: 'bridge', Internal: true }); }
-    catch (e) { if (!e.message?.includes('already exists')) throw e; }
-
-    // 6. Remove old containers if any
+    // 4. Remove old containers if any
     for (const name of [sidecarName, containerName]) {
       try { await docker.getContainer(name).remove({ force: true }); } catch {}
     }
 
-    // 7. Create and start OpenClaw container
+    // 5. Create and start OpenClaw container
     const container = await docker.createContainer({
       Image: OPENCLAW_IMAGE,
       name: containerName,
@@ -167,6 +157,8 @@ async function provisionInstance(instance) {
       Env: [
         'HOST=0.0.0.0',
         `PORT=${OPENCLAW_INTERNAL_PORT}`,
+        'OPENCLAW_STATE_DIR=/data/openclaw-state',
+        `OPENCLAW_GATEWAY_TOKEN=${gatewayToken}`,
         `MINIMAX_API_KEY=${envVars.MINIMAX_API_KEY || ''}`,
         `COMPOSIO_API_KEY=${envVars.COMPOSIO_API_KEY || ''}`,
         `USER_ID=${instance.user_id}`,
@@ -179,43 +171,27 @@ async function provisionInstance(instance) {
         'c4g.subdomain': instance.subdomain,
       },
       ExposedPorts: { [`${SIDECAR_EXTERNAL_PORT}/tcp`]: {} },
-      Healthcheck: {
-        Test: ['CMD', 'node', 'dist/index.js', 'health'],
-        Interval: 30_000_000_000,
-        Timeout: 10_000_000_000,
-        Retries: 3,
-        StartPeriod: 60_000_000_000,
-      },
       HostConfig: {
-        Memory: 2048 * 1024 * 1024,
+        Memory: 4096 * 1024 * 1024,
         NanoCpus: 2_000_000_000,
         PidsLimit: 500,
         NetworkMode: DOCKER_NETWORK,
         Binds: [
-          `${configVolume}:/home/node/.openclaw`,
-          `${workspaceVolume}:/home/node/.openclaw/workspace`,
+          `${stateDir}:/data/openclaw-state`,
+          `${workspaceDir}:/data/openclaw-state/workspace`,
         ],
-        CapDrop: ['ALL'],
-        SecurityOpt: ['no-new-privileges:true'],
-        ReadonlyRootfs: true,
         Tmpfs: {
-          '/tmp': 'rw,noexec,nosuid,size=100m',
-          '/var/tmp': 'rw,noexec,nosuid,size=100m',
-          '/run': 'rw,noexec,nosuid,size=50m',
+          '/tmp': 'rw,nosuid,size=500m',
+          '/var/tmp': 'rw,nosuid,size=200m',
+          '/run': 'rw,nosuid,size=50m',
         },
       },
     });
 
-    // Connect to isolated network
-    try {
-      const nets = await docker.listNetworks({ filters: { name: [isolatedNetName] } });
-      if (nets.length > 0) await docker.getNetwork(nets[0].Id).connect({ Container: container.id });
-    } catch {}
-
     await container.start();
     console.log(`[provisioner] Container ${containerName} started (${container.id.substring(0, 12)})`);
 
-    // 8. Deploy socat sidecar
+    // 6. Deploy socat sidecar (bridges external port to internal loopback)
     await ensureImage('alpine:latest');
     const sidecar = await docker.createContainer({
       Image: 'alpine:latest',
@@ -230,7 +206,7 @@ async function provisionInstance(instance) {
     await sidecar.start();
     console.log(`[provisioner] Sidecar ${sidecarName} started`);
 
-    // 9. Update Supabase → running
+    // 7. Update Supabase → running
     await sbPatch('c4g_instances', `id=eq.${instance.id}`, {
       container_id: container.id,
       status: 'running',

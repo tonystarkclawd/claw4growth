@@ -94,19 +94,23 @@ export async function forwardToContainer(
     message: string,
     telegramId: number
 ): Promise<string> {
+    const gatewayToken = process.env.C4G_GATEWAY_TOKEN || '';
+
     try {
-        const response = await fetch(`${containerUrl}/api/chat`, {
+        // Use OpenAI-compatible /v1/chat/completions endpoint
+        const response = await fetch(`${containerUrl}/v1/chat/completions`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Source': 'telegram',
-                'X-Telegram-Id': String(telegramId),
+                ...(gatewayToken && { 'Authorization': `Bearer ${gatewayToken}` }),
             },
             body: JSON.stringify({
-                message,
-                source: 'telegram',
+                model: 'default',
+                messages: [
+                    { role: 'user', content: message },
+                ],
             }),
-            signal: AbortSignal.timeout(30_000), // 30s timeout
+            signal: AbortSignal.timeout(120_000), // 120s timeout (agents can be slow)
         });
 
         if (!response.ok) {
@@ -115,7 +119,9 @@ export async function forwardToContainer(
         }
 
         const data = await response.json();
-        return data.response || data.message || '(no response)';
+        // OpenAI format: { choices: [{ message: { content: "..." } }] }
+        const content = data.choices?.[0]?.message?.content;
+        return content || data.response || data.message || '(no response)';
     } catch (error) {
         console.error('[router] Failed to forward to container:', error);
 
