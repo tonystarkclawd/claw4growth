@@ -81,12 +81,24 @@
     display: flex;
     align-items: center;
     gap: 16px;
+    min-width: 0;
+    flex-shrink: 1;
 }
 
 .dash-user {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    min-width: 0;
+}
+
+@media (max-width: 480px) {
+    .dash-nav-inner .logo { flex-shrink: 0; }
+    .dash-nav-right { gap: 8px; }
+    .dash-user { display: none; }
 }
 
 .dash-logout-btn {
