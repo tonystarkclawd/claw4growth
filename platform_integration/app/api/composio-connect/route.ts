@@ -36,6 +36,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const app = searchParams.get('app');
     const entityId = searchParams.get('entityId') || 'default';
+    const redirectTo = searchParams.get('redirectTo');
 
     if (!app) {
         return NextResponse.json({ error: 'Missing app parameter' }, { status: 400 });
@@ -50,7 +51,9 @@ export async function GET(request: Request) {
     const origin = request.headers.get('origin')
         || request.headers.get('referer')?.replace(/\/[^/]*$/, '')
         || 'https://claw4growth.com';
-    const redirectUrl = `${origin}/onboarding/?step=app-connected&app=${app}`;
+    const redirectUrl = redirectTo
+        ? `${origin}${redirectTo}?connected=${app}`
+        : `${origin}/onboarding/?step=app-connected&app=${app}`;
 
     try {
         const response = await composio.connectedAccounts.create({
