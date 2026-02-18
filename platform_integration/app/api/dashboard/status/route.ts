@@ -119,7 +119,7 @@ const MONTHLY_BUDGET_EUR = 20;
  * Fetches current month's API usage for a user.
  */
 async function getMonthlyUsage(
-    supabaseAdmin: ReturnType<typeof createClient>,
+    supabaseAdmin: any,
     userId: string,
 ): Promise<{ current_eur: number; budget_eur: number; pct: number }> {
     try {
