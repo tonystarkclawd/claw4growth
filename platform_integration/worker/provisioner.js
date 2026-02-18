@@ -131,20 +131,7 @@ async function provisionInstance(instance) {
     execSync(`chown 1000:1000 "${path.join(stateDir, 'openclaw.json')}"`);
     console.log(`[provisioner] Config written to ${stateDir}/openclaw.json`);
 
-    // 3. Write memory files if onboarding data exists
-    if (onboarding.brand) {
-      const brand = onboarding.brand;
-      const memoryDir = path.join(stateDir, 'memory');
-      execSync(`mkdir -p "${memoryDir}" && chown 1000:1000 "${memoryDir}"`);
-      const brandMd = `# Brand: ${brand.name}\n## Industry: ${brand.industry}\n## Description: ${brand.description || 'N/A'}\n## Tone: ${onboarding.tone || 'professional'}\n## Website: ${brand.website || 'N/A'}`;
-      const sysPrompt = `You are ${onboarding.operatorName || 'an AI operator'}, a marketing operator for ${brand.name}. Your tone is ${onboarding.tone || 'professional'}. You help with digital marketing tasks.`;
-      fs.writeFileSync(path.join(memoryDir, 'brand.md'), brandMd);
-      fs.writeFileSync(path.join(stateDir, 'system-prompt.md'), sysPrompt);
-      execSync(`chown -R 1000:1000 "${stateDir}"`);
-      console.log(`[provisioner] Memory files written`);
-    }
-
-    // 4. Remove old containers if any
+    // 3. Remove old containers if any
     for (const name of [sidecarName, containerName]) {
       try { await docker.getContainer(name).remove({ force: true }); } catch {}
     }
@@ -206,7 +193,103 @@ async function provisionInstance(instance) {
     await sidecar.start();
     console.log(`[provisioner] Sidecar ${sidecarName} started`);
 
-    // 7. Update Supabase → running
+    // 7. Write identity + memory files into the workspace (tmpfs, written after boot)
+    if (onboarding.brand) {
+      const brand = onboarding.brand;
+      const opName = onboarding.operatorName || 'AI Operator';
+      const tone = onboarding.tone || 'professional';
+      const wsPath = '/home/node/.openclaw/workspace';
+
+      // Wait for gateway to initialize workspace
+      await new Promise(r => setTimeout(r, 10_000));
+
+      const writeFile = async (filePath, content) => {
+        const b64 = Buffer.from(content).toString('base64');
+        await container.exec({
+          Cmd: ['sh', '-c', `echo '${b64}' | base64 -d > ${filePath}`],
+          User: '1000:1000',
+        }).then(exec => exec.start());
+      };
+
+      // IDENTITY.md — who the agent is
+      await writeFile(`${wsPath}/IDENTITY.md`, [
+        '# IDENTITY.md - Who Am I?',
+        '',
+        `- **Name:** ${opName}`,
+        `- **Creature:** AI marketing operator`,
+        `- **Vibe:** ${tone}, helpful, proactive`,
+        `- **Emoji:** 🚀`,
+        '',
+        `I am ${opName}, the dedicated marketing operator for ${brand.name}.`,
+        `I help with digital marketing tasks: content creation, campaign management, analytics, and more.`,
+      ].join('\n'));
+
+      // USER.md — info about the human
+      await writeFile(`${wsPath}/USER.md`, [
+        '# USER.md - About Your Human',
+        '',
+        `- **Brand:** ${brand.name}`,
+        `- **Industry:** ${brand.industry}`,
+        `- **Description:** ${brand.description || 'N/A'}`,
+        `- **Website:** ${brand.website || 'N/A'}`,
+        `- **Preferred tone:** ${tone}`,
+        '',
+        '## Context',
+        '',
+        `This user runs ${brand.name} in the ${brand.industry} space.`,
+        `They use Claw4Growth to automate their digital marketing.`,
+        `Always communicate in a ${tone} tone.`,
+      ].join('\n'));
+
+      // memory/brand.md
+      await container.exec({
+        Cmd: ['sh', '-c', `mkdir -p ${wsPath}/memory`],
+        User: '1000:1000',
+      }).then(exec => exec.start());
+
+      await writeFile(`${wsPath}/memory/brand.md`, [
+        `# Brand: ${brand.name}`,
+        `## Industry: ${brand.industry}`,
+        `## Description: ${brand.description || 'N/A'}`,
+        `## Tone: ${tone}`,
+        `## Website: ${brand.website || 'N/A'}`,
+      ].join('\n'));
+
+      // BOOTSTRAP.md — custom first-message replacing the generic one
+      await writeFile(`${wsPath}/BOOTSTRAP.md`, [
+        `# Welcome!`,
+        ``,
+        `You are **${opName}**, the marketing operator for **${brand.name}**.`,
+        `Your tone is **${tone}**. You help with digital marketing tasks.`,
+        ``,
+        `## First Message`,
+        ``,
+        `Introduce yourself briefly. Something like:`,
+        ``,
+        `> "Hey! I'm ${opName}, your marketing operator for ${brand.name}. 🚀`,
+        `> I can help with content creation, campaign management, analytics, and more.`,
+        `> What would you like to work on?"`,
+        ``,
+        `Also mention that they can manage their integrations and subscription at:`,
+        `**https://claw4growth.com/dashboard/**`,
+        ``,
+        `## After the first conversation`,
+        ``,
+        `Delete this file — you don't need it anymore.`,
+      ].join('\n'));
+
+      // Reindex memory
+      try {
+        await container.exec({
+          Cmd: ['node', 'openclaw.mjs', 'memory', 'index', '--force'],
+          User: '1000:1000',
+        }).then(exec => exec.start());
+      } catch {}
+
+      console.log(`[provisioner] Identity + memory files written for ${opName} / ${brand.name}`);
+    }
+
+    // 8. Update Supabase → running
     await sbPatch('c4g_instances', `id=eq.${instance.id}`, {
       container_id: container.id,
       status: 'running',
