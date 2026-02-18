@@ -65,8 +65,8 @@ export async function GET(request: Request) {
         { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    // Fetch instance, subscription, and Composio connections in parallel
-    const [instanceResult, subscription, connections] = await Promise.all([
+    // Fetch instance, subscription, Composio connections, and usage in parallel
+    const [instanceResult, subscription, connections, usageResult] = await Promise.all([
         supabaseAdmin
             .from('c4g_instances')
             .select('id, subdomain, status, created_at')
@@ -76,6 +76,7 @@ export async function GET(request: Request) {
             .maybeSingle(),
         getUserSubscription(user.id),
         getComposioConnections(user.id),
+        getMonthlyUsage(supabaseAdmin, user.id),
     ]);
 
     const instance = instanceResult.data;
@@ -97,7 +98,44 @@ export async function GET(request: Request) {
             }
             : null,
         connections,
+        usage: usageResult,
     }, { headers: CORS_HEADERS });
+}
+
+const MONTHLY_BUDGET_EUR = 20;
+
+/**
+ * Fetches current month's API usage for a user.
+ */
+async function getMonthlyUsage(
+    supabaseAdmin: ReturnType<typeof createClient>,
+    userId: string,
+): Promise<{ current_eur: number; budget_eur: number; pct: number }> {
+    try {
+        const monthStart = new Date();
+        monthStart.setDate(1);
+        monthStart.setHours(0, 0, 0, 0);
+
+        const { data, error } = await supabaseAdmin
+            .from('c4g_api_usage')
+            .select('estimated_cost_eur')
+            .eq('user_id', userId)
+            .gte('created_at', monthStart.toISOString());
+
+        if (error) throw error;
+
+        const currentEur = (data || []).reduce(
+            (sum: number, r: { estimated_cost_eur: number }) => sum + parseFloat(String(r.estimated_cost_eur || 0)),
+            0,
+        );
+        const rounded = Math.round(currentEur * 100) / 100;
+        const pct = Math.min(100, Math.round((rounded / MONTHLY_BUDGET_EUR) * 100));
+
+        return { current_eur: rounded, budget_eur: MONTHLY_BUDGET_EUR, pct };
+    } catch (err) {
+        console.error('Failed to fetch monthly usage:', err);
+        return { current_eur: 0, budget_eur: MONTHLY_BUDGET_EUR, pct: 0 };
+    }
 }
 
 /**

@@ -120,6 +120,7 @@ function loadDashboard(token) {
         dashState.instance = data.instance;
         dashState.subscription = data.subscription;
         dashState.connections = data.connections || {};
+        dashState.usage = data.usage || null;
 
         // Use Supabase user ID as Composio entityId (stable, unique per user)
         dashState.entityId = data.user.id || 'default';
@@ -216,8 +217,19 @@ function renderSubscription() {
         if (planNameEl) planNameEl.textContent += ' (CANCELED)';
     }
 
-    // Hide usage bar — tracking not yet implemented
-    if (usageSection) usageSection.style.display = 'none';
+    // Show real API usage data
+    var usage = dashState.usage;
+    if (usageSection && usage) {
+        usageSection.style.display = '';
+        var pctEl = document.getElementById('usagePct');
+        var fillEl = document.getElementById('usageFill');
+        var noteEl = document.querySelector('.dash-usage-note');
+        if (pctEl) pctEl.textContent = usage.pct + '%';
+        if (fillEl) fillEl.style.width = usage.pct + '%';
+        if (noteEl) noteEl.textContent = '€' + usage.current_eur.toFixed(2) + ' / €' + usage.budget_eur.toFixed(2) + ' — Resets monthly.';
+    } else if (usageSection) {
+        usageSection.style.display = 'none';
+    }
 }
 
 // ===== ACTIONS =====

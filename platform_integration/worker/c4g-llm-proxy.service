@@ -1,0 +1,15 @@
+[Unit]
+Description=C4G LLM Proxy
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/c4g/proxy
+ExecStart=/usr/bin/node /opt/c4g/proxy/llm-proxy.js
+EnvironmentFile=/opt/c4g/proxy/.env
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

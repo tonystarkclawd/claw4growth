@@ -22,7 +22,9 @@ const DOCKER_NETWORK = 'caddy';
 const OPENCLAW_INTERNAL_PORT = 18789;
 const SIDECAR_EXTERNAL_PORT = 18790;
 const CONTAINER_STATE_BASE = '/opt/c4g/containers';
-const OPENCLAW_MODEL = 'minimax/MiniMax-M2.5';
+const OPENCLAW_MODEL = 'openai/MiniMax-M2.5';
+const LLM_PROXY_HOST = '172.17.0.1';  // Docker bridge gateway — reachable from containers
+const LLM_PROXY_PORT = 18800;
 
 // ─── Load env ────────────────────────────────────────────
 const envPath = process.env.C4G_ENV || path.resolve(__dirname, '.env');
@@ -146,7 +148,8 @@ async function provisionInstance(instance) {
         `PORT=${OPENCLAW_INTERNAL_PORT}`,
         'OPENCLAW_STATE_DIR=/data/openclaw-state',
         `OPENCLAW_GATEWAY_TOKEN=${gatewayToken}`,
-        `MINIMAX_API_KEY=${envVars.MINIMAX_API_KEY || ''}`,
+        `OPENAI_BASE_URL=http://${LLM_PROXY_HOST}:${LLM_PROXY_PORT}/v1`,
+        `OPENAI_API_KEY=${instance.user_id}`,
         `COMPOSIO_API_KEY=${envVars.COMPOSIO_API_KEY || ''}`,
         `COMPOSIO_ENTITY_ID=${instance.user_id}`,
         `USER_ID=${instance.user_id}`,
