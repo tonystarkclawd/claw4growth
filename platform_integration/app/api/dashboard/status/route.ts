@@ -75,7 +75,7 @@ export async function GET(request: Request) {
             .limit(1)
             .maybeSingle(),
         getUserSubscription(user.id),
-        getComposioConnections(user.id, supabaseAdmin),
+        getComposioConnections(user.id),
     ]);
 
     const instance = instanceResult.data;
@@ -106,7 +106,6 @@ export async function GET(request: Request) {
  */
 async function getComposioConnections(
     userId: string,
-    supabase: any
 ): Promise<Record<string, boolean>> {
     // Build the connected map (all false by default)
     const connectedMap: Record<string, boolean> = {};
@@ -115,34 +114,15 @@ async function getComposioConnections(
     }
 
     try {
-        // Get the entityId from the instance's onboarding_data
-        const { data: config } = await supabase
-            .from('c4g_instance_configs')
-            .select('onboarding_data')
-            .eq('instance_id', (
-                await supabase
-                    .from('c4g_instances')
-                    .select('id')
-                    .eq('user_id', userId)
-                    .limit(1)
-                    .maybeSingle()
-            ).data?.id ?? '')
-            .maybeSingle();
-
-        const operatorName = (config?.onboarding_data as any)?.operatorName;
-        const entityId = operatorName
-            ? operatorName.replace(/\s+/g, '_').toLowerCase()
-            : 'default';
-
-        // Fetch all connected accounts for this entity
+        // Use Supabase user ID directly as Composio entityId (stable, unique)
         const accounts = await composio.connectedAccounts.list({
-            user_ids: [entityId],
+            user_ids: [userId],
         });
 
         if (accounts?.items) {
             for (const account of accounts.items) {
-                const appId = (account as any).appName || (account as any).app_name || '';
-                const dashIds = COMPOSIO_TO_DASHBOARD[appId.toLowerCase()];
+                const toolkit = (account as any).toolkit?.slug || (account as any).appName || '';
+                const dashIds = COMPOSIO_TO_DASHBOARD[toolkit.toLowerCase()];
                 if (dashIds) {
                     for (const did of dashIds) {
                         connectedMap[did] = true;
@@ -152,7 +132,6 @@ async function getComposioConnections(
         }
     } catch (err) {
         console.error('Failed to fetch Composio connections:', err);
-        // Return all-false map on error — dashboard still renders
     }
 
     return connectedMap;

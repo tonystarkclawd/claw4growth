@@ -115,12 +115,8 @@ function loadDashboard(token) {
         dashState.subscription = data.subscription;
         dashState.connections = data.connections || {};
 
-        // Derive entityId from onboarding state or user email
-        var savedOnboarding = JSON.parse(localStorage.getItem('c4g_onboarding_state') || '{}');
-        var opName = savedOnboarding.operatorName;
-        dashState.entityId = opName
-            ? opName.replace(/\s+/g, '_').toLowerCase()
-            : 'default';
+        // Use Supabase user ID as Composio entityId (stable, unique per user)
+        dashState.entityId = data.user.id || 'default';
 
         renderNavUser();
         renderApps();

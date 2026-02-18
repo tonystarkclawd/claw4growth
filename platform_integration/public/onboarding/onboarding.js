@@ -292,7 +292,7 @@ function toggleApp(el) {
 
     // If not connected yet, launch Composio OAuth
     if (!el.classList.contains('connected')) {
-        const entityId = state.operatorName ? state.operatorName.replace(/\s+/g, '_').toLowerCase() : 'default';
+        const entityId = state.userId || localStorage.getItem('c4g_user_id') || 'default';
         const authUrl = 'https://app.claw4growth.com/api/composio-connect?app=' + app + '&entityId=' + entityId;
 
         if (needsRedirect) {

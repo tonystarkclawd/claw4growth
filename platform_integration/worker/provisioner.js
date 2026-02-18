@@ -148,6 +148,7 @@ async function provisionInstance(instance) {
         `OPENCLAW_GATEWAY_TOKEN=${gatewayToken}`,
         `MINIMAX_API_KEY=${envVars.MINIMAX_API_KEY || ''}`,
         `COMPOSIO_API_KEY=${envVars.COMPOSIO_API_KEY || ''}`,
+        `COMPOSIO_ENTITY_ID=${instance.user_id}`,
         `USER_ID=${instance.user_id}`,
         `INSTANCE_ID=${instance.id}`,
       ],
