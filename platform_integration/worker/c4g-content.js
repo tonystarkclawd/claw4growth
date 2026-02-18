@@ -185,7 +185,7 @@ function generateComposioMd() {
     '- `GOOGLECALENDAR_FREEBUSY` — args: `{"timeMin":"...","timeMax":"..."}` — check availability',
     '',
     '### Google Drive',
-    '- `GOOGLEDRIVE_LIST_FILES` — args: `{"page_size":20,"q":"mimeType=...'"}` — list/filter files',
+    '- `GOOGLEDRIVE_LIST_FILES` — args: `{"page_size":20,"q":"mimeType=..."}` — list/filter files',
     '- `GOOGLEDRIVE_FIND_FILE` — args: `{"query":"report","page_size":10}` — search by name',
     '- `GOOGLEDRIVE_CREATE_FOLDER` — args: `{"name":"Campaign Assets","parent_id":"optional"}`',
     '- `GOOGLEDRIVE_CREATE_FILE_FROM_TEXT` — args: `{"name":"notes.txt","content":"Hello"}`',
