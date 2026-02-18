@@ -52,6 +52,9 @@ const APP_INPUT_FIELDS: Record<string, string[]> = {
     googleads: ['generic_token', 'generic_id'],
 };
 
+// Google apps handled by our own OAuth (not Composio)
+const GOOGLE_APPS = ['googleads'];
+
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const app = searchParams.get('app');
@@ -60,6 +63,19 @@ export async function GET(request: Request) {
 
     if (!app) {
         return NextResponse.json({ error: 'Missing app parameter' }, { status: 400 });
+    }
+
+    // Redirect Google apps to our direct OAuth flow
+    if (GOOGLE_APPS.includes(app.toLowerCase())) {
+        const googleParams = new URLSearchParams({
+            app: app.toLowerCase(),
+            entityId,
+            ...(redirectTo ? { redirectTo } : {}),
+        });
+        // Pass customer_id if provided
+        const customerId = searchParams.get('generic_id') || searchParams.get('customer_id');
+        if (customerId) googleParams.set('customer_id', customerId);
+        return NextResponse.redirect(new URL(`/api/google-connect?${googleParams}`, request.url), 303);
     }
 
     const authConfigId = AUTH_CONFIG_MAP[app.toLowerCase()];

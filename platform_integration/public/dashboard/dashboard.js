@@ -14,7 +14,7 @@ const apps = [
     { id: 'googledrive',        name: 'Google Drive',       icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googledrive.svg',      sub: 'Files, folders, sharing',           group: 'Google' },
     { id: 'googledocs',         name: 'Google Docs',        icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googledocs.svg',       sub: 'Documents, reports',                group: 'Google' },
     { id: 'google_analytics',   name: 'Google Analytics',   icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleanalytics.svg',  sub: 'GA4 reports, audiences, events',    group: 'Google' },
-    { id: 'googleads',          name: 'Google Ads',         icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleads.svg',        sub: 'Campaigns, customer lists',         group: 'Google', inputFields: [{ key: 'generic_token', label: 'Developer Token', placeholder: 'Enter your Google Ads developer token' }, { key: 'generic_id', label: 'Customer ID (no dashes)', placeholder: '1234567890' }] },
+    { id: 'googleads',          name: 'Google Ads',         icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleads.svg',        sub: 'Campaigns, customer lists',         group: 'Google' },
     // — Meta —
     { id: 'facebook',           name: 'Facebook',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg',         sub: 'Pages, Messenger, insights',        group: 'Meta' },
     { id: 'instagram',          name: 'Instagram',          icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg',        sub: 'Posts, stories, DMs, analytics',    group: 'Meta' },
@@ -405,6 +405,9 @@ function connectAppWithInput(appId, fieldKey) {
     window.location.href = url;
 }
 
+// Google apps using direct OAuth (not Composio)
+var GOOGLE_DIRECT_APPS = ['googleads'];
+
 function disconnectApp(appId, connectionId) {
     if (!confirm('Disconnect ' + appId + '? Your operator will lose access to this tool.')) {
         return;
@@ -412,13 +415,21 @@ function disconnectApp(appId, connectionId) {
     var token = getToken();
     if (!token) { logout(); return; }
 
-    fetch(API_BASE + '/api/composio-disconnect', {
+    // Google direct apps use /api/google-disconnect
+    var endpoint = GOOGLE_DIRECT_APPS.indexOf(appId) !== -1
+        ? '/api/google-disconnect'
+        : '/api/composio-disconnect';
+    var body = GOOGLE_DIRECT_APPS.indexOf(appId) !== -1
+        ? JSON.stringify({ app: appId })
+        : JSON.stringify({ connectionId: connectionId });
+
+    fetch(API_BASE + endpoint, {
         method: 'POST',
         headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ connectionId: connectionId }),
+        body: body,
     })
     .then(function(r) {
         if (r.status === 401) { logout(); return null; }

@@ -181,6 +181,13 @@ async function provisionInstance(instance) {
         `COMPOSIO_ENTITY_ID=${instance.user_id}`,
         `USER_ID=${instance.user_id}`,
         `INSTANCE_ID=${instance.id}`,
+        // Google direct integration (google-bridge.js)
+        `SUPABASE_URL=${SB_URL}`,
+        `SUPABASE_SERVICE_ROLE_KEY=${SB_KEY}`,
+        `ENCRYPTION_KEY=${envVars.ENCRYPTION_KEY || ''}`,
+        `GOOGLE_CLIENT_ID=${envVars.GOOGLE_CLIENT_ID || ''}`,
+        `GOOGLE_CLIENT_SECRET=${envVars.GOOGLE_CLIENT_SECRET || ''}`,
+        `GOOGLE_ADS_DEVELOPER_TOKEN=${envVars.GOOGLE_ADS_DEVELOPER_TOKEN || ''}`,
       ],
       Labels: {
         'caddy': `${instance.subdomain}.claw4growth.com`,

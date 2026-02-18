@@ -19,18 +19,27 @@ const composio = new Composio({
 });
 
 /**
+ * Google apps handled by our direct OAuth (not Composio).
+ * Maps dashboard app ID → required OAuth scope.
+ */
+const GOOGLE_DIRECT_APPS: Record<string, string> = {
+    googleads: 'https://www.googleapis.com/auth/adwords',
+};
+
+/**
  * Maps dashboard app IDs to Composio toolkit slugs.
  * Must stay in sync with composio-connect/route.ts APP_MAP.
+ * NOTE: Google apps in GOOGLE_DIRECT_APPS are checked via Supabase, not Composio.
  */
 const DASHBOARD_TO_COMPOSIO: Record<string, string> = {
-    // Google services (individual)
+    // Google services (still on Composio for now)
     gmail: 'gmail',
     googlecalendar: 'googlecalendar',
     googlesheets: 'googlesheets',
     googledrive: 'googledrive',
     googledocs: 'googledocs',
     google_analytics: 'google_analytics',
-    googleads: 'googleads',
+    // googleads → moved to direct OAuth (GOOGLE_DIRECT_APPS)
     // Meta services
     facebook: 'facebook',
     instagram: 'instagram',
@@ -76,8 +85,8 @@ export async function GET(request: Request) {
         { auth: { autoRefreshToken: false, persistSession: false } }
     );
 
-    // Fetch instance, subscription, Composio connections, and usage in parallel
-    const [instanceResult, subscription, connections, usageResult] = await Promise.all([
+    // Fetch instance, subscription, Composio connections, Google connections, and usage in parallel
+    const [instanceResult, subscription, composioConnections, googleConnections, usageResult] = await Promise.all([
         supabaseAdmin
             .from('c4g_instances')
             .select('id, subdomain, status, created_at')
@@ -87,10 +96,14 @@ export async function GET(request: Request) {
             .maybeSingle(),
         getUserSubscription(user.id),
         getComposioConnections(user.id),
+        getGoogleConnections(supabaseAdmin, user.id),
         getMonthlyUsage(supabaseAdmin, user.id),
     ]);
 
     const instance = instanceResult.data;
+
+    // Merge Composio + Google direct connections
+    const connections = { ...composioConnections, ...googleConnections };
 
     return NextResponse.json({
         user: {
@@ -190,4 +203,41 @@ async function getComposioConnections(
     }
 
     return connectedMap;
+}
+
+/**
+ * Checks Google direct OAuth connections from c4g_google_tokens.
+ * Returns connection status for apps in GOOGLE_DIRECT_APPS.
+ */
+async function getGoogleConnections(
+    supabaseAdmin: any,
+    userId: string,
+): Promise<Record<string, { connected: boolean; connectionId?: string }>> {
+    const result: Record<string, { connected: boolean; connectionId?: string }> = {};
+
+    // Initialize all Google direct apps as disconnected
+    for (const dashId of Object.keys(GOOGLE_DIRECT_APPS)) {
+        result[dashId] = { connected: false };
+    }
+
+    try {
+        const { data } = await supabaseAdmin
+            .from('c4g_google_tokens')
+            .select('id, scopes')
+            .eq('user_id', userId)
+            .maybeSingle();
+
+        if (data) {
+            const userScopes = data.scopes || [];
+            for (const [dashId, requiredScope] of Object.entries(GOOGLE_DIRECT_APPS)) {
+                if (userScopes.includes(requiredScope)) {
+                    result[dashId] = { connected: true, connectionId: `google:${data.id}` };
+                }
+            }
+        }
+    } catch (err) {
+        console.error('Failed to fetch Google connections:', err);
+    }
+
+    return result;
 }
