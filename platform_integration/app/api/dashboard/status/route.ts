@@ -98,7 +98,7 @@ export async function GET(request: Request) {
  */
 async function getComposioConnections(
     userId: string,
-    supabase: ReturnType<typeof createClient>
+    supabase: any
 ): Promise<Record<string, boolean>> {
     // Build the connected map (all false by default)
     const connectedMap: Record<string, boolean> = {};
