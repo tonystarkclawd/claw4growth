@@ -14,7 +14,7 @@ const apps = [
     { id: 'googledrive',        name: 'Google Drive',       icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googledrive.svg',      sub: 'Files, folders, sharing',           group: 'Google' },
     { id: 'googledocs',         name: 'Google Docs',        icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googledocs.svg',       sub: 'Documents, reports',                group: 'Google' },
     { id: 'google_analytics',   name: 'Google Analytics',   icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleanalytics.svg',  sub: 'GA4 reports, audiences, events',    group: 'Google' },
-    { id: 'googleads',          name: 'Google Ads',         icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleads.svg',        sub: 'Campaigns, customer lists',         group: 'Google' },
+    { id: 'googleads',          name: 'Google Ads',         icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/googleads.svg',        sub: 'Campaigns, customer lists',         group: 'Google', inputFields: [{ key: 'generic_token', label: 'Developer Token', placeholder: 'Enter your Google Ads developer token' }, { key: 'generic_id', label: 'Customer ID (no dashes)', placeholder: '1234567890' }] },
     // — Meta —
     { id: 'facebook',           name: 'Facebook',           icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg',         sub: 'Pages, Messenger, insights',        group: 'Meta' },
     { id: 'instagram',          name: 'Instagram',          icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg',        sub: 'Posts, stories, DMs, analytics',    group: 'Meta' },
@@ -85,30 +85,32 @@ function logout() {
         showLoginScreen();
         return;
     }
-    // Token exists — hide login immediately, show loading state
+    // Token exists — hide login, show loading screen
     var login = document.getElementById('loginScreen');
-    var nav = document.getElementById('dashNav');
-    var main = document.getElementById('dashMain');
+    var loading = document.getElementById('loadingScreen');
     if (login) login.style.display = 'none';
-    if (nav) nav.style.display = '';
-    if (main) { main.style.display = ''; main.style.opacity = '0.5'; }
+    if (loading) loading.style.display = '';
     loadDashboard(token);
 })();
 
 function showLoginScreen() {
     var login = document.getElementById('loginScreen');
+    var loading = document.getElementById('loadingScreen');
     var nav = document.getElementById('dashNav');
     var main = document.getElementById('dashMain');
     if (login) login.style.display = '';
+    if (loading) loading.style.display = 'none';
     if (nav) nav.style.display = 'none';
     if (main) main.style.display = 'none';
 }
 
 function hideLoginScreen() {
     var login = document.getElementById('loginScreen');
+    var loading = document.getElementById('loadingScreen');
     var nav = document.getElementById('dashNav');
     var main = document.getElementById('dashMain');
     if (login) login.style.display = 'none';
+    if (loading) loading.style.display = 'none';
     if (nav) nav.style.display = '';
     if (main) main.style.display = '';
 }
@@ -143,8 +145,6 @@ function loadDashboard(token) {
         dashState.entityId = data.user.id || 'default';
 
         hideLoginScreen();
-        var main = document.getElementById('dashMain');
-        if (main) main.style.opacity = '';
         renderNavUser();
         renderApps();
         renderSubscription();
@@ -277,6 +277,13 @@ function renderAppCard(app) {
         btnHtml = '<button class="dash-app-btn coming-soon" disabled>COMING SOON</button>';
     } else if (connected) {
         btnHtml = '<button class="dash-app-btn disconnect" onclick="disconnectApp(\'' + app.id + '\', \'' + (conn.connectionId || '') + '\')">DISCONNECT</button>';
+    } else if (app.inputFields) {
+        inputHtml = '<div class="dash-app-input-row">';
+        app.inputFields.forEach(function(f) {
+            inputHtml += '<input type="text" id="input_' + app.id + '_' + f.key + '" class="dash-app-input" placeholder="' + (f.placeholder || f.label) + '" style="margin-bottom:6px;">';
+        });
+        inputHtml += '</div>';
+        btnHtml = '<button class="dash-app-btn connect" onclick="connectAppWithFields(\'' + app.id + '\')">CONNECT</button>';
     } else if (app.inputField) {
         var f = app.inputField;
         inputHtml = '<div class="dash-app-input-row">' +
@@ -363,6 +370,25 @@ function renderSubscription() {
 function connectApp(appId) {
     var entityId = dashState.entityId || 'default';
     var url = API_BASE + '/api/composio-connect?app=' + appId + '&entityId=' + entityId + '&redirectTo=/dashboard/';
+    window.location.href = url;
+}
+
+function connectAppWithFields(appId) {
+    var appDef = apps.find(function(a) { return a.id === appId; });
+    if (!appDef || !appDef.inputFields) return;
+    var entityId = dashState.entityId || 'default';
+    var url = API_BASE + '/api/composio-connect?app=' + appId + '&entityId=' + entityId + '&redirectTo=/dashboard/';
+    for (var i = 0; i < appDef.inputFields.length; i++) {
+        var f = appDef.inputFields[i];
+        var input = document.getElementById('input_' + appId + '_' + f.key);
+        var value = input ? input.value.trim() : '';
+        if (!value) {
+            input.style.borderColor = 'var(--red)';
+            input.focus();
+            return;
+        }
+        url += '&' + f.key + '=' + encodeURIComponent(value);
+    }
     window.location.href = url;
 }
 

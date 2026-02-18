@@ -148,6 +148,11 @@
         </div>
     </nav>
 
+    <!-- LOADING SCREEN (shown while fetching data) -->
+    <div id="loadingScreen" style="display:none;text-align:center;padding:120px 20px;font-family:'JetBrains Mono',monospace;">
+        <div style="font-size:14px;color:var(--text-muted,#888);letter-spacing:2px;">LOADING DASHBOARD<span id="loadingDots">...</span></div>
+    </div>
+
     <!-- MAIN -->
     <main class="dash-main" id="dashMain" style="display:none">
 
@@ -197,10 +202,10 @@
                 <div class="dash-sub-row">
                     <div class="dash-sub-plan">
                         <span class="dash-sub-label">CURRENT PLAN</span>
-                        <span class="dash-sub-value" id="planName">PRO MONTHLY</span>
+                        <span class="dash-sub-value" id="planName">—</span>
                     </div>
                     <div class="dash-sub-price">
-                        <span class="dash-sub-amount" id="planPrice">&euro;49.90</span>
+                        <span class="dash-sub-amount" id="planPrice">—</span>
                         <span class="dash-sub-period">/month</span>
                     </div>
                 </div>
@@ -208,7 +213,7 @@
                 <div class="dash-sub-row">
                     <div>
                         <span class="dash-sub-label">NEXT BILLING</span>
-                        <span class="dash-sub-value" id="nextBilling">March 14, 2026</span>
+                        <span class="dash-sub-value" id="nextBilling">—</span>
                     </div>
                 </div>
 

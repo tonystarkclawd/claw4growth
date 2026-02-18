@@ -14,6 +14,14 @@
 const Docker = require('dockerode');
 const fs = require('fs');
 const path = require('path');
+const {
+  generateIdentityMd,
+  generateUserMd,
+  generateBootstrapMd,
+  generateBrandMemory,
+  generateModelsMd,
+  generateComposioMd,
+} = require('./c4g-content');
 
 // ─── Config ──────────────────────────────────────────────
 const POLL_INTERVAL_MS = 5_000;
@@ -236,34 +244,10 @@ async function provisionInstance(instance) {
       };
 
       // IDENTITY.md — who the agent is
-      await writeFile(`${wsPath}/IDENTITY.md`, [
-        '# IDENTITY.md - Who Am I?',
-        '',
-        `- **Name:** ${opName}`,
-        `- **Creature:** AI marketing operator`,
-        `- **Vibe:** ${tone}, helpful, proactive`,
-        `- **Emoji:** 🚀`,
-        '',
-        `I am ${opName}, the dedicated marketing operator for ${brand.name}.`,
-        `I help with digital marketing tasks: content creation, campaign management, analytics, and more.`,
-      ].join('\n'));
+      await writeFile(`${wsPath}/IDENTITY.md`, generateIdentityMd(opName, brand, tone));
 
       // USER.md — info about the human
-      await writeFile(`${wsPath}/USER.md`, [
-        '# USER.md - About Your Human',
-        '',
-        `- **Brand:** ${brand.name}`,
-        `- **Industry:** ${brand.industry}`,
-        `- **Description:** ${brand.description || 'N/A'}`,
-        `- **Website:** ${brand.website || 'N/A'}`,
-        `- **Preferred tone:** ${tone}`,
-        '',
-        '## Context',
-        '',
-        `This user runs ${brand.name} in the ${brand.industry} space.`,
-        `They use Claw4Growth to automate their digital marketing.`,
-        `Always communicate in a ${tone} tone.`,
-      ].join('\n'));
+      await writeFile(`${wsPath}/USER.md`, generateUserMd(brand, tone));
 
       // memory/brand.md
       await container.exec({
@@ -271,169 +255,16 @@ async function provisionInstance(instance) {
         User: '1000:1000',
       }).then(exec => exec.start());
 
-      await writeFile(`${wsPath}/memory/brand.md`, [
-        `# Brand: ${brand.name}`,
-        `## Industry: ${brand.industry}`,
-        `## Description: ${brand.description || 'N/A'}`,
-        `## Tone: ${tone}`,
-        `## Website: ${brand.website || 'N/A'}`,
-      ].join('\n'));
+      await writeFile(`${wsPath}/memory/brand.md`, generateBrandMemory(brand, tone));
 
       // BOOTSTRAP.md — custom first-message replacing the generic one
-      await writeFile(`${wsPath}/BOOTSTRAP.md`, [
-        `# Welcome!`,
-        ``,
-        `You are **${opName}**, the marketing operator for **${brand.name}**.`,
-        `Your tone is **${tone}**. You help with digital marketing tasks.`,
-        ``,
-        `## First Message`,
-        ``,
-        `Introduce yourself briefly. Something like:`,
-        ``,
-        `> "Hey! I'm ${opName}, your marketing operator for ${brand.name}. 🚀`,
-        `> I can help with content creation, campaign management, analytics, and more.`,
-        `> What would you like to work on?"`,
-        ``,
-        `Also mention that they can manage their integrations and subscription at:`,
-        `**https://claw4growth.com/dashboard/**`,
-        ``,
-        `## After the first conversation`,
-        ``,
-        `Delete this file — you don't need it anymore.`,
-      ].join('\n'));
+      await writeFile(`${wsPath}/BOOTSTRAP.md`, generateBootstrapMd(opName, brand, tone));
 
       // MODELS.md — instructions for model switching
-      await writeFile(`${wsPath}/MODELS.md`, [
-        '# Available AI Models',
-        '',
-        'You are currently using **GPT-4o Mini** — fast and cost-effective for most tasks.',
-        '',
-        '## When to suggest a model upgrade',
-        '',
-        'For particularly complex tasks, you can suggest using a more capable model.',
-        'ONLY suggest this when the task genuinely requires it:',
-        '',
-        '- **Deep data analysis** with large datasets or complex reasoning',
-        '- **Long-form strategy documents** requiring nuanced business insight',
-        '- **Complex multi-step campaigns** with many variables',
-        '- **Code generation** for advanced automations or integrations',
-        '',
-        '## How to suggest',
-        '',
-        'When you think a stronger model would help, ask the user:',
-        '',
-        '> "This task is quite complex. I can handle it with my current model (GPT-4o Mini),',
-        '> but for best results I\'d suggest switching to a more powerful model for this specific task.',
-        '> It will cost a bit more from your monthly budget. Would you like to upgrade for this task?"',
-        '',
-        '## Available models (by cost)',
-        '',
-        '| Model | Best for | Relative cost |',
-        '|-------|----------|---------------|',
-        '| GPT-4o Mini | General tasks, quick responses | $ (default) |',
-        '| Gemini 2.0 Flash | Fast tasks, similar to Mini | $ |',
-        '| Claude Haiku 4 | Quick analytical tasks | $$ |',
-        '| GPT-4o | Complex reasoning, analysis | $$$ |',
-        '| Gemini 2.5 Pro | Deep analysis, long context | $$$ |',
-        '| Claude Sonnet 4 | Best quality writing & reasoning | $$$$ |',
-        '',
-        '## Important',
-        '',
-        '- NEVER switch model without asking the user first',
-        '- NEVER mention model names proactively — only when the user asks or the task warrants it',
-        '- After the complex task is done, switch back to GPT-4o Mini',
-        '- The user has a monthly budget cap — be mindful of costs',
-      ].join('\n'));
+      await writeFile(`${wsPath}/MODELS.md`, generateModelsMd());
 
       // COMPOSIO.md — instructions for using connected app integrations
-      await writeFile(`${wsPath}/COMPOSIO.md`, [
-        '# App Integrations (Composio)',
-        '',
-        'You have access to connected apps via the Composio bridge.',
-        'The user connected these apps through the Claw4Growth dashboard.',
-        '',
-        '## How to Use',
-        '',
-        'Run commands via Bash using the bridge script:',
-        '',
-        '### List connected apps',
-        '```bash',
-        'node /opt/composio-bridge/composio-bridge.js list-apps $USER_ID',
-        '```',
-        '',
-        '### List available tools for an app',
-        '```bash',
-        'node /opt/composio-bridge/composio-bridge.js list-tools $USER_ID gmail',
-        '```',
-        '',
-        '### Execute a tool',
-        '```bash',
-        `node /opt/composio-bridge/composio-bridge.js execute $USER_ID TOOL_SLUG '{"param":"value"}'`,
-        '```',
-        '',
-        '## Common Tools',
-        '',
-        '### Gmail',
-        '- `GMAIL_SEND_EMAIL` — args: `{"to":"email","subject":"...","body":"..."}`',
-        '- `GMAIL_FETCH_EMAILS` — args: `{"max_results":5}`',
-        '- `GMAIL_GET_PROFILE` — no args needed',
-        '- `GMAIL_CREATE_EMAIL_DRAFT` — args: `{"to":"email","subject":"...","body":"..."}`',
-        '',
-        '### Google Calendar',
-        '- `GOOGLECALENDAR_CREATE_EVENT` — args: `{"summary":"...","start":{"dateTime":"..."},"end":{"dateTime":"..."}}`',
-        '- `GOOGLECALENDAR_EVENTS_LIST` — args: `{"calendarId":"primary"}`',
-        '- `GOOGLECALENDAR_FIND_FREE_SLOTS` — find available time slots',
-        '',
-        '### Facebook',
-        '- `FACEBOOK_GET_USER_PAGES` — no args needed. Lists pages the user manages',
-        '- `FACEBOOK_CREATE_PAGE_POST` — args: `{"page_id":"...","message":"..."}`',
-        '- `FACEBOOK_GET_PAGE_INSIGHTS` — args: `{"page_id":"..."}`',
-        '',
-        '### Instagram',
-        '- `INSTAGRAM_GET_USER_INFO` — no args needed. Returns profile info, followers, media count',
-        '- `INSTAGRAM_GET_MEDIA` — get recent posts',
-        '- `INSTAGRAM_CREATE_MEDIA` — create a post',
-        '',
-        '### Meta Ads',
-        '- `METAADS_GET_AD_ACCOUNTS` — no args needed. Returns all ad accounts the user has access to',
-        '- `METAADS_GET_INSIGHTS` — args: `{"ad_account_id":"act_123456","date_preset":"last_30d"}` — campaign performance',
-        '- `METAADS_READ_ADSETS` — args: `{"ad_account_id":"act_123456"}` — list ad sets',
-        '- `METAADS_CREATE_CAMPAIGN` — args: `{"ad_account_id":"act_123456","name":"...","objective":"OUTCOME_TRAFFIC","status":"PAUSED"}`',
-        '- `METAADS_CREATE_AD_SET` — create an ad set within a campaign',
-        '- `METAADS_CREATE_AD` — create an ad within an ad set',
-        '- `METAADS_CREATE_AD_CREATIVE` — create ad creative (text, images, links)',
-        '- `METAADS_PAUSE_CAMPAIGN` / `METAADS_RESUME_CAMPAIGN` — pause/resume campaigns',
-        '- `METAADS_UPDATE_CAMPAIGN` / `METAADS_DELETE_CAMPAIGN` — update/delete campaigns',
-        '',
-        '**Meta Ads workflow:** Always start with `METAADS_GET_AD_ACCOUNTS` to get the ad account ID, then use that ID for all other operations.',
-        '',
-        '### LinkedIn',
-        '- `LINKEDIN_GET_MY_INFO` — no args needed. Returns user profile',
-        '- `LINKEDIN_CREATE_LINKED_IN_POST` — args: `{"text":"..."}`',
-        '',
-        '### Reddit',
-        '- `REDDIT_GET_ME_PREFS` — no args needed. Returns user info',
-        '- `REDDIT_SUBMIT_A_LINK_POST` — args: `{"sr":"subreddit","title":"...","url":"..."}`',
-        '- `REDDIT_SUBMIT_A_SELF_POST` — args: `{"sr":"subreddit","title":"...","text":"..."}`',
-        '- `REDDIT_SEARCH_REDDIT` — args: `{"q":"query"}`',
-        '',
-        '### Notion',
-        '- `NOTION_GET_ABOUT_ME` — no args needed. Returns workspace info',
-        '- `NOTION_SEARCH_NOTION_PAGE` — args: `{"search_query":"..."}`',
-        '- `NOTION_CREATE_NOTION_PAGE` — create a new page',
-        '',
-        '### Stripe',
-        '- `STRIPE_LIST_PRODUCTS` — args: `{"limit":10}` — list products',
-        '- `STRIPE_LIST_ALL_CUSTOMERS` — list customers',
-        '- `STRIPE_LIST_ALL_CHARGES` — list payments/charges',
-        '',
-        '## Important',
-        '',
-        '- Always run `list-apps` first to see what the user has connected',
-        '- If a tool fails, check if the app is connected',
-        '- The bridge output is JSON — parse and present results clearly to the user',
-        '- NEVER show raw JSON to the user — summarize the results in a friendly way',
-      ].join('\n'));
+      await writeFile(`${wsPath}/COMPOSIO.md`, generateComposioMd());
 
       // Reindex memory
       try {

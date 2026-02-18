@@ -49,6 +49,7 @@ const AUTH_CONFIG_MAP: Record<string, string> = {
  */
 const APP_INPUT_FIELDS: Record<string, string[]> = {
     shopify: ['subdomain'],
+    googleads: ['generic_token', 'generic_id'],
 };
 
 export async function GET(request: Request) {

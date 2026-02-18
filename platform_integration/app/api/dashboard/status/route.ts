@@ -164,14 +164,16 @@ async function getComposioConnections(
     try {
         const accounts = await composio.connectedAccounts.list({
             user_ids: [userId],
+            limit: 100,
         });
 
         if (accounts?.items) {
             for (const account of accounts.items) {
+                const acct = account as any;
                 // Skip non-active accounts
-                if ((account as any).status !== 'ACTIVE') continue;
+                if (acct.status !== 'ACTIVE') continue;
 
-                const toolkit = (account as any).toolkit?.slug || (account as any).appName || '';
+                const toolkit = acct.toolkit?.slug || acct.appName || '';
                 const dashIds = COMPOSIO_TO_DASHBOARD[toolkit.toLowerCase()];
                 if (dashIds) {
                     for (const did of dashIds) {
