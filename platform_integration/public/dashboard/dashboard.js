@@ -226,10 +226,43 @@ function renderApps() {
         grid.appendChild(section);
     });
 
-    // Render ungrouped apps
-    ungrouped.forEach(function(app) {
-        grid.appendChild(renderAppCard(app));
-    });
+    // Render ungrouped apps inside an "Other" group container
+    if (ungrouped.length > 0) {
+        var otherSection = document.createElement('div');
+        otherSection.className = 'dash-app-group';
+
+        var otherConnCount = 0;
+        ungrouped.forEach(function(a) {
+            if (dashState.connections[a.id] && dashState.connections[a.id].connected) otherConnCount++;
+        });
+
+        var otherHeader = document.createElement('div');
+        otherHeader.className = 'dash-app-group-header';
+        otherHeader.innerHTML =
+            '<span class="dash-app-group-name">Other</span>' +
+            '<span class="dash-app-group-count">' + otherConnCount + '/' + ungrouped.length + ' connected</span>' +
+            '<span class="dash-app-group-toggle">▼</span>';
+        otherHeader.onclick = function() {
+            var inner = otherSection.querySelector('.dash-app-group-inner');
+            var toggle = otherHeader.querySelector('.dash-app-group-toggle');
+            if (inner.style.display === 'none') {
+                inner.style.display = '';
+                toggle.textContent = '▼';
+            } else {
+                inner.style.display = 'none';
+                toggle.textContent = '▶';
+            }
+        };
+        otherSection.appendChild(otherHeader);
+
+        var otherInner = document.createElement('div');
+        otherInner.className = 'dash-app-group-inner';
+        ungrouped.forEach(function(app) {
+            otherInner.appendChild(renderAppCard(app));
+        });
+        otherSection.appendChild(otherInner);
+        grid.appendChild(otherSection);
+    }
 }
 
 function renderAppCard(app) {
@@ -273,7 +306,7 @@ function renderAppCard(app) {
 
 // Price per tier (EUR)
 var TIER_PRICES = {
-    pro: '€49.90',
+    pro: '€34.90',
     enterprise: 'Custom',
 };
 
@@ -298,7 +331,7 @@ function renderSubscription() {
     }
 
     if (planPriceEl) {
-        planPriceEl.textContent = TIER_PRICES[tier] || '€49.90';
+        planPriceEl.textContent = TIER_PRICES[tier] || '€34.90';
     }
 
     if (nextBillingEl && sub.current_period_end) {
@@ -319,7 +352,7 @@ function renderSubscription() {
         var noteEl = document.querySelector('.dash-usage-note');
         if (pctEl) pctEl.textContent = usage.pct + '%';
         if (fillEl) fillEl.style.width = usage.pct + '%';
-        if (noteEl) noteEl.textContent = '€' + usage.current_eur.toFixed(2) + ' / €' + usage.budget_eur.toFixed(2) + ' — Resets monthly.';
+        if (noteEl) noteEl.textContent = 'AI usage this month — Resets monthly.';
     } else if (usageSection) {
         usageSection.style.display = 'none';
     }
