@@ -22,8 +22,8 @@ const DOCKER_NETWORK = 'caddy';
 const OPENCLAW_INTERNAL_PORT = 18789;
 const SIDECAR_EXTERNAL_PORT = 18790;
 const CONTAINER_STATE_BASE = '/opt/c4g/containers';
-const OPENCLAW_MODEL = 'openai/MiniMax-M2.5';
-const LLM_PROXY_HOST = '172.17.0.1';  // Docker bridge gateway — reachable from containers
+const OPENCLAW_MODEL = 'c4g/MiniMax-M2.5';
+const LLM_PROXY_HOST = '172.18.0.1';  // Caddy network gateway — reachable from containers
 const LLM_PROXY_PORT = 18800;
 
 // ─── Load env ────────────────────────────────────────────
@@ -122,6 +122,19 @@ async function provisionInstance(instance) {
     const gatewayToken = envVars.C4G_GATEWAY_TOKEN || 'c4g-gw-default-token';
     const openclawConfig = JSON.stringify({
       agents: { defaults: { model: { primary: OPENCLAW_MODEL } } },
+      models: {
+        mode: 'merge',
+        providers: {
+          c4g: {
+            baseUrl: `http://${LLM_PROXY_HOST}:${LLM_PROXY_PORT}/v1`,
+            apiKey: `\${OPENAI_API_KEY}`,
+            api: 'openai-completions',
+            models: [
+              { id: 'MiniMax-M2.5', name: 'MiniMax M2.5' },
+            ],
+          },
+        },
+      },
       gateway: {
         port: OPENCLAW_INTERNAL_PORT,
         auth: { mode: 'token' },

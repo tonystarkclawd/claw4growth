@@ -52,6 +52,12 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
+// ─── Model rewriting ─────────────────────────────────────
+// OpenClaw sends a known OpenAI model name; proxy rewrites to the real provider model.
+const MODEL_REWRITE = {
+  'gpt-4o-mini': 'MiniMax-M2.5',
+};
+
 // ─── Token pricing (EUR per token) ──────────────────────
 const TOKEN_PRICES = {
   'MiniMax-M2.5': { input: 0.0000008, output: 0.0000032 },
@@ -139,10 +145,30 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // Only handle POST /v1/chat/completions
-  if (req.method !== 'POST' || !req.url.startsWith('/v1/chat/completions')) {
+  // Log all requests for debugging
+  console.log(`[llm-proxy] ${req.method} ${req.url}`);
+
+  // Forward any /v1/* request (chat/completions, responses, models, etc.)
+  if (!req.url.startsWith('/v1/')) {
     res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'Not found. Only POST /v1/chat/completions is supported.' }));
+    res.end(JSON.stringify({ error: 'Not found. Use /v1/* endpoints.' }));
+    return;
+  }
+
+  // GET /v1/models — return a minimal model list (no budget check needed)
+  if (req.method === 'GET' && req.url.startsWith('/v1/models')) {
+    res.writeHead(200, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({
+      object: 'list',
+      data: [{ id: 'MiniMax-M2.5', object: 'model', owned_by: 'c4g' }],
+    }));
+    return;
+  }
+
+  // Only budget-check and forward POST requests
+  if (req.method !== 'POST') {
+    res.writeHead(405, { 'Content-Type': 'application/json' });
+    res.end(JSON.stringify({ error: 'Method not allowed' }));
     return;
   }
 
@@ -169,9 +195,20 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // 2. Read and forward request
+    // 2. Read request, rewrite model if needed, and forward
     const body = await readBody(req);
-    const providerUrl = `${LLM_PROVIDER_BASE_URL}/chat/completions`;
+    let forwardBody = body;
+    try {
+      const parsed = JSON.parse(body.toString());
+      if (parsed.model && MODEL_REWRITE[parsed.model]) {
+        parsed.model = MODEL_REWRITE[parsed.model];
+        forwardBody = JSON.stringify(parsed);
+      }
+    } catch {}
+
+    // Forward to provider using same path (e.g. /v1/chat/completions -> /chat/completions)
+    const forwardPath = req.url.replace(/^\/v1/, '');
+    const providerUrl = `${LLM_PROVIDER_BASE_URL}${forwardPath}`;
 
     const providerRes = await fetch(providerUrl, {
       method: 'POST',
@@ -179,7 +216,7 @@ const server = http.createServer(async (req, res) => {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${LLM_PROVIDER_API_KEY}`,
       },
-      body,
+      body: forwardBody,
     });
 
     const providerBody = await providerRes.text();
