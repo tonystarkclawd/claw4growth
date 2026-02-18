@@ -44,7 +44,7 @@ function logout() {
     localStorage.removeItem('c4g_logged_in');
     localStorage.removeItem('c4g_user_id');
     localStorage.removeItem('c4g_user_email');
-    loginWithGoogle();
+    showLoginScreen();
 }
 
 // Handle OAuth hash callback
@@ -72,11 +72,32 @@ function logout() {
 (function init() {
     var token = getToken();
     if (!token) {
-        loginWithGoogle();
+        // Show login screen, hide dashboard
+        showLoginScreen();
         return;
     }
+    // Authenticated — hide login, show dashboard
+    hideLoginScreen();
     loadDashboard(token);
 })();
+
+function showLoginScreen() {
+    var login = document.getElementById('loginScreen');
+    var nav = document.getElementById('dashNav');
+    var main = document.getElementById('dashMain');
+    if (login) login.style.display = '';
+    if (nav) nav.style.display = 'none';
+    if (main) main.style.display = 'none';
+}
+
+function hideLoginScreen() {
+    var login = document.getElementById('loginScreen');
+    var nav = document.getElementById('dashNav');
+    var main = document.getElementById('dashMain');
+    if (login) login.style.display = 'none';
+    if (nav) nav.style.display = '';
+    if (main) main.style.display = '';
+}
 
 function loadDashboard(token) {
     fetch(API_BASE + '/api/dashboard/status', {

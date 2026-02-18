@@ -1,5 +1,64 @@
 /* Dashboard — inherits ../style.css */
 
+/* Login screen */
+.dash-login-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+}
+
+.dash-login-card {
+    text-align: center;
+    padding: 48px 40px;
+    background: var(--bg-card);
+    border: 2px solid var(--border);
+    max-width: 380px;
+    width: 90%;
+}
+
+.dash-login-logo {
+    margin-bottom: 20px;
+}
+
+.dash-login-title {
+    font-family: var(--font-pixel);
+    font-size: 18px;
+    color: var(--text);
+    letter-spacing: 3px;
+    margin-bottom: 8px;
+}
+
+.dash-login-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+}
+
+.dash-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 28px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: #1a1a2e;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dash-login-btn:hover {
+    border-color: var(--accent);
+    background: rgba(93,186,59,0.05);
+}
+
 .dash-nav {
     position: fixed;
     top: 0;
