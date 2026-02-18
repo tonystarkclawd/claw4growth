@@ -40,9 +40,10 @@ async function getOrCreateAuthConfig(toolkitSlug: string): Promise<string> {
     // Create a new auth config with Composio-managed credentials
     const created = await composio.authConfigs.create({
         toolkit: { slug: toolkitSlug },
+        auth_config: { type: 'use_composio_managed_auth' },
     });
 
-    return created.id;
+    return created.auth_config.id;
 }
 
 /**

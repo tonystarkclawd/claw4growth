@@ -151,6 +151,10 @@
     border-color: var(--accent);
 }
 
+.dash-app-card.dash-app-coming {
+    opacity: 0.5;
+}
+
 .dash-app-header {
     display: flex;
     align-items: center;
