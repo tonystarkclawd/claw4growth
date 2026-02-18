@@ -24,22 +24,19 @@ const composio = new Composio({
  */
 const GOOGLE_DIRECT_APPS: Record<string, string> = {
     googleads: 'https://www.googleapis.com/auth/adwords',
+    gmail: 'https://www.googleapis.com/auth/gmail.modify',
+    googlecalendar: 'https://www.googleapis.com/auth/calendar',
+    googledrive: 'https://www.googleapis.com/auth/drive',
+    googledocs: 'https://www.googleapis.com/auth/drive',       // Docs uses drive scope
+    googlesheets: 'https://www.googleapis.com/auth/drive',     // Sheets uses drive scope
+    google_analytics: 'https://www.googleapis.com/auth/analytics.readonly',
 };
 
 /**
  * Maps dashboard app IDs to Composio toolkit slugs.
- * Must stay in sync with composio-connect/route.ts APP_MAP.
- * NOTE: Google apps in GOOGLE_DIRECT_APPS are checked via Supabase, not Composio.
+ * NOTE: All Google apps are now in GOOGLE_DIRECT_APPS (checked via Supabase).
  */
 const DASHBOARD_TO_COMPOSIO: Record<string, string> = {
-    // Google services (still on Composio for now)
-    gmail: 'gmail',
-    googlecalendar: 'googlecalendar',
-    googlesheets: 'googlesheets',
-    googledrive: 'googledrive',
-    googledocs: 'googledocs',
-    google_analytics: 'google_analytics',
-    // googleads → moved to direct OAuth (GOOGLE_DIRECT_APPS)
     // Meta services
     facebook: 'facebook',
     instagram: 'instagram',

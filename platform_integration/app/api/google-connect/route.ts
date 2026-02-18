@@ -1,15 +1,28 @@
 import { NextResponse } from 'next/server';
 
 /**
- * Google app → OAuth scopes
- * Phase 1: Google Ads only. Expand as we migrate more services off Composio.
+ * Google app → OAuth scopes.
+ * All Google services use our direct OAuth (not Composio).
+ * userinfo.email is always included for account identification.
  */
-const SCOPE_MAP: Record<string, string[]> = {
-    googleads: [
-        'https://www.googleapis.com/auth/adwords',
-        'https://www.googleapis.com/auth/userinfo.email',
-    ],
+const BASE_SCOPES = ['https://www.googleapis.com/auth/userinfo.email'];
+
+const APP_SCOPES: Record<string, string[]> = {
+    googleads:        ['https://www.googleapis.com/auth/adwords'],
+    gmail:            ['https://www.googleapis.com/auth/gmail.modify'],
+    googlecalendar:   ['https://www.googleapis.com/auth/calendar'],
+    googledrive:      ['https://www.googleapis.com/auth/drive'],
+    googledocs:       ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/drive'],
+    googlesheets:     ['https://www.googleapis.com/auth/spreadsheets', 'https://www.googleapis.com/auth/drive'],
+    google_analytics: ['https://www.googleapis.com/auth/analytics.readonly'],
 };
+
+/** Resolve scopes: app-specific + base (email) */
+function getScopesForApp(app: string): string[] | null {
+    const appScopes = APP_SCOPES[app];
+    if (!appScopes) return null;
+    return [...new Set([...BASE_SCOPES, ...appScopes])];
+}
 
 /**
  * GET /api/google-connect
@@ -32,7 +45,7 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Missing app or entityId' }, { status: 400 });
     }
 
-    const scopes = SCOPE_MAP[app];
+    const scopes = getScopesForApp(app);
     if (!scopes) {
         return NextResponse.json({ error: `Unsupported Google app: ${app}` }, { status: 400 });
     }

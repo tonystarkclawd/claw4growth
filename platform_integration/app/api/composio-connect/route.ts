@@ -53,7 +53,7 @@ const APP_INPUT_FIELDS: Record<string, string[]> = {
 };
 
 // Google apps handled by our own OAuth (not Composio)
-const GOOGLE_APPS = ['googleads'];
+const GOOGLE_APPS = ['googleads', 'gmail', 'googlecalendar', 'googledrive', 'googledocs', 'googlesheets', 'google_analytics'];
 
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
