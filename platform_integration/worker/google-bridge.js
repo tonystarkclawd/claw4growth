@@ -169,7 +169,7 @@ async function gapiDelete(accessToken, url) {
 
 // ─── Google Ads GAQL ─────────────────────────────────────
 async function adsQuery(accessToken, customerId, gaql) {
-  const url = `https://googleads.googleapis.com/v17/customers/${customerId}/googleAds:searchStream`;
+  const url = `https://googleads.googleapis.com/v20/customers/${customerId}/googleAds:searchStream`;
   const res = await fetch(url, {
     method: 'POST',
     headers: {

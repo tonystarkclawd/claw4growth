@@ -4,7 +4,7 @@ import { encryptToken } from '@/lib/google-crypto';
 
 const GOOGLE_TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const GOOGLE_USERINFO_URL = 'https://www.googleapis.com/oauth2/v2/userinfo';
-const GOOGLE_ADS_CUSTOMERS_URL = 'https://googleads.googleapis.com/v17/customers:listAccessibleCustomers';
+const GOOGLE_ADS_CUSTOMERS_URL = 'https://googleads.googleapis.com/v20/customers:listAccessibleCustomers';
 
 /**
  * GET /api/google-callback
