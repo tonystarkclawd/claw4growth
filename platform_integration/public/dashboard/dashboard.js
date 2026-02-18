@@ -34,7 +34,7 @@ function getToken() {
 }
 
 function loginWithGoogle() {
-    var redirectTo = 'https://claw4growth.com/dashboard/';
+    var redirectTo = window.location.origin + '/dashboard/';
     var authUrl = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
     window.location.href = authUrl;
 }

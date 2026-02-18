@@ -4,6 +4,16 @@ import { getUserSubscription } from '@/lib/supabase/billing-db';
 import { createClient } from '@supabase/supabase-js';
 import { Composio } from '@composio/client';
 
+const CORS_HEADERS = {
+    'Access-Control-Allow-Origin': 'https://www.claw4growth.com',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+};
+
+export async function OPTIONS() {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
+
 const composio = new Composio({
     apiKey: process.env.COMPOSIO_API_KEY!,
 });
@@ -48,7 +58,7 @@ for (const [dashId, composioId] of Object.entries(DASHBOARD_TO_COMPOSIO)) {
 export async function GET(request: Request) {
     const user = await getAuthUser(request);
     if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS });
     }
 
     const supabaseAdmin = createClient(
@@ -89,7 +99,7 @@ export async function GET(request: Request) {
             }
             : null,
         connections,
-    });
+    }, { headers: CORS_HEADERS });
 }
 
 /**

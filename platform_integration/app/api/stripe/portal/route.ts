@@ -7,6 +7,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: '2026-01-28.clover',
 });
 
+const CORS_HEADERS = {
+    'Access-Control-Allow-Origin': 'https://www.claw4growth.com',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+};
+
+export async function OPTIONS() {
+    return new Response(null, { status: 204, headers: CORS_HEADERS });
+}
+
 /**
  * POST /api/stripe/portal
  *
@@ -18,29 +28,29 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export async function POST(request: Request) {
     const user = await getAuthUser(request);
     if (!user) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: CORS_HEADERS });
     }
 
     const subscription = await getUserSubscription(user.id);
     if (!subscription?.stripe_customer_id) {
         return NextResponse.json(
             { error: 'No active subscription found' },
-            { status: 404 }
+            { status: 404, headers: CORS_HEADERS }
         );
     }
 
     try {
         const session = await stripe.billingPortal.sessions.create({
             customer: subscription.stripe_customer_id,
-            return_url: 'https://claw4growth.com/dashboard/',
+            return_url: 'https://www.claw4growth.com/dashboard/',
         });
 
-        return NextResponse.json({ url: session.url });
+        return NextResponse.json({ url: session.url }, { headers: CORS_HEADERS });
     } catch (err) {
         console.error('Stripe portal error:', err);
         return NextResponse.json(
             { error: 'Failed to create portal session' },
-            { status: 500 }
+            { status: 500, headers: CORS_HEADERS }
         );
     }
 }
