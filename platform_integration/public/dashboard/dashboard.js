@@ -152,7 +152,8 @@ function renderApps() {
     grid.innerHTML = '';
 
     apps.forEach(function(app) {
-        var connected = !!dashState.connections[app.id];
+        var conn = dashState.connections[app.id] || {};
+        var connected = !!conn.connected;
         var card = document.createElement('div');
         card.className = 'dash-app-card' + (connected ? ' connected' : '');
 
@@ -166,7 +167,7 @@ function renderApps() {
             '</div>' +
             (app.sub ? '<div class="dash-app-sub">' + app.sub + '</div>' : '') +
             (connected
-                ? '<button class="dash-app-btn add-account" onclick="connectApp(\'' + app.id + '\')">+ ADD ACCOUNT</button>'
+                ? '<button class="dash-app-btn disconnect" onclick="disconnectApp(\'' + app.id + '\', \'' + (conn.connectionId || '') + '\')">DISCONNECT</button>'
                 : '<button class="dash-app-btn connect" onclick="connectApp(\'' + app.id + '\')">CONNECT</button>'
             );
 
@@ -208,14 +209,46 @@ function renderSubscription() {
 
 function connectApp(appId) {
     var entityId = dashState.entityId || 'default';
-    // Map dashboard IDs to composio-connect expected IDs
     var composioAppMap = {
         googlesuper: 'google',
-        meta: 'metaads',
     };
     var composioApp = composioAppMap[appId] || appId;
     var url = API_BASE + '/api/composio-connect?app=' + composioApp + '&entityId=' + entityId + '&redirectTo=/dashboard/';
     window.location.href = url;
+}
+
+function disconnectApp(appId, connectionId) {
+    if (!confirm('Disconnect ' + appId + '? Your operator will lose access to this tool.')) {
+        return;
+    }
+    var token = getToken();
+    if (!token) { logout(); return; }
+
+    fetch(API_BASE + '/api/composio-disconnect', {
+        method: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ connectionId: connectionId }),
+    })
+    .then(function(r) {
+        if (r.status === 401) { logout(); return null; }
+        return r.json();
+    })
+    .then(function(data) {
+        if (data && data.ok) {
+            // Update local state and re-render
+            dashState.connections[appId] = { connected: false };
+            renderApps();
+        } else if (data && data.error) {
+            alert('Error: ' + data.error);
+        }
+    })
+    .catch(function(err) {
+        console.error('Disconnect error:', err);
+        alert('Failed to disconnect.');
+    });
 }
 
 function manageSubscription() {

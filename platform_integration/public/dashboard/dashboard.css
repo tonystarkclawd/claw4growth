@@ -269,15 +269,16 @@
     filter: brightness(1.15);
 }
 
-.dash-app-btn.add-account {
+.dash-app-btn.disconnect {
     background: transparent;
-    color: var(--accent);
-    border: 1px dashed var(--accent-dim);
-    margin-top: 6px;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
 }
 
-.dash-app-btn.add-account:hover {
-    background: rgba(93,186,59,0.05);
+.dash-app-btn.disconnect:hover {
+    color: var(--red);
+    border-color: var(--red);
+    background: rgba(255,85,85,0.05);
 }
 
 /* Subscription card */

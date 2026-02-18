@@ -102,30 +102,34 @@ export async function GET(request: Request) {
 
 /**
  * Fetches connected accounts from Composio for this user.
- * Uses the entityId convention: operatorName from onboarding config.
+ * Returns { appId: { connected: bool, connectionId?: string } }
  */
 async function getComposioConnections(
     userId: string,
-): Promise<Record<string, boolean>> {
-    // Build the connected map (all false by default)
-    const connectedMap: Record<string, boolean> = {};
+): Promise<Record<string, { connected: boolean; connectionId?: string }>> {
+    const connectedMap: Record<string, { connected: boolean; connectionId?: string }> = {};
     for (const dashId of Object.keys(DASHBOARD_TO_COMPOSIO)) {
-        connectedMap[dashId] = false;
+        connectedMap[dashId] = { connected: false };
     }
 
     try {
-        // Use Supabase user ID directly as Composio entityId (stable, unique)
         const accounts = await composio.connectedAccounts.list({
             user_ids: [userId],
         });
 
         if (accounts?.items) {
             for (const account of accounts.items) {
+                // Skip non-active accounts
+                if ((account as any).status !== 'ACTIVE') continue;
+
                 const toolkit = (account as any).toolkit?.slug || (account as any).appName || '';
                 const dashIds = COMPOSIO_TO_DASHBOARD[toolkit.toLowerCase()];
                 if (dashIds) {
                     for (const did of dashIds) {
-                        connectedMap[did] = true;
+                        connectedMap[did] = {
+                            connected: true,
+                            connectionId: account.id,
+                        };
                     }
                 }
             }
