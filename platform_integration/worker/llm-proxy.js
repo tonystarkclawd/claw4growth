@@ -41,7 +41,7 @@ const LLM_PROVIDER_API_KEY = envVars.LLM_PROVIDER_API_KEY;
 const MONTHLY_BUDGET_EUR = parseFloat(envVars.MONTHLY_BUDGET_EUR || '20');
 const SUPABASE_URL = envVars.SUPABASE_URL || envVars.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = envVars.SUPABASE_SERVICE_ROLE_KEY;
-const PORT = parseInt(envVars.LLM_PROXY_PORT || '18800', 10);
+const PORT = parseInt(envVars.LLM_PROXY_PORT || '19000', 10);
 
 if (!LLM_PROVIDER_BASE_URL || !LLM_PROVIDER_API_KEY) {
   console.error('[llm-proxy] Missing LLM_PROVIDER_BASE_URL or LLM_PROVIDER_API_KEY');
@@ -52,16 +52,19 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
   process.exit(1);
 }
 
-// ─── Model rewriting ─────────────────────────────────────
-// OpenClaw sends a known OpenAI model name; proxy rewrites to the real provider model.
-const MODEL_REWRITE = {
-  'gpt-4o-mini': 'MiniMax-M2.5',
-};
+// ─── Default model ──────────────────────────────────────
+const DEFAULT_MODEL = envVars.DEFAULT_MODEL || 'openai/gpt-4o-mini';
 
-// ─── Token pricing (EUR per token) ──────────────────────
+// ─── Token pricing (EUR per 1 token) ───────────────────
+// Prices from OpenRouter, converted USD→EUR at ~0.92
 const TOKEN_PRICES = {
-  'MiniMax-M2.5': { input: 0.0000008, output: 0.0000032 },
-  'default':      { input: 0.000001,  output: 0.000004  },
+  'openai/gpt-4o-mini':            { input: 0.000000138, output: 0.000000552 },
+  'openai/gpt-4o':                 { input: 0.0000023,   output: 0.0000092  },
+  'google/gemini-2.0-flash':       { input: 0.0000001,   output: 0.0000004  },
+  'google/gemini-2.5-pro-preview': { input: 0.00000115,  output: 0.0000046  },
+  'anthropic/claude-sonnet-4':     { input: 0.00000276,  output: 0.0000138  },
+  'anthropic/claude-haiku-4':      { input: 0.00000073,  output: 0.00000368 },
+  'default':                       { input: 0.000001,    output: 0.000004   },
 };
 
 function getPrice(model) {
@@ -155,13 +158,13 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // GET /v1/models — return a minimal model list (no budget check needed)
+  // GET /v1/models — return available models (no budget check needed)
   if (req.method === 'GET' && req.url.startsWith('/v1/models')) {
+    const models = Object.keys(TOKEN_PRICES)
+      .filter(k => k !== 'default')
+      .map(id => ({ id, object: 'model', owned_by: 'openrouter' }));
     res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      object: 'list',
-      data: [{ id: 'MiniMax-M2.5', object: 'model', owned_by: 'c4g' }],
-    }));
+    res.end(JSON.stringify({ object: 'list', data: models }));
     return;
   }
 
@@ -195,18 +198,21 @@ const server = http.createServer(async (req, res) => {
       return;
     }
 
-    // 2. Read request, rewrite model if needed, and forward
+    // 2. Read request, ensure model is set, and forward to OpenRouter
     const body = await readBody(req);
     let forwardBody = body;
+    let requestModel = DEFAULT_MODEL;
     try {
       const parsed = JSON.parse(body.toString());
-      if (parsed.model && MODEL_REWRITE[parsed.model]) {
-        parsed.model = MODEL_REWRITE[parsed.model];
-        forwardBody = JSON.stringify(parsed);
+      // If no model or generic model name, inject default
+      if (!parsed.model || parsed.model === 'gpt-4o-mini' || parsed.model === 'default') {
+        parsed.model = DEFAULT_MODEL;
       }
+      requestModel = parsed.model;
+      forwardBody = JSON.stringify(parsed);
     } catch {}
 
-    // Forward to provider using same path (e.g. /v1/chat/completions -> /chat/completions)
+    // Forward to OpenRouter (same path structure: /v1/chat/completions → /chat/completions)
     const forwardPath = req.url.replace(/^\/v1/, '');
     const providerUrl = `${LLM_PROVIDER_BASE_URL}${forwardPath}`;
 
@@ -215,6 +221,8 @@ const server = http.createServer(async (req, res) => {
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${LLM_PROVIDER_API_KEY}`,
+        'HTTP-Referer': 'https://claw4growth.com',
+        'X-Title': 'Claw4Growth',
       },
       body: forwardBody,
     });
@@ -259,6 +267,7 @@ const server = http.createServer(async (req, res) => {
 server.listen(PORT, '0.0.0.0', () => {
   console.log(`[llm-proxy] LLM Proxy listening on 0.0.0.0:${PORT}`);
   console.log(`[llm-proxy] Provider: ${LLM_PROVIDER_BASE_URL}`);
+  console.log(`[llm-proxy] Default model: ${DEFAULT_MODEL}`);
   console.log(`[llm-proxy] Monthly budget: €${MONTHLY_BUDGET_EUR}`);
 });
 

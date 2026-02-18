@@ -23,9 +23,9 @@ const OPENCLAW_INTERNAL_PORT = 18789;
 const SIDECAR_EXTERNAL_PORT = 18790;
 const CONTAINER_STATE_BASE = '/opt/c4g/containers';
 const COMPOSIO_BRIDGE_DIR = '/opt/c4g/composio-bridge';
-const OPENCLAW_MODEL = 'c4g/MiniMax-M2.5';
+const OPENCLAW_MODEL = 'c4g/openai/gpt-4o-mini';
 const LLM_PROXY_HOST = '172.18.0.1';  // Caddy network gateway — reachable from containers
-const LLM_PROXY_PORT = 18800;
+const LLM_PROXY_PORT = 19000;
 
 // ─── Load env ────────────────────────────────────────────
 const envPath = process.env.C4G_ENV || path.resolve(__dirname, '.env');
@@ -131,7 +131,12 @@ async function provisionInstance(instance) {
             apiKey: `\${OPENAI_API_KEY}`,
             api: 'openai-completions',
             models: [
-              { id: 'MiniMax-M2.5', name: 'MiniMax M2.5' },
+              { id: 'openai/gpt-4o-mini', name: 'GPT-4o Mini (default)' },
+              { id: 'openai/gpt-4o', name: 'GPT-4o' },
+              { id: 'google/gemini-2.0-flash', name: 'Gemini 2.0 Flash' },
+              { id: 'google/gemini-2.5-pro-preview', name: 'Gemini 2.5 Pro' },
+              { id: 'anthropic/claude-sonnet-4', name: 'Claude Sonnet 4' },
+              { id: 'anthropic/claude-haiku-4', name: 'Claude Haiku 4' },
             ],
           },
         },
@@ -295,6 +300,49 @@ async function provisionInstance(instance) {
         `## After the first conversation`,
         ``,
         `Delete this file — you don't need it anymore.`,
+      ].join('\n'));
+
+      // MODELS.md — instructions for model switching
+      await writeFile(`${wsPath}/MODELS.md`, [
+        '# Available AI Models',
+        '',
+        'You are currently using **GPT-4o Mini** — fast and cost-effective for most tasks.',
+        '',
+        '## When to suggest a model upgrade',
+        '',
+        'For particularly complex tasks, you can suggest using a more capable model.',
+        'ONLY suggest this when the task genuinely requires it:',
+        '',
+        '- **Deep data analysis** with large datasets or complex reasoning',
+        '- **Long-form strategy documents** requiring nuanced business insight',
+        '- **Complex multi-step campaigns** with many variables',
+        '- **Code generation** for advanced automations or integrations',
+        '',
+        '## How to suggest',
+        '',
+        'When you think a stronger model would help, ask the user:',
+        '',
+        '> "This task is quite complex. I can handle it with my current model (GPT-4o Mini),',
+        '> but for best results I\'d suggest switching to a more powerful model for this specific task.',
+        '> It will cost a bit more from your monthly budget. Would you like to upgrade for this task?"',
+        '',
+        '## Available models (by cost)',
+        '',
+        '| Model | Best for | Relative cost |',
+        '|-------|----------|---------------|',
+        '| GPT-4o Mini | General tasks, quick responses | $ (default) |',
+        '| Gemini 2.0 Flash | Fast tasks, similar to Mini | $ |',
+        '| Claude Haiku 4 | Quick analytical tasks | $$ |',
+        '| GPT-4o | Complex reasoning, analysis | $$$ |',
+        '| Gemini 2.5 Pro | Deep analysis, long context | $$$ |',
+        '| Claude Sonnet 4 | Best quality writing & reasoning | $$$$ |',
+        '',
+        '## Important',
+        '',
+        '- NEVER switch model without asking the user first',
+        '- NEVER mention model names proactively — only when the user asks or the task warrants it',
+        '- After the complex task is done, switch back to GPT-4o Mini',
+        '- The user has a monthly budget cap — be mindful of costs',
       ].join('\n'));
 
       // COMPOSIO.md — instructions for using connected app integrations
