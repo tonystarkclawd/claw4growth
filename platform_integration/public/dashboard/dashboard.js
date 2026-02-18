@@ -74,8 +74,7 @@ function logout() {
         showLoginScreen();
         return;
     }
-    // Authenticated — hide login, show dashboard
-    hideLoginScreen();
+    // Authenticated — load data (login screen hidden after instance check)
     loadDashboard(token);
 })();
 
@@ -110,6 +109,13 @@ function loadDashboard(token) {
     })
     .then(function(data) {
         if (!data) return;
+
+        // No instance = user hasn't completed onboarding → redirect
+        if (!data.instance) {
+            window.location.href = '/onboarding/';
+            return;
+        }
+
         dashState.user = data.user;
         dashState.instance = data.instance;
         dashState.subscription = data.subscription;
@@ -118,6 +124,7 @@ function loadDashboard(token) {
         // Use Supabase user ID as Composio entityId (stable, unique per user)
         dashState.entityId = data.user.id || 'default';
 
+        hideLoginScreen();
         renderNavUser();
         renderApps();
         renderSubscription();
