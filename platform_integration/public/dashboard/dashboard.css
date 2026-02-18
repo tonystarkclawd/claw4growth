@@ -88,10 +88,33 @@
     color: var(--yellow);
 }
 
+.dash-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
 .dash-user {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-muted);
+}
+
+.dash-logout-btn {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-muted);
+    background: none;
+    border: 1px solid var(--border);
+    padding: 4px 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.2s;
+}
+
+.dash-logout-btn:hover {
+    color: var(--red);
+    border-color: var(--red);
 }
 
 .dash-main {
@@ -177,6 +200,14 @@
     color: var(--text);
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.dash-app-sub {
+    font-family: var(--font-body);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin: -6px 0 10px 0;
+    line-height: 1.4;
 }
 
 .dash-app-status {

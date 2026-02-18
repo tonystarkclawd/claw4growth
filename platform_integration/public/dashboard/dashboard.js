@@ -7,11 +7,9 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // ===== APP DEFINITIONS =====
 const apps = [
     { id: 'googlesuper', name: 'Google Suite', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/google.svg', sub: 'Drive, Gmail, Sheets, Calendar, Ads, Analytics' },
-    { id: 'facebook', name: 'Facebook', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg' },
-    { id: 'meta', name: 'Meta Ads', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/meta.svg' },
+    { id: 'facebook', name: 'Facebook', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/facebook.svg', sub: 'Pages, Messenger, Meta Ads, Insights' },
     { id: 'instagram', name: 'Instagram', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/instagram.svg' },
     { id: 'linkedin', name: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/linkedin.svg' },
-    { id: 'tiktok', name: 'TikTok', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/tiktok.svg' },
     { id: 'stripe', name: 'Stripe', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/stripe.svg' },
     { id: 'shopify', name: 'Shopify', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/shopify.svg' },
     { id: 'hubspot', name: 'HubSpot', icon: 'https://cdn.jsdelivr.net/npm/simple-icons@v13/icons/hubspot.svg' },
@@ -163,7 +161,7 @@ function renderApps() {
                 '</div>' +
                 '<span class="dash-app-status ' + (connected ? 'on' : 'off') + '">' + (connected ? 'CONNECTED' : 'NOT CONNECTED') + '</span>' +
             '</div>' +
-            (app.sub ? '<div class="dash-app-sub" style="font-size:11px;color:#888;margin:-8px 0 8px 0;">' + app.sub + '</div>' : '') +
+            (app.sub ? '<div class="dash-app-sub">' + app.sub + '</div>' : '') +
             (connected
                 ? '<button class="dash-app-btn add-account" onclick="connectApp(\'' + app.id + '\')">+ ADD ACCOUNT</button>'
                 : '<button class="dash-app-btn connect" onclick="connectApp(\'' + app.id + '\')">CONNECT</button>'

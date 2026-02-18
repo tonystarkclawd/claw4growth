@@ -25,10 +25,8 @@ const composio = new Composio({
 const DASHBOARD_TO_COMPOSIO: Record<string, string> = {
     googlesuper: 'google',       // Google Suite umbrella
     facebook: 'facebook',
-    meta: 'facebook_ads',
     instagram: 'instagram',
     linkedin: 'linkedin',
-    tiktok: 'tiktok',
     stripe: 'stripe',
     shopify: 'shopify',
     hubspot: 'hubspot',
