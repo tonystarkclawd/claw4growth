@@ -21,7 +21,7 @@ const APP_SCOPES: Record<string, string[]> = {
 function getScopesForApp(app: string): string[] | null {
     const appScopes = APP_SCOPES[app];
     if (!appScopes) return null;
-    return [...new Set([...BASE_SCOPES, ...appScopes])];
+    return Array.from(new Set([...BASE_SCOPES, ...appScopes]));
 }
 
 /**
