@@ -218,13 +218,18 @@
     border: 1px solid rgba(255, 193, 7, 0.25);
     border-radius: 8px;
     padding: 10px 14px;
-    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
     line-height: 1.5;
-    color: #ccc;
+    color: #aaa;
+    letter-spacing: 0;
+    text-transform: none;
 }
 
 .dash-google-callout strong {
     color: #ffc107;
+    font-weight: 600;
 }
 
 /* Input field for apps that need extra data (e.g. Shopify store name) */
