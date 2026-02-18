@@ -61,6 +61,24 @@
             top: 28px;
         }
 
+        .nav-login-btn {
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 8px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .nav-login-btn:hover {
+            color: #fff;
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
         /* Hero adjustments for marketer audience */
         .hero {
             text-align: left;
@@ -617,7 +635,10 @@
                     </svg></span>
                 <span class="logo-text">CLAW<span class="logo-accent">4</span>GROWTH</span>
             </a>
-            <a href="#pricing" class="mc-btn mc-btn-primary nav-cta-btn">ACCESSO EARLY BIRD</a>
+            <div style="display:flex;align-items:center;gap:12px">
+                <a href="/dashboard/" class="nav-login-btn">Accedi</a>
+                <a href="#pricing" class="mc-btn mc-btn-primary nav-cta-btn">ACCESSO EARLY BIRD</a>
+            </div>
         </div>
     </nav>
 
